@@ -27,6 +27,8 @@ public class Main extends GameApplication {
 		settings.setHeight(600);
 		settings.setTitle("JavaSpace");
 		settings.setVersion("0.0.1");
+		
+		System.out.println("prueba de git");
 	}
 	
 	@Override
