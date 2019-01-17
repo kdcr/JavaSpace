@@ -14,7 +14,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
 public class Main extends GameApplication {
-	
+	//
 	private Entity player;
 
 	public static void main(String[] args) {
