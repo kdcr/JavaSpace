@@ -3,3 +3,4 @@
 .classpath
 .settings/org.eclipse.jdt.core.prefs
 logs/FXGL-17-ene.-2019-19.23.16.log
+*.log
