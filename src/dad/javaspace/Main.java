@@ -14,7 +14,6 @@ import javafx.scene.text.Text;
 
 public class Main extends GameApplication {
 	//
-	private Entity player;
 
 	public static void main(String[] args) {
 		launch(args);
@@ -24,7 +23,6 @@ public class Main extends GameApplication {
 	protected void initSettings(GameSettings settings) {
 		settings.setWidth(600);
 		settings.setHeight(600);
-		settings.setFullScreenAllowed(true);
 		settings.setTitle("JavaSpace");
 		settings.setVersion("0.0.1");
 	}
@@ -36,30 +34,37 @@ public class Main extends GameApplication {
 	    input.addAction(new UserAction("Move Right") {
 	        @Override
 	        protected void onAction() {
-	            player.translateX(5); // move right 5 pixels
+	            // Enviar input al servidor
 	        }
 	    }, KeyCode.D);
 	    
 	    input.addAction(new UserAction("Move Left") {
 	        @Override
 	        protected void onAction() {
-	            player.translateX(-5); // move left 5 pixels
+	            // Enviar input al servidor
 	        }
 	    }, KeyCode.A);
 	    
 	    input.addAction(new UserAction("Move Up") {
 	        @Override
 	        protected void onAction() {
-	            player.translateY(-5); // move up 5 pixels
+	            // Enviar input al servidor
 	        }
 	    }, KeyCode.W);
 
 	    input.addAction(new UserAction("Move Down") {
 	        @Override
 	        protected void onAction() {
-	            player.translateY(5); // move down 5 pixels
+	            // Enviar input al servidor
 	        }
 	    }, KeyCode.S);
+	    
+	    input.addAction(new UserAction("Shoot") {
+	        @Override
+	        protected void onAction() {
+	            // Enviar input al servidor
+	        }
+	    }, KeyCode.SPACE);
 	    
 	}
 	
@@ -80,8 +85,8 @@ public class Main extends GameApplication {
 	@Override
 	protected void initGame() {
 		super.initGame();
-		player = Entities.builder().at(300, 300).viewFromNode(new ImageView("/dad/javaspace/resources/images/player.png"))
-				.buildAndAttach(getGameWorld());
+//		player = Entities.builder().at(300, 300).viewFromNode(new ImageView("/dad/javaspace/resources/images/player.png"))
+//				.buildAndAttach(getGameWorld());
 	}
 
 }
