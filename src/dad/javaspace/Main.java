@@ -8,9 +8,8 @@ import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.input.*;
 import com.almasb.fxgl.settings.GameSettings;
 
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
 public class Main extends GameApplication {
@@ -25,6 +24,7 @@ public class Main extends GameApplication {
 	protected void initSettings(GameSettings settings) {
 		settings.setWidth(600);
 		settings.setHeight(600);
+		settings.setFullScreenAllowed(true);
 		settings.setTitle("JavaSpace");
 		settings.setVersion("0.0.1");
 	}
@@ -80,7 +80,7 @@ public class Main extends GameApplication {
 	@Override
 	protected void initGame() {
 		super.initGame();
-		player = Entities.builder().at(300, 300).viewFromNode(new Rectangle(25, 25, Color.BLUE))
+		player = Entities.builder().at(300, 300).viewFromNode(new ImageView("/dad/javaspace/resources/images/player.png"))
 				.buildAndAttach(getGameWorld());
 	}
 
