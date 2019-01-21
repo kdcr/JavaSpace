@@ -10,16 +10,15 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-
-<GridPane fx:id="cfgHoverRoot" alignment="CENTER" maxWidth="1.7976931348623157E308" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/10.0.1">
+<GridPane fx:id="cfgHoverRoot" alignment="CENTER" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Resolución" textAlignment="CENTER" />
       <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Pantalla Completa" textAlignment="CENTER" GridPane.rowIndex="1" />
       <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Nombre en el juego" textAlignment="CENTER" GridPane.rowIndex="2" />
-      <TextField fx:id="nombreField" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="2" />
-      <CheckBox fx:id="fullScreenCheckBox" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-      <ComboBox fx:id="resoltionComboBox" prefWidth="150.0" GridPane.columnIndex="1" />
       <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Sonido de Efectos" GridPane.rowIndex="3" />
+      <ComboBox fx:id="resolutionComboBox" prefWidth="150.0" GridPane.columnIndex="1" />
+      <CheckBox fx:id="fullScreenCheckBox" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+      <TextField fx:id="nombreField" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="2" />
       <Slider fx:id="sonidoSlider" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="3" />
    </children>
    <columnConstraints>
