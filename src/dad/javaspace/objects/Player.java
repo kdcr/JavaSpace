@@ -1,4 +1,4 @@
-package dad.javaspace;
+package dad.javaspace.objects;
 
 public class Player extends RigidBody {
 

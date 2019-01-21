@@ -3,12 +3,9 @@ package dad.javaspace;
 import java.util.Map;
 
 import com.almasb.fxgl.app.GameApplication;
-import com.almasb.fxgl.entity.Entities;
-import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.input.*;
 import com.almasb.fxgl.settings.GameSettings;
 
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.text.Text;
 
@@ -31,28 +28,28 @@ public class Main extends GameApplication {
 	protected void initInput() {
 	    Input input = getInput();
 
-	    input.addAction(new UserAction("Move Right") {
+	    input.addAction(new UserAction("Rotate Right") {
 	        @Override
 	        protected void onAction() {
 	            // Enviar input al servidor
 	        }
 	    }, KeyCode.D);
 	    
-	    input.addAction(new UserAction("Move Left") {
+	    input.addAction(new UserAction("Rotate Left") {
 	        @Override
 	        protected void onAction() {
 	            // Enviar input al servidor
 	        }
 	    }, KeyCode.A);
 	    
-	    input.addAction(new UserAction("Move Up") {
+	    input.addAction(new UserAction("Add thrust") {
 	        @Override
 	        protected void onAction() {
 	            // Enviar input al servidor
 	        }
 	    }, KeyCode.W);
 
-	    input.addAction(new UserAction("Move Down") {
+	    input.addAction(new UserAction("Remove thrust") {
 	        @Override
 	        protected void onAction() {
 	            // Enviar input al servidor
@@ -87,6 +84,8 @@ public class Main extends GameApplication {
 		super.initGame();
 //		player = Entities.builder().at(300, 300).viewFromNode(new ImageView("/dad/javaspace/resources/images/player.png"))
 //				.buildAndAttach(getGameWorld());
+		
+		
 	}
 
 }

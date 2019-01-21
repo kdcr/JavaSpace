@@ -1,7 +1,7 @@
 package dad.javaspace.physics;
 
-import dad.javaspace.Player;
-import dad.javaspace.RigidBody;
+import dad.javaspace.objects.Player;
+import dad.javaspace.objects.RigidBody;
 
 public class Physics {
 

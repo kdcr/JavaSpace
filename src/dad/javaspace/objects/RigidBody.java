@@ -1,4 +1,4 @@
-package dad.javaspace;
+package dad.javaspace.objects;
 
 import com.almasb.fxgl.entity.Entity;
 
