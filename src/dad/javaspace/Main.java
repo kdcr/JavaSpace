@@ -14,12 +14,14 @@ import com.almasb.fxgl.settings.GameSettings;
 
 import dad.javaspace.objects.Player;
 import dad.javaspace.physics.Physics;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.scene.input.KeyCode;
 import javafx.scene.text.Text;
 
 public class Main extends GameApplication {
 	
-	private String version = "0.0.1";
+	private StringProperty version = new SimpleStringProperty(this, "version", "0.0.1");
 
 	private static String ip = "10.2.2.64", name = "jugador_test", skin = "0";
 	private static int id;
@@ -73,7 +75,7 @@ public class Main extends GameApplication {
 		settings.setWidth(600);
 		settings.setHeight(600);
 		settings.setTitle("JavaSpace");
-		settings.setVersion(version);
+		settings.setVersion(version.get());
 	}
 
 	@Override
@@ -138,6 +140,18 @@ public class Main extends GameApplication {
 //		player = Entities.builder().at(300, 300).viewFromNode(new ImageView("/dad/javaspace/resources/images/player.png"))
 //				.buildAndAttach(getGameWorld());
 
+	}
+
+	public final StringProperty versionProperty() {
+		return this.version;
+	}
+
+	public final String getVersion() {
+		return this.versionProperty().get();
+	}
+
+	public final void setVersion(final String version) {
+		this.versionProperty().set(version);
 	}
 
 }
