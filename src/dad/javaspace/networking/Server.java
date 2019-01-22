@@ -1,15 +1,27 @@
 package dad.javaspace.networking;
 
-import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Scanner;
+import java.util.ArrayList;
 
-public class Server extends Thread {
+public class Server {
 	Socket skCliente;
-
-	private static boolean newPlayer=true;
 	
+	 static final int NPLAYERS=2;
+	private static ArrayList<Connection> connectionsArray=new ArrayList<Connection>();
+	private static String players="";
+	public static String getPlayers() {
+		return players;
+	}
+
+
+	
+
+	public static ArrayList<Connection> getConnectionsArray() {
+		return connectionsArray;
+	}
+
+
 	static final int Puerto = 2000;
 	 static int numCliente = 0;
 
@@ -32,63 +44,42 @@ public class Server extends Thread {
 			
 			System.out.println("Escucho el puerto " + Puerto);
 
-			while (newPlayer) {
+			while (numCliente<NPLAYERS) {
 
-
-
+				
+				
 				Socket skCliente = skServidor.accept();
 				
 
 				System.out.println("Cliente conectado");
 
 //				Atiendo al cliente mediante un thread
-			///TODO crear clase cliente que recibe el socket y que tenga el run
-				new Connection(skCliente, numCliente++).start();
+				connectionsArray.add(new Connection(skCliente, ++numCliente, connectionsArray));
 			}
+			
+			
+
+			for (Connection con : connectionsArray) {
+				con.start();
+				
+			}
+			
+			
+			//TODO cambiar el sleep por una barrera que se abra ina vez se hayan inicializado todas la conexiones
+			Thread.sleep(4000);
+			
+			
+			for (Connection con : connectionsArray) {
+				players+=con.getIdentity()+","+con.getNombre()+","+con.getSkin()+"_";
+			}
+			
+			players+="\n";
+			System.out.println(players.toString());
 			
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 
-//	public void run() {
-//
-//		
-//		
-//		
-//		
-//		try {
-//
-//			// Creo los flujos de entrada y salida
-//
-//			
-//			Scanner scanner=new Scanner(skCliente.getInputStream(), "UTF8");
-//			OutputStreamWriter flujo_salida = new OutputStreamWriter(skCliente.getOutputStream(), "UTF8");
-//
-//			
-//			while(!skCliente.isClosed()) {
-//				
-//				//TODO recibr inputs y manejar las vidas
-//				
-//				
-//				
-//				
-//			}
-//		
-// 
-//			// Se cierra la conexión
-//
-//			skCliente.close();
-//
-//			System.out.println("Cliente desconectado");
-//
-//		} catch (Exception e) {
-//
-//			System.out.println(e.getMessage());
-//
-//		}
-//
-//	}
 }
