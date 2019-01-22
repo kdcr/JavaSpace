@@ -46,10 +46,8 @@ public class Connection extends Thread{
 //		try {
 //			barrera.await();
 //		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		} catch (BrokenBarrierException e) {
-//			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
 		
@@ -74,7 +72,6 @@ public class Connection extends Thread{
 				salida.flush();
 				
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		

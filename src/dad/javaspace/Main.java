@@ -8,14 +8,20 @@ import java.net.UnknownHostException;
 import java.util.Map;
 import java.util.Scanner;
 
+import com.almasb.fxgl.app.FXGL;
 import com.almasb.fxgl.app.GameApplication;
+import com.almasb.fxgl.entity.Entities;
+import com.almasb.fxgl.entity.Entity;
+import com.almasb.fxgl.entity.component.Component;
 import com.almasb.fxgl.input.*;
+import com.almasb.fxgl.physics.HitBox;
 import com.almasb.fxgl.settings.GameSettings;
 
 import dad.javaspace.objects.Player;
 import dad.javaspace.physics.Physics;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.text.Text;
 
@@ -27,11 +33,13 @@ public class Main extends GameApplication {
 	private static int identity, numPlayers;
 
 	private static String[] players;
-	
+
 	private static InputStreamReader flujoEntrada;
 	private static OutputStreamWriter flujoSalida;
 
 	private static Player player = new Player();
+
+	private static Entity playerEntity = new Entity();
 
 	private static Physics physics = new Physics();
 
@@ -41,45 +49,45 @@ public class Main extends GameApplication {
 
 	public static void main(String[] args) {
 
-		try {
-			Socket sk;
-
-			System.out.println("Buscando conexion...");
-
-			sk = new Socket(ip, 2000);
-
-			// Espera para que le de tiempo al servidor de mover la conexión a otro puerto
-			Thread.sleep(3000);
-
-			flujoEntrada = new InputStreamReader(sk.getInputStream(), "UTF-8");
-
-			flujoSalida = new OutputStreamWriter(sk.getOutputStream(), "UTF-8");
-
-			flujoSalida.write(name + "," + skin + "\n");
-
-			flujoSalida.flush();
-
-			System.out.println("nombre enviado");
-
-			identity = flujoEntrada.read();
-			
-			Scanner input = new Scanner(flujoEntrada);
-
-			players = input.nextLine().split("_");
-			
-			System.out.println(players[0]);
-
-			System.out.println("id recibida");
-
-			System.out.println(identity);
-
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			Socket sk;
+//
+//			System.out.println("Buscando conexion...");
+//
+//			sk = new Socket(ip, 2000);
+//
+//			// Espera para que le de tiempo al servidor de mover la conexión a otro puerto
+//			Thread.sleep(3000);
+//
+//			flujoEntrada = new InputStreamReader(sk.getInputStream(), "UTF-8");
+//
+//			flujoSalida = new OutputStreamWriter(sk.getOutputStream(), "UTF-8");
+//
+//			flujoSalida.write(name + "," + skin + "\n");
+//
+//			flujoSalida.flush();
+//
+//			System.out.println("nombre enviado");
+//
+//			identity = flujoEntrada.read();
+//
+//			Scanner input = new Scanner(flujoEntrada);
+//
+//			players = input.nextLine().split("_");
+//
+//			System.out.println(players[0]);
+//
+//			System.out.println("id recibida");
+//
+//			System.out.println(identity);
+//
+//		} catch (UnknownHostException e) {
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
 		launch(args);
 
 	}
@@ -99,31 +107,28 @@ public class Main extends GameApplication {
 		input.addAction(new UserAction("Rotate Right") {
 			@Override
 			protected void onAction() {
-				// Enviar input al servidor
+				playerEntity.setRotation(playerEntity.getRotation() + 1);
 			}
 		}, KeyCode.D);
 
 		input.addAction(new UserAction("Rotate Left") {
 			@Override
 			protected void onAction() {
-				// Enviar input al servidor
+				//playerEntity.setRotation(playerEntity.getRotation() - 1);
 			}
 		}, KeyCode.A);
 
 		input.addAction(new UserAction("Add thrust") {
 			@Override
 			protected void onAction() {
-				// Enviar input al servidor
-				if (player.getThrust() + 0.1 <= 3) {
-					player.setThrust(player.getThrust() + 0.1);
-				}
+				addThrust();
 			}
+
 		}, KeyCode.W);
 
 		input.addAction(new UserAction("Shoot") {
 			@Override
 			protected void onAction() {
-				// Enviar input al servidor
 				makeShoot();
 			}
 		}, KeyCode.SPACE);
@@ -151,9 +156,14 @@ public class Main extends GameApplication {
 	@Override
 	protected void initGame() {
 		super.initGame();
-
-//		player = Entities.builder().at(300, 300).viewFromNode(new ImageView("/dad/javaspace/resources/images/player.png"))
-//				.buildAndAttach(getGameWorld());
+		
+		player.angleProperty().bind(playerEntity.angleProperty());
+		
+		player.angleProperty().addListener((ob,ov,nv)-> System.out.println(nv));
+		
+		playerEntity = Entities.builder().at(300, 300)
+				.viewFromNode(new ImageView("/dad/javaspace/resources/images/player.png"))
+				.buildAndAttach(getGameWorld());
 
 	}
 
@@ -168,11 +178,18 @@ public class Main extends GameApplication {
 	}
 
 	private void sendPlayerPosition() {
-		try {
-			flujoSalida.write(identity + "," + player.getX() + "," + player.getY() + "," + player.getRotation() + ","
-					+ shooting + "\n");
-		} catch (IOException e) {
+//		try {
+//			flujoSalida.write(identity + "," + player.getX() + "," + player.getY() + "," + player.getRotation() + ","
+//					+ shooting + "\n");
+//		} catch (IOException e) {
+//		}
+	}
+	
+	private void addThrust() {
+		if (player.getThrust() + 0.1 <= 3) {
+			player.setThrust(player.getThrust() + 0.1);
 		}
+		Physics.forcePlayerCalc(player);
 	}
 
 	public final StringProperty versionProperty() {
