@@ -89,6 +89,8 @@ public class LauncherController implements Initializable {
 
 	@FXML
 	private ImageView imageViewEP;
+	
+	private MediaPlayer mpButtons;
 
 	public LauncherController() {
 		loadView("/dad/javaspace/interfacing/MainMenuView.fxml");
@@ -103,11 +105,11 @@ public class LauncherController implements Initializable {
 
 			imageViewEP.setImage(new Image("/dad/javaspace/resources/images/imagenjugar.jpg"));
 			rootView.setCenter(empezarPartidaHoverRoot);
-			
-			/**
+
+			/*
 			 * Audio
 			 */
-			
+
 			String musicFile = "src/dad/javaspace/resources/sound/Vigil.mp3";
 			Media mainTheme = new Media(new File(musicFile).toURI().toString());
 			MediaPlayer mp = new MediaPlayer(mainTheme);
@@ -116,6 +118,10 @@ public class LauncherController implements Initializable {
 
 			cfgButton.hoverProperty().addListener(e -> onCFGButtonHovered());
 			empezarPartidaButton.hoverProperty().addListener(e -> onEmpezarPartidaButtonHovered());
+			
+			String buttonMusicFile = "src/dad/javaspace/resources/sound/ButtonSound1.mp3";
+			Media buttonSound = new Media(new File(buttonMusicFile).toURI().toString());
+			mpButtons = new MediaPlayer(buttonSound);
 
 		}
 	}
@@ -137,22 +143,13 @@ public class LauncherController implements Initializable {
 	}
 
 	private void hoverAnimation(Node nodo) {
-		Task<Void> task = new Task<Void>() {
-			@Override
-			protected Void call() throws Exception {
-				String musicFile = "src/dad/javaspace/resources/sound/ButtonSound1.mp3";
-				Media mainTheme = new Media(new File(musicFile).toURI().toString());
-				MediaPlayer mp = new MediaPlayer(mainTheme);
-				mp.setVolume(1);
-				mp.setCycleCount(10);
-				mp.play();
-				return null;
-			}
-		};
+
 		
-		Thread hiloSonido = new Thread(task);
-		hiloSonido.start();
-		
+		mpButtons.stop();
+		mpButtons.setVolume(1);
+		mpButtons.setCycleCount(1);
+		mpButtons.play();
+
 		rootView.setCenter(nodo);
 		FadeTransition fade = new FadeTransition();
 		fade.setNode(nodo);
