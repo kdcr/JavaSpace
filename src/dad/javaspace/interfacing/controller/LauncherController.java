@@ -6,8 +6,6 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import javafx.animation.FadeTransition;
-import javafx.beans.Observable;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -89,7 +87,7 @@ public class LauncherController implements Initializable {
 
 	@FXML
 	private ImageView imageViewEP;
-	
+
 	private MediaPlayer mpButtons;
 
 	public LauncherController() {
@@ -119,7 +117,7 @@ public class LauncherController implements Initializable {
 
 			cfgButton.hoverProperty().addListener(e -> onCFGButtonHovered());
 			empezarPartidaButton.hoverProperty().addListener(e -> onEmpezarPartidaButtonHovered());
-			
+
 			String buttonMusicFile = "src/dad/javaspace/resources/sound/ButtonSound1.mp3";
 			Media buttonSound = new Media(new File(buttonMusicFile).toURI().toString());
 			mpButtons = new MediaPlayer(buttonSound);
@@ -144,7 +142,7 @@ public class LauncherController implements Initializable {
 
 	}
 
-	private void hoverAnimation(Node nodo) {		
+	private void hoverAnimation(Node nodo) {
 		mpButtons.stop();
 		mpButtons.play();
 
