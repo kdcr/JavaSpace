@@ -113,7 +113,8 @@ public class LauncherController implements Initializable {
 			String musicFile = "src/dad/javaspace/resources/sound/Vigil.mp3";
 			Media mainTheme = new Media(new File(musicFile).toURI().toString());
 			MediaPlayer mp = new MediaPlayer(mainTheme);
-			mp.setVolume(0.2);
+			mp.volumeProperty().bind(sonidoSlider.valueProperty().divide(100));
+			mp.setCycleCount(100);
 			mp.play();
 
 			cfgButton.hoverProperty().addListener(e -> onCFGButtonHovered());
@@ -142,12 +143,9 @@ public class LauncherController implements Initializable {
 
 	}
 
-	private void hoverAnimation(Node nodo) {
-
-		
+	private void hoverAnimation(Node nodo) {		
 		mpButtons.stop();
 		mpButtons.setVolume(1);
-		mpButtons.setCycleCount(1);
 		mpButtons.play();
 
 		rootView.setCenter(nodo);
