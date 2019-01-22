@@ -40,6 +40,7 @@ public class Main extends GameApplication {
 			
 			sk = new Socket(ip, 2000);
 			
+			// Espera para que le de tiempo al servidor de mover la conexión a otro puerto
 			Thread.sleep(3000);
 			
 			flujoEntrada = new InputStreamReader(sk.getInputStream());
