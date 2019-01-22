@@ -123,6 +123,7 @@ public class LauncherController implements Initializable {
 			String buttonMusicFile = "src/dad/javaspace/resources/sound/ButtonSound1.mp3";
 			Media buttonSound = new Media(new File(buttonMusicFile).toURI().toString());
 			mpButtons = new MediaPlayer(buttonSound);
+			mpButtons.setVolume(1);
 
 		}
 	}
@@ -145,7 +146,6 @@ public class LauncherController implements Initializable {
 
 	private void hoverAnimation(Node nodo) {		
 		mpButtons.stop();
-		mpButtons.setVolume(1);
 		mpButtons.play();
 
 		rootView.setCenter(nodo);
