@@ -1,7 +1,10 @@
 package dad.javaspace.interfacing;
 
-public enum Resolutions {
-	X1366X768,
-	X1360X768,
-	X1920X1080
+public enum ScreenResolutions {
+	X800Y600,
+	X1024Y768,
+	X1280Y1024,
+	X1366Y768,
+	X1360Y768,
+	X1920Y1080
 }
