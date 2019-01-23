@@ -1,7 +1,9 @@
 package dad.javaspace;
 
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.FloatProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -14,7 +16,9 @@ public class ClientModel {
 	private double xForce, yForce;
 
 	private DoubleProperty thrust = new SimpleDoubleProperty();
-	
+
+	private FloatProperty angular = new SimpleFloatProperty();
+
 	private StringProperty version = new SimpleStringProperty(this, "version", "0.0.1");
 
 	public final DoubleProperty thrustProperty() {
@@ -68,7 +72,7 @@ public class ClientModel {
 	public void setyForce(double yForce) {
 		this.yForce = yForce;
 	}
-	
+
 	public final StringProperty versionProperty() {
 		return this.version;
 	}
@@ -79,6 +83,18 @@ public class ClientModel {
 
 	public final void setVersion(final String version) {
 		this.versionProperty().set(version);
+	}
+
+	public final FloatProperty angularProperty() {
+		return this.angular;
+	}
+
+	public final float getAngular() {
+		return this.angularProperty().get();
+	}
+
+	public final void setAngular(final float angular) {
+		this.angularProperty().set(angular);
 	}
 
 }

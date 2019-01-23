@@ -14,10 +14,6 @@ import com.almasb.fxgl.entity.Entities;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.component.Component;
 import com.almasb.fxgl.input.*;
-import com.almasb.fxgl.physics.HitBox;
-import com.almasb.fxgl.physics.PhysicsComponent;
-import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
-import com.almasb.fxgl.physics.box2d.dynamics.FixtureDef;
 import com.almasb.fxgl.settings.GameSettings;
 
 import dad.javaspace.objects.Player;
@@ -26,6 +22,7 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.geometry.Point2D;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.text.Text;
@@ -37,9 +34,9 @@ public class Main extends GameApplication {
 	private static InputStreamReader flujoEntrada;
 	private static OutputStreamWriter flujoSalida;
 
-	private static Entity playerEntity = new Entity();
-
-	PhysicsComponent physics;
+	Physics physics;
+	
+	Player player = new Player();
 
 	long coolDown = 0, coolDownEngine = 0;
 
@@ -107,14 +104,16 @@ public class Main extends GameApplication {
 		input.addAction(new UserAction("Rotate Right") {
 			@Override
 			protected void onAction() {
-				playerEntity.setRotation(playerEntity.getRotation() + 1);
+				if (player.getRotation() > 1)
+					player.setRotation(player.getRotation() + 0.5);
 			}
 		}, KeyCode.D);
 
 		input.addAction(new UserAction("Rotate Left") {
 			@Override
 			protected void onAction() {
-				// playerEntity.setRotation(playerEntity.getRotation() - 1);
+				if (model.getAngular() > -0.5f)
+					model.setAngular(model.getAngular() - 0.005f);
 			}
 		}, KeyCode.A);
 
@@ -153,19 +152,10 @@ public class Main extends GameApplication {
 	protected void initGame() {
 		super.initGame();
 
-		physics = new PhysicsComponent();
+		
+		player.setViewFromTexture("player.png");
 
-		physics.setBodyType(BodyType.DYNAMIC);
-
-		// these are direct jbox2d objects, so we don't actually introduce new API
-		FixtureDef fd = new FixtureDef();
-		fd.setDensity(0.7f);
-		fd.setRestitution(0.3f);
-		physics.setFixtureDef(fd);
-
-		playerEntity.addComponent(physics);
-		playerEntity = Entities.builder().at(300, 300).viewFromTexture("player.png").buildAndAttach(getGameWorld());
-
+		getGameWorld().addEntities(player);
 	}
 
 	private void makeShoot() {
@@ -192,10 +182,13 @@ public class Main extends GameApplication {
 		coolDownEngine = System.currentTimeMillis();
 		getAudioPlayer().playSound("thruster.mp3");
 //		}
-		if (model.getThrust() + 0.1 <= 3) {
-			model.setThrust(model.getThrust() + 0.1);
+
+		if (player.getThrust() + 0.1 <= 3) {
+			player.setThrust(player.getThrust() + 0.1);
 		}
-		physics.setLinearVelocity(1, 0);
+		
+		Physics.forcePlayerCalc(player);
+
 	}
 
 	@Override
