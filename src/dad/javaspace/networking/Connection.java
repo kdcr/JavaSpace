@@ -12,15 +12,18 @@ import com.almasb.fxgl.entity.Entity;
 
 public class Connection extends Thread{
 	
-	Socket sk;
-	String[] itemState;
+	private Socket sk;
+	private String[] itemState;
+
 	private int identity;
 	
-
+	
+	
+	
 	private String[] nombreSkin;
 	private String nombre, skin;
 
-
+	
 	private static  ArrayList<Connection> connectionsArray;
 	
 	private static CyclicBarrier barrera =new CyclicBarrier(Server.NPLAYERS);
@@ -82,9 +85,9 @@ public class Connection extends Thread{
 		
 		while(true){
 			
-			itemState=entrada.nextLine().toString().split(",");
-			//if(itemState[3].equals("true"))
-			//TODO hacer el evento de disparar
+			itemStateString=entrada.nextLine().toString();
+			itemState=itemStateString.split(",");
+			
 			
 			
 			
@@ -102,6 +105,10 @@ public class Connection extends Thread{
 	public int getIdentity() {
 		return identity;
 	}
+	public String getItemStateString() {
+		return itemStateString;
+	}
+	private String itemStateString; 
 	
 
 }
