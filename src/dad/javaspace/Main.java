@@ -15,10 +15,15 @@ import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.component.Component;
 import com.almasb.fxgl.input.*;
 import com.almasb.fxgl.physics.HitBox;
+import com.almasb.fxgl.physics.PhysicsComponent;
+import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
+import com.almasb.fxgl.physics.box2d.dynamics.FixtureDef;
 import com.almasb.fxgl.settings.GameSettings;
 
 import dad.javaspace.objects.Player;
 import dad.javaspace.physics.Physics;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.image.ImageView;
@@ -27,25 +32,20 @@ import javafx.scene.text.Text;
 
 public class Main extends GameApplication {
 
-	private StringProperty version = new SimpleStringProperty(this, "version", "0.0.1");
-
 	private static String ip = "10.2.2.64", name = "jugador_test", skin = "0";
-	private static int identity, numPlayers;
-
-	private static String[] players;
 
 	private static InputStreamReader flujoEntrada;
 	private static OutputStreamWriter flujoSalida;
 
-	private static Player player = new Player();
-
 	private static Entity playerEntity = new Entity();
 
-	private static Physics physics = new Physics();
+	PhysicsComponent physics;
 
-	long coolDown = 0;
+	long coolDown = 0, coolDownEngine = 0;
 
 	private boolean shooting = false;
+
+	private ClientModel model = new ClientModel();
 
 	public static void main(String[] args) {
 
@@ -97,7 +97,7 @@ public class Main extends GameApplication {
 		settings.setWidth(600);
 		settings.setHeight(600);
 		settings.setTitle("JavaSpace");
-		settings.setVersion(version.get());
+		settings.setVersion(model.getVersion());
 	}
 
 	@Override
@@ -114,7 +114,7 @@ public class Main extends GameApplication {
 		input.addAction(new UserAction("Rotate Left") {
 			@Override
 			protected void onAction() {
-				//playerEntity.setRotation(playerEntity.getRotation() - 1);
+				// playerEntity.setRotation(playerEntity.getRotation() - 1);
 			}
 		}, KeyCode.A);
 
@@ -132,10 +132,6 @@ public class Main extends GameApplication {
 				makeShoot();
 			}
 		}, KeyCode.SPACE);
-
-		// Bindeos para enviar la informacion segun hay cambios en el jugador
-		player.thrustProperty().addListener(e -> sendPlayerPosition());
-		player.angleProperty().addListener(e -> sendPlayerPosition());
 
 	}
 
@@ -156,24 +152,30 @@ public class Main extends GameApplication {
 	@Override
 	protected void initGame() {
 		super.initGame();
-		
-		player.angleProperty().bind(playerEntity.angleProperty());
-		
-		player.angleProperty().addListener((ob,ov,nv)-> System.out.println(nv));
-		
-		playerEntity = Entities.builder().at(300, 300)
-				.viewFromNode(new ImageView("/dad/javaspace/resources/images/player.png"))
-				.buildAndAttach(getGameWorld());
+
+		physics = new PhysicsComponent();
+
+		physics.setBodyType(BodyType.DYNAMIC);
+
+		// these are direct jbox2d objects, so we don't actually introduce new API
+		FixtureDef fd = new FixtureDef();
+		fd.setDensity(0.7f);
+		fd.setRestitution(0.3f);
+		physics.setFixtureDef(fd);
+
+		playerEntity.addComponent(physics);
+		playerEntity = Entities.builder().at(300, 300).viewFromTexture("player.png").buildAndAttach(getGameWorld());
 
 	}
 
 	private void makeShoot() {
-		if (System.currentTimeMillis() > coolDown + 1000) {
+		if (System.currentTimeMillis() > coolDown + 300) {
 			coolDown = System.currentTimeMillis();
 			shooting = true;
 			sendPlayerPosition();
 			shooting = false;
 			sendPlayerPosition();
+			getAudioPlayer().playSound("laser.mp3");
 		}
 	}
 
@@ -184,24 +186,21 @@ public class Main extends GameApplication {
 //		} catch (IOException e) {
 //		}
 	}
-	
+
 	private void addThrust() {
-		if (player.getThrust() + 0.1 <= 3) {
-			player.setThrust(player.getThrust() + 0.1);
+//		if (System.currentTimeMillis() >= coolDownEngine + 100) {
+		coolDownEngine = System.currentTimeMillis();
+		getAudioPlayer().playSound("thruster.mp3");
+//		}
+		if (model.getThrust() + 0.1 <= 3) {
+			model.setThrust(model.getThrust() + 0.1);
 		}
-		Physics.forcePlayerCalc(player);
+		physics.setLinearVelocity(1, 0);
 	}
 
-	public final StringProperty versionProperty() {
-		return this.version;
-	}
-
-	public final String getVersion() {
-		return this.versionProperty().get();
-	}
-
-	public final void setVersion(final String version) {
-		this.versionProperty().set(version);
+	@Override
+	protected void onUpdate(double tpf) {
+		super.onUpdate(tpf);
 	}
 
 }
