@@ -101,14 +101,14 @@ public class LauncherController implements Initializable {
 
 		if (cfgHoverRoot != null) {
 
-			imageViewEP.setImage(new Image("/dad/javaspace/resources/images/imagenjugar.jpg"));
+			imageViewEP.setImage(new Image("/main/resources/assets/textures/imagenjugar.jpg"));
 			rootView.setCenter(empezarPartidaHoverRoot);
 
 			/*
 			 * Audio
 			 */
 
-			String musicFile = "src/dad/javaspace/resources/sound/Vigil.mp3";
+			String musicFile = "src/main/resources/assets/sounds/Vigil.mp3";
 			Media mainTheme = new Media(new File(musicFile).toURI().toString());
 			MediaPlayer mp = new MediaPlayer(mainTheme);
 			mp.volumeProperty().bind(sonidoSlider.valueProperty().divide(100));
@@ -118,7 +118,7 @@ public class LauncherController implements Initializable {
 			cfgButton.hoverProperty().addListener(e -> onCFGButtonHovered());
 			empezarPartidaButton.hoverProperty().addListener(e -> onEmpezarPartidaButtonHovered());
 
-			String buttonMusicFile = "src/dad/javaspace/resources/sound/ButtonSound1.mp3";
+			String buttonMusicFile = "src/main/resources/assets/sounds/ButtonSound1.mp3";
 			Media buttonSound = new Media(new File(buttonMusicFile).toURI().toString());
 			mpButtons = new MediaPlayer(buttonSound);
 			mpButtons.setVolume(1);
