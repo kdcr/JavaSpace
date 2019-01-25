@@ -54,12 +54,12 @@ public class FXGLPruebaApp extends GameApplication {
 	Input input;
 
 //	Imagenes
-	ImageView jugadorImage = new ImageView(new Image("image.png"));
-	ImageView bulletImage = new ImageView(new Image("preloader.gif"));
+//	ImageView jugadorImage = new ImageView(getAssetLoader().loadImage("image.png"));
+//	ImageView bulletImage = new ImageView(this.getAssetLoader().loadImage("preloader.gif"));
 
 //	Entidades
 	private Entity jugador;
-	
+
 //	Particle
 	private ParticleComponent component;
 	private ParticleEmitter emitter;
@@ -72,13 +72,15 @@ public class FXGLPruebaApp extends GameApplication {
 	protected void initGame() {
 //		new Rectangle(10, 10, Color.BLUEVIOLET
 		getGameScene().setBackgroundColor(Color.BLACK);
-		
-		jugador = Entities.builder().at(250, 250).viewFromNode(jugadorImage).buildAndAttach(getGameWorld());
+
+//		jugador = Entities.builder().at(250, 250).viewFromNode(jugadorImage).buildAndAttach(getGameWorld());
+		jugador = Entities.builder().at(250, 250).buildAndAttach(getGameWorld());
+		jugador.setViewFromTexture("image.png");
 
 		emitter = ParticleEmitters.newFireEmitter();
-		emitter.setSourceImage(new Image("image.gif"));
+//		emitter.setSourceImage(this.getAssetLoader().loadImage("image.gif"));
 		emitter.setAccelerationFunction(new Supplier<Point2D>() {
-			
+
 			@Override
 			public Point2D get() {
 				// TODO Auto-generated method stub
@@ -86,7 +88,7 @@ public class FXGLPruebaApp extends GameApplication {
 			}
 		});
 		emitter.setSpawnPointFunction(new Function<Integer, Point2D>() {
-			
+
 			@Override
 			public Point2D apply(Integer arg) {
 				// TODO Auto-generated method stub
@@ -97,15 +99,34 @@ public class FXGLPruebaApp extends GameApplication {
 		emitter.setStartColor(Color.ORANGERED);
 		emitter.setEndColor(Color.YELLOW);
 		emitter.setExpireFunction(e -> Duration.seconds(0.5));
-		emitter.setEmissionRate(velocidad/10);
+		emitter.setEmissionRate(velocidad / 10);
 		component = new ParticleComponent(emitter);
 
 		component.setOnFinished(jugador::removeFromWorld);
 
 		jugador.addComponent(component);
 
-		hiperJumpTransition(jugadorImage, 0.4, -350, 0);
-		bulletTransition(jugadorImage, 0.5, 0.5, 1);
+//		hiperJumpTransition(jugadorImage, 0.4, -350, 0);
+//		bulletTransition(jugadorImage, 0.5, 0.5, 1);
+		transition(jugador, 0.5, 0.5, 1);
+	}
+
+	public void transition(Entity player, double duration, double tamMin, double tamMax) {
+
+		Transition scaleA = new Transition() {
+			@Override
+			protected void interpolate(double frac) {
+//				player.setScaleX(tamMin);
+//				player.setScaleY(tamMin);
+					player.getView().setScaleX(0);
+			}
+		};
+		scaleA.play();
+
+		scaleA.setOnFinished(e -> {
+			scaleA.play();
+		});
+
 	}
 
 	public void bulletTransition(ImageView image, double duration, double tamMin, double tamMax) {
@@ -220,7 +241,6 @@ public class FXGLPruebaApp extends GameApplication {
 
 			@Override
 			protected void onActionBegin() {
-				
 
 			}
 
@@ -330,7 +350,7 @@ public class FXGLPruebaApp extends GameApplication {
 	@Override
 	protected void onUpdate(double tpf) {
 
-		emitter.setEmissionRate(velocidad/10);
+		emitter.setEmissionRate(velocidad / 10);
 //		jugador.setPosition(getInput().getMousePositionWorld());
 
 		if (jugador.getPosition().getX() > (getWidth() - 32)) {
