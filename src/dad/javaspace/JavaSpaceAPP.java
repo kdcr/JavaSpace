@@ -4,6 +4,7 @@ import dad.javaspace.interfacing.controller.LauncherController;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class JavaSpaceAPP extends Application {
 
@@ -18,6 +19,7 @@ public class JavaSpaceAPP extends Application {
 		primaryStage.setScene(scene);
 		primaryStage.setResizable(false);
 		primaryStage.setTitle("Prueba JavaSpaceLauncher");
+		primaryStage.initStyle(StageStyle.UNDECORATED);
 		primaryStage.show();
 
 	}

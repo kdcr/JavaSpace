@@ -20,6 +20,12 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -136,12 +142,15 @@ public class LauncherController implements Initializable {
 	@FXML
 	private Button skinOcho;
 
-
 	/**
 	 * MediaPlayer
 	 */
 
 	private MediaPlayer mpButtons;
+	
+	// window Position
+	double ejeX;
+	double ejeY;
 
 	public LauncherController() {
 		loadView("/dad/javaspace/interfacing/MainMenuView.fxml");
@@ -172,7 +181,7 @@ public class LauncherController implements Initializable {
 			skinSeis.setGraphic(new ImageView(new Image("/main/resources/assets/textures/navePrueba.png")));
 			skinSiete.setGraphic(new ImageView(new Image("/main/resources/assets/textures/navePrueba.png")));
 			skinOcho.setGraphic(new ImageView(new Image("/main/resources/assets/textures/navePrueba.png")));
-			
+
 			/*
 			 * Audio
 			 */
@@ -191,6 +200,16 @@ public class LauncherController implements Initializable {
 			mpButtons = new MediaPlayer(buttonSound);
 			mpButtons.setVolume(1);
 
+			// Background
+
+			BackgroundSize bSize = new BackgroundSize(720, 360, false, false, true, true);
+
+			Background background = new Background(
+					new BackgroundImage(new Image("/main/resources/assets/textures/launcherBackground.gif"),
+							BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, bSize));
+
+			rootView.setBackground(background);
+			
 			/**
 			 * Buttons
 			 * 
@@ -202,8 +221,28 @@ public class LauncherController implements Initializable {
 			selectSkinButton.hoverProperty().addListener(e -> onSelectSkinButtonHovered());
 
 			exitButton.setOnAction(e -> JavaSpaceAPP.getPrimaryStage().close());
+			
+			/**
+			 * 
+			 * Stage dragging behaviour
+			 * 
+			 */
+			
+			rootView.setOnMousePressed(e -> onMousePressed(e));
+			rootView.setOnMouseDragged(e -> onMouseDrag(e));
+			
 
 		}
+	}
+
+	private void onMouseDrag(MouseEvent e) {
+		JavaSpaceAPP.getPrimaryStage().setX(e.getScreenX() + ejeX);
+		JavaSpaceAPP.getPrimaryStage().setY(e.getScreenY() + ejeY);
+	}
+
+	private void onMousePressed(MouseEvent e) {
+		ejeX = JavaSpaceAPP.getPrimaryStage().getX() - e.getScreenX();
+		ejeY = JavaSpaceAPP.getPrimaryStage().getY() - e.getScreenY();
 	}
 
 	private void onSelectSkinButtonHovered() {
