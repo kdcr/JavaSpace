@@ -9,9 +9,9 @@ import javafx.beans.property.StringProperty;
 
 public class ClientModel {
 
-	private static int identity, numPlayers;
+	private int identity, numPlayers;
 
-	private static String[] players;
+	private String[] players;
 
 	private double xForce, yForce;
 
@@ -33,28 +33,28 @@ public class ClientModel {
 		this.thrustProperty().set(thrust);
 	}
 
-	public static int getIdentity() {
+	public int getIdentity() {
 		return identity;
 	}
 
-	public static void setIdentity(int identity) {
-		ClientModel.identity = identity;
+	public void setIdentity(int identity) {
+		this.identity = identity;
 	}
 
-	public static int getNumPlayers() {
+	public int getNumPlayers() {
 		return numPlayers;
 	}
 
-	public static void setNumPlayers(int numPlayers) {
-		ClientModel.numPlayers = numPlayers;
+	public void setNumPlayers(int numPlayers) {
+		this.numPlayers = numPlayers;
 	}
 
-	public static String[] getPlayers() {
+	public String[] getPlayers() {
 		return players;
 	}
 
-	public static void setPlayers(String[] players) {
-		ClientModel.players = players;
+	public void setPlayers(String[] players) {
+		this.players = players;
 	}
 
 	public double getxForce() {
