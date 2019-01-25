@@ -8,25 +8,19 @@ import java.net.UnknownHostException;
 import java.util.Map;
 import java.util.Scanner;
 
-import com.almasb.fxgl.app.FXGL;
 import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.core.math.Vec2;
-import com.almasb.fxgl.entity.Entities;
 import com.almasb.fxgl.entity.Entity;
-import com.almasb.fxgl.entity.component.Component;
 import com.almasb.fxgl.input.*;
 import com.almasb.fxgl.physics.PhysicsComponent;
 import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
 import com.almasb.fxgl.physics.box2d.dynamics.FixtureDef;
 import com.almasb.fxgl.settings.GameSettings;
 
-import dad.javaspace.objects.Player;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.geometry.Point2D;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.text.Text;
 
@@ -39,11 +33,11 @@ public class Main extends GameApplication {
 
 	PhysicsComponent physicsComponent;
 
-	Player player = new Player();
+	Entity player = new Entity();
 
 	long coolDown = 0, coolDownEngine = 0;
 
-	private boolean shooting = false;
+	private boolean canShoot = false;
 
 	private ClientModel model = new ClientModel();
 
@@ -69,15 +63,16 @@ public class Main extends GameApplication {
 			protected void onAction() {
 //				if (player.getRotation() > 1)
 //					player.setRotation(player.getRotation() + 0.5);
-				
+//				physicsComponent.setAngularVelocity(0.5);
+				physicsComponent.applyAngularImpulse(10);
 			}
 		}, KeyCode.D);
 
 		input.addAction(new UserAction("Rotate Left") {
 			@Override
 			protected void onAction() {
-				if (model.getAngular() > -0.5f)
-					model.setAngular(model.getAngular() - 0.005f);
+				// if (physicsComponent.getBody().getAngularVelocity() > -10)
+				physicsComponent.setAngularVelocity(-0.5);
 			}
 		}, KeyCode.A);
 
@@ -85,6 +80,7 @@ public class Main extends GameApplication {
 			@Override
 			protected void onAction() {
 				addThrust();
+
 			}
 
 		}, KeyCode.W);
@@ -157,9 +153,9 @@ public class Main extends GameApplication {
 //		}
 
 		physicsComponent = new PhysicsComponent();
-		
+
 		physicsComponent.setBodyType(BodyType.DYNAMIC);
-		
+
 		getPhysicsWorld().setGravity(0, 0);
 
 		// these are direct jbox2d objects, so we don't actually introduce new API
@@ -167,21 +163,19 @@ public class Main extends GameApplication {
 		fd.setDensity(0.7f);
 		fd.setRestitution(0.3f);
 		physicsComponent.setFixtureDef(fd);
-		
+
 		player.setViewFromTexture("player.png");
-		
+
 		player.addComponent(physicsComponent);
 
 		getGameWorld().addEntities(player);
-		
+
 	}
 
 	private void makeShoot() {
-		if (System.currentTimeMillis() > coolDown + 500) {
+		if (System.currentTimeMillis() >= coolDown + 500) {
 			coolDown = System.currentTimeMillis();
-			shooting = true;
-//			sendPlayerPosition();
-			shooting = false;
+			canShoot = true;
 //			sendPlayerPosition();
 			getAudioPlayer().playSound("laser.mp3");
 		}
@@ -189,25 +183,26 @@ public class Main extends GameApplication {
 
 	private void sendPlayerPosition() {
 		try {
-			flujoSalida.write(model.getIdentity() + "," + player.getX() + "," + player.getY() + ","
-					+ player.getRotation() + "," + shooting + "\n");
+			if (canShoot) {
+				canShoot = false;
+				flujoSalida.write(model.getIdentity() + "," + player.getX() + "," + player.getY() + ","
+						+ player.getRotation() + "," + true + "\n");
+			} else
+				flujoSalida.write(model.getIdentity() + "," + player.getX() + "," + player.getY() + ","
+						+ player.getRotation() + "," + false + "\n");
+
 		} catch (IOException e) {
 		}
 	}
 
 	private void addThrust() {
 //		if (System.currentTimeMillis() >= coolDownEngine + 100) {
-		coolDownEngine = System.currentTimeMillis();
-		getAudioPlayer().playSound("thruster.mp3");
+//			coolDownEngine = System.currentTimeMillis();
+//			getAudioPlayer().playSound("thruster.mp3");
 //		}
 
-		if (player.getThrust() + 0.1 <= 3) {
-			player.setThrust(player.getThrust() + 0.1);
-		}
-		
-		physicsComponent.setBodyLinearVelocity(new Vec2(1,0));
-		
-//		player.setForces(new Vec2((player.getForces().x + (player.getThrust() / 10 * Math.sin((player.getRotation())))), 0));
+		physicsComponent.applyBodyForceToCenter(new Vec2(-Math.sin(physicsComponent.getBody().getAngle()),
+				Math.cos(physicsComponent.getBody().getAngle())));
 
 	}
 
