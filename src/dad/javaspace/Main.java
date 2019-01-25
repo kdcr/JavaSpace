@@ -11,16 +11,19 @@ import java.util.Scanner;
 import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.core.math.Vec2;
 import com.almasb.fxgl.entity.Entity;
+import com.almasb.fxgl.entity.view.EntityView;
 import com.almasb.fxgl.input.*;
 import com.almasb.fxgl.physics.PhysicsComponent;
 import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
 import com.almasb.fxgl.physics.box2d.dynamics.FixtureDef;
+import com.almasb.fxgl.scene.Viewport;
 import com.almasb.fxgl.settings.GameSettings;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
 import javafx.scene.text.Text;
 
@@ -64,7 +67,9 @@ public class Main extends GameApplication {
 //				if (player.getRotation() > 1)
 //					player.setRotation(player.getRotation() + 0.5);
 //				physicsComponent.setAngularVelocity(0.5);
-				physicsComponent.applyAngularImpulse(10);
+//				if e(model.getRotation() > 1)
+//					player.setRotation(player.getRotation() + 0.5);
+				physicsComponent.setAngularVelocity(0.5);
 			}
 		}, KeyCode.D);
 
@@ -105,7 +110,7 @@ public class Main extends GameApplication {
 
 	@Override
 	protected void initGameVars(Map<String, Object> vars) {
-		vars.put("pixelsMoved", 0);
+		vars.put("lives", 3);
 	}
 
 	@Override
@@ -152,6 +157,9 @@ public class Main extends GameApplication {
 //			e.printStackTrace();
 //		}
 
+		getGameScene().getViewport().xProperty().bind(player.xProperty());
+		getGameScene().getViewport().yProperty().bind(player.yProperty());
+		
 		physicsComponent = new PhysicsComponent();
 
 		physicsComponent.setBodyType(BodyType.DYNAMIC);
