@@ -1,5 +1,7 @@
 package dad.javaspace.objects;
 
-public class Laser extends RigidBody {
+import com.almasb.fxgl.entity.Entity;
+
+public class Laser extends Entity {
 
 }

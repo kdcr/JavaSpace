@@ -21,7 +21,6 @@ import com.almasb.fxgl.physics.box2d.dynamics.FixtureDef;
 import com.almasb.fxgl.settings.GameSettings;
 
 import dad.javaspace.objects.Player;
-import dad.javaspace.physics.Physics;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -173,18 +172,12 @@ public class Main extends GameApplication {
 		
 		player.addComponent(physicsComponent);
 
-		
 		getGameWorld().addEntities(player);
-		
-		player.forcesProperty().addListener((ob, ov, nv)->{
-			physicsComponent.setBodyLinearVelocity(nv);
-			
-		});
 		
 	}
 
 	private void makeShoot() {
-		if (System.currentTimeMillis() > coolDown + 300) {
+		if (System.currentTimeMillis() > coolDown + 500) {
 			coolDown = System.currentTimeMillis();
 			shooting = true;
 //			sendPlayerPosition();
@@ -212,7 +205,7 @@ public class Main extends GameApplication {
 			player.setThrust(player.getThrust() + 0.1);
 		}
 		
-		player.setForces(new Vec2(1,0));
+		physicsComponent.setBodyLinearVelocity(new Vec2(1,0));
 		
 //		player.setForces(new Vec2((player.getForces().x + (player.getThrust() / 10 * Math.sin((player.getRotation())))), 0));
 

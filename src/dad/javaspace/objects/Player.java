@@ -1,11 +1,13 @@
 package dad.javaspace.objects;
 
+import com.almasb.fxgl.entity.Entity;
+
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 
-public class Player extends RigidBody {
+public class Player extends Entity {
 
 	private DoubleProperty thrust = new SimpleDoubleProperty(this, "thrust", 0);
 	private IntegerProperty lives = new SimpleIntegerProperty(this, "lives", 3);
