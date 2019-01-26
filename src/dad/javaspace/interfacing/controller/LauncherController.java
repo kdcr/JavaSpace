@@ -3,10 +3,13 @@ package dad.javaspace.interfacing.controller;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import dad.javaspace.JavaSpaceAPP;
+import dad.javaspace.interfacing.ScreenResolutions;
 import javafx.animation.FadeTransition;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -76,7 +79,7 @@ public class LauncherController implements Initializable {
 	private GridPane cfgHoverRoot;
 
 	@FXML
-	private ComboBox<String> resolutionComboBox;
+	private ComboBox<ScreenResolutions> resolutionComboBox;
 
 	@FXML
 	private CheckBox fullScreenCheckBox;
@@ -166,6 +169,12 @@ public class LauncherController implements Initializable {
 		if (cfgHoverRoot != null) {
 
 			/**
+			 * CSS
+			 */
+			
+			rootView.getStylesheets().setAll("dad/javaspace/interfacing/launcher.css");
+			
+			/**
 			 * Imagenes
 			 */
 			imageViewEP.setImage(new Image("/main/resources/assets/textures/imagenjugar.jpg"));
@@ -231,9 +240,14 @@ public class LauncherController implements Initializable {
 			rootView.setOnMousePressed(e -> onMousePressed(e));
 			rootView.setOnMouseDragged(e -> onMouseDrag(e));
 			
-
+			/**
+			 * ComboBox resoluciones
+			 */
+			
+			resolutionComboBox.getItems().setAll(ScreenResolutions.values());
 		}
 	}
+		
 
 	private void onMouseDrag(MouseEvent e) {
 		JavaSpaceAPP.getPrimaryStage().setX(e.getScreenX() + ejeX);

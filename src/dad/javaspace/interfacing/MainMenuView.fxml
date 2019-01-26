@@ -11,11 +11,11 @@
    <left>
       <VBox fx:id="cajaBotones" prefHeight="200.0" prefWidth="150.0" BorderPane.alignment="CENTER">
          <children>
-            <Button fx:id="empezarPartidaButton" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Empezar partida" VBox.vgrow="ALWAYS" />
-            <Button fx:id="cfgButton" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Configuración" VBox.vgrow="ALWAYS" />
-            <Button fx:id="selectSkinButton" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Seleccionar Skin" VBox.vgrow="ALWAYS" />
-            <Button fx:id="aboutButton" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Sobre Nosotros" VBox.vgrow="ALWAYS" />
-            <Button fx:id="exitButton" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Salir" VBox.vgrow="ALWAYS" />
+            <Button fx:id="empezarPartidaButton" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="botonesMenu" text="Empezar partida" VBox.vgrow="ALWAYS" />
+            <Button fx:id="cfgButton" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="botonesMenu" text="Configuración" VBox.vgrow="ALWAYS" />
+            <Button fx:id="selectSkinButton" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="botonesMenu" text="Seleccionar Skin" VBox.vgrow="ALWAYS" />
+            <Button fx:id="aboutButton" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="botonesMenu" text="Sobre Nosotros" VBox.vgrow="ALWAYS" />
+            <Button fx:id="exitButton" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="botonesMenu" text="Salir" VBox.vgrow="ALWAYS" />
          </children>
          <BorderPane.margin>
             <Insets right="30.0" />

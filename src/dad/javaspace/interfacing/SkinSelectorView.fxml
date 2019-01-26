@@ -4,18 +4,18 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.TilePane?>
 
-<ScrollPane fx:id="skinTilePaneRoot" hbarPolicy="NEVER" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<ScrollPane fx:id="skinTilePaneRoot" hbarPolicy="NEVER" styleClass="scrollPaneClass" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <content>
-      <TilePane fx:id="skinTilePane" alignment="TOP_CENTER" hgap="5.0" maxHeight="293.0" maxWidth="511.0" prefHeight="293.0" prefWidth="511.0" vgap="5.0">
+      <TilePane fx:id="skinTilePane" alignment="TOP_CENTER" hgap="5.0" maxHeight="293.0" maxWidth="511.0" prefHeight="293.0" prefWidth="511.0" styleClass="tilePaneClass" vgap="5.0">
          <children>
-            <Button fx:id="skinUno" maxHeight="140.0" maxWidth="140.0" mnemonicParsing="false" prefHeight="140.0" prefWidth="140.0" />
-            <Button fx:id="skinDos" maxHeight="140.0" maxWidth="140.0" mnemonicParsing="false" prefHeight="140.0" prefWidth="140.0" />
-            <Button fx:id="skinTres" maxHeight="140.0" maxWidth="140.0" mnemonicParsing="false" prefHeight="140.0" prefWidth="140.0" />
-            <Button fx:id="skinCuatro" maxHeight="140.0" maxWidth="140.0" mnemonicParsing="false" prefHeight="140.0" prefWidth="140.0" />
-            <Button fx:id="skinCinco" maxHeight="140.0" maxWidth="140.0" mnemonicParsing="false" prefHeight="140.0" prefWidth="140.0" />
-            <Button fx:id="skinSeis" maxHeight="140.0" maxWidth="140.0" mnemonicParsing="false" prefHeight="140.0" prefWidth="140.0" />
-            <Button fx:id="skinSiete" maxHeight="140.0" maxWidth="140.0" mnemonicParsing="false" prefHeight="140.0" prefWidth="140.0" />
-            <Button fx:id="skinOcho" maxHeight="140.0" maxWidth="140.0" mnemonicParsing="false" prefHeight="140.0" prefWidth="140.0" />
+            <Button fx:id="skinUno" maxHeight="140.0" maxWidth="140.0" mnemonicParsing="false" prefHeight="140.0" prefWidth="140.0" styleClass="skinButtons" />
+            <Button fx:id="skinDos" maxHeight="140.0" maxWidth="140.0" mnemonicParsing="false" prefHeight="140.0" prefWidth="140.0" styleClass="skinButtons" />
+            <Button fx:id="skinTres" maxHeight="140.0" maxWidth="140.0" mnemonicParsing="false" prefHeight="140.0" prefWidth="140.0" styleClass="skinButtons" />
+            <Button fx:id="skinCuatro" maxHeight="140.0" maxWidth="140.0" mnemonicParsing="false" prefHeight="140.0" prefWidth="140.0" styleClass="skinButtons" />
+            <Button fx:id="skinCinco" maxHeight="140.0" maxWidth="140.0" mnemonicParsing="false" prefHeight="140.0" prefWidth="140.0" styleClass="skinButtons" />
+            <Button fx:id="skinSeis" maxHeight="140.0" maxWidth="140.0" mnemonicParsing="false" prefHeight="140.0" prefWidth="140.0" styleClass="skinButtons" />
+            <Button fx:id="skinSiete" maxHeight="140.0" maxWidth="140.0" mnemonicParsing="false" prefHeight="140.0" prefWidth="140.0" styleClass="skinButtons" />
+            <Button fx:id="skinOcho" maxHeight="140.0" maxWidth="140.0" mnemonicParsing="false" prefHeight="140.0" prefWidth="140.0" styleClass="skinButtons" />
          </children>
       </TilePane>
    </content>
