@@ -1,5 +1,11 @@
 package dad.javaspace.launchermodel;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+
 import dad.javaspace.interfacing.ScreenResolutions;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
@@ -31,6 +37,20 @@ public class LauncherModel {
 		resolucion = new SimpleObjectProperty<>(this, "resolucion");
 	}
 
+	public void guardarConfig() {
+		String datos = "";
+		
+		File file = new File("src/main/resources/persistence/persistence.txt");
+		
+		datos += volumenMusica.getValue() + ";" + volumenJuego.getValue() + ";" + ip.get() + ";" + puerto.get() + ";" + nombreJugador.get() + ";" + pantallaCompleta.get() + ";" + resolucion.get().toString();
+		byte [] tablaBytes = datos.getBytes();
+		try {
+			Files.write(file.toPath(), tablaBytes, StandardOpenOption.TRUNCATE_EXISTING);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public final DoubleProperty volumenMusicaProperty() {
 		return this.volumenMusica;
 	}

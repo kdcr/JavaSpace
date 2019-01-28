@@ -288,7 +288,7 @@ public class LauncherController implements Initializable {
 			empezarPartidaButton.hoverProperty().addListener(e -> onEmpezarPartidaButtonHovered());
 			selectSkinButton.hoverProperty().addListener(e -> onSelectSkinButtonHovered());
 			exitButton.setOnAction(e -> JavaSpaceAPP.getPrimaryStage().close());
-//			launchButton.setOnAction(e -> onLaunchAction());
+			launchButton.setOnAction(e -> model.guardarConfig());
 
 			/****************************************************************************************************
 			 * 
@@ -326,6 +326,8 @@ public class LauncherController implements Initializable {
 			Bindings.bindBidirectional(puertoTextField.textProperty(), model.puertoProperty(), new NumberStringConverter());
 			Bindings.bindBidirectional(fullScreenCheckBox.selectedProperty(), model.pantallaCompletaProperty());
 // TODO		Bindings.bindBidirectional(resolutionComboBox.getSelectionModel().selectedItemProperty(), model.resolucionProperty());
+			//Provisionalmente bindeo de un solo lado
+			model.resolucionProperty().bind(resolutionComboBox.getSelectionModel().selectedItemProperty());
 			// No puedo bindear bidireccional porque el combo es ReadOnly
 			
 
