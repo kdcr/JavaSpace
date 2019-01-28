@@ -2,6 +2,7 @@ package dad.javaspace;
 
 import dad.javaspace.interfacing.controller.LauncherController;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -21,7 +22,7 @@ public class JavaSpaceAPP extends Application {
 		primaryStage.setTitle("Prueba JavaSpaceLauncher");
 		primaryStage.initStyle(StageStyle.UNDECORATED);
 		primaryStage.show();
-
+		
 	}
 
 	public static void main(String[] args) {

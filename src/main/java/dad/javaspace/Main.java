@@ -14,9 +14,12 @@ import java.util.Scanner;
 import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.core.math.Vec2;
 import com.almasb.fxgl.entity.Entity;
+import com.almasb.fxgl.entity.components.PositionComponent;
+import com.almasb.fxgl.entity.components.RotationComponent;
 import com.almasb.fxgl.entity.view.EntityView;
 import com.almasb.fxgl.input.*;
 import com.almasb.fxgl.physics.PhysicsComponent;
+import com.almasb.fxgl.physics.box2d.collision.shapes.MassData;
 import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
 import com.almasb.fxgl.physics.box2d.dynamics.FixtureDef;
 import com.almasb.fxgl.scene.Viewport;
@@ -27,6 +30,7 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -51,15 +55,19 @@ public class Main extends GameApplication {
 	long coolDown = 0, coolDownStars = 0;
 	private boolean canShoot = false;
 
+	RotationComponent rot;
+	PositionComponent pos;
+
+	private Vec2 direccion;
+
 	// Estetica
 	private ArrayList<Entity> starArray = new ArrayList<>();
 	ArrayList<Entity> starList = new ArrayList<>();
 
 	public static void main(String[] args) {
 		launch(args);
-
 	}
-
+	
 	@Override
 	protected void initSettings(GameSettings settings) {
 		settings.setWidth(800);
@@ -76,6 +84,7 @@ public class Main extends GameApplication {
 			@Override
 			protected void onAction() {
 				physicsComponent.setAngularVelocity(0.5);
+				physicsComponent.applyTorque(20);
 			}
 		}, KeyCode.D);
 
@@ -85,6 +94,13 @@ public class Main extends GameApplication {
 				physicsComponent.setAngularVelocity(-0.5);
 			}
 		}, KeyCode.A);
+
+		input.addAction(new UserAction("Center") {
+			@Override
+			protected void onAction() {
+				physicsComponent.setAngularVelocity(0);
+			}
+		}, KeyCode.Q);
 
 		input.addAction(new UserAction("Add thrust") {
 			@Override
@@ -161,38 +177,43 @@ public class Main extends GameApplication {
 //			e.printStackTrace();
 //		}
 
-		
+		// Estas cuatro lineas se encargan de mover la camara con el jugador
 		double viewWidth = getGameScene().getViewport().getWidth();
 		double viewHeight = getGameScene().getViewport().getHeight();
-		getGameScene().getViewport().xProperty().bind(player.xProperty().subtract(viewWidth/2));
-		getGameScene().getViewport().yProperty().bind(player.yProperty().subtract(viewHeight/2));
+		getGameScene().getViewport().xProperty().bind(player.xProperty().subtract(viewWidth / 2));
+		getGameScene().getViewport().yProperty().bind(player.yProperty().subtract(viewHeight / 2));
 
 		// Mecanica
 
 		mp = new MediaPlayer(new Media(new File("src/main/resources/assets/sounds/thruster.mp3").toURI().toString()));
 
+		// these are direct jbox2d objects, so we don't actually introduce new API
+//		FixtureDef fd = new FixtureDef();
+//		fd.setDensity(0.7f);
+//		fd.setRestitution(0.3f);
+//		physicsComponent.setFixtureDef(fd);
+
 		physicsComponent = new PhysicsComponent();
 
 		physicsComponent.setBodyType(BodyType.DYNAMIC);
 
-		getPhysicsWorld().setGravity(0, 0);
+		player.addComponent(physicsComponent);
 
-		// these are direct jbox2d objects, so we don't actually introduce new API
-		FixtureDef fd = new FixtureDef();
-		fd.setDensity(0.7f);
-		fd.setRestitution(0.3f);
-		physicsComponent.setFixtureDef(fd);
+		getPhysicsWorld().setGravity(0, 0);
 
 		player.setViewFromTexture("player.png");
 
-		player.addComponent(physicsComponent);
-
 		getGameWorld().addEntities(player);
-		physicsComponent.getBody().setAngularDamping(0.8f);
+
+		direccion = new Vec2(-Math.sin(physicsComponent.getBody().getAngle()) * 0.3,
+				Math.cos(physicsComponent.getBody().getAngle()) * 0.3);
+
+		// physicsComponent.getBody().setAngularDamping(0.8f);
+
+		physicsComponent.getBody().setAwake(true);
 
 		mp.setVolume(0);
 		mp.play();
-
 		// Estetico
 
 	}
@@ -221,8 +242,8 @@ public class Main extends GameApplication {
 	}
 
 	private void addThrust() {
-		physicsComponent.applyBodyForceToCenter(new Vec2(-Math.sin(physicsComponent.getBody().getAngle()) * 0.5,
-				Math.cos(physicsComponent.getBody().getAngle()) * 0.5));
+		physicsComponent.applyBodyForceToCenter(new Vec2(-Math.sin(physicsComponent.getBody().getAngle()) * 0.3,
+				Math.cos(physicsComponent.getBody().getAngle()) * 0.3));
 	}
 
 	@Override
@@ -235,6 +256,7 @@ public class Main extends GameApplication {
 //			mp.setVolume(mp.getVolume() + 0.1);
 //		else
 //			mp.setVolume(mp.getVolume() - 0.05);
+
 	}
 
 	private void generateStars() {
@@ -247,11 +269,13 @@ public class Main extends GameApplication {
 			starArray.add(newStar);
 			getGameWorld().addEntity(newStar);
 
-			newStar.setX(getGameScene().getViewport().getX() + (Math.random() * getGameScene().getViewport().getWidth())); 
-			newStar.setY(getGameScene().getViewport().getY() + (Math.random() * getGameScene().getViewport().getHeight()));
+			newStar.setX(
+					getGameScene().getViewport().getX() + (Math.random() * getGameScene().getViewport().getWidth()));
+			newStar.setY(
+					getGameScene().getViewport().getY() + (Math.random() * getGameScene().getViewport().getHeight()));
 
 			starList = new ArrayList<>();
-			
+
 			for (Entity entity : starArray) {
 				if (Math.random() > 0.8) {
 					starList.add(entity);
@@ -261,7 +285,7 @@ public class Main extends GameApplication {
 			starArray.removeAll(starList);
 
 			getGameWorld().removeEntities(starList);
-			
+
 		}
 	}
 

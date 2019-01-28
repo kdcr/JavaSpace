@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import dad.javaspace.ClientModel;
 import dad.javaspace.JavaSpaceAPP;
 import dad.javaspace.Main;
 import dad.javaspace.interfacing.ScreenResolutions;
