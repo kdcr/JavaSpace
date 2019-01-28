@@ -1,10 +1,13 @@
 package dad.javaspace;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -19,30 +22,38 @@ import com.almasb.fxgl.physics.box2d.dynamics.FixtureDef;
 import com.almasb.fxgl.scene.Viewport;
 import com.almasb.fxgl.settings.GameSettings;
 
+import dad.javaspace.objects.EntityTypes;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.Node;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Text;
 
 public class Main extends GameApplication {
 
+	// Conectividad
 	private String ip = "10.2.2.64", name = "jugador_test", skin = "0";
 
 	private InputStreamReader flujoEntrada;
 	private OutputStreamWriter flujoSalida;
 
+	// Mecanica interna
 	PhysicsComponent physicsComponent;
-
 	Entity player = new Entity();
-
-	long coolDown = 0, coolDownEngine = 0;
-
+	private ClientModel model = new ClientModel();
+	private MediaPlayer mp;
+	long coolDown = 0, coolDownStars = 0;
 	private boolean canShoot = false;
 
-	private ClientModel model = new ClientModel();
+	// Estetica
+	private ArrayList<Entity> starArray = new ArrayList<>();
+	ArrayList<Entity> starList = new ArrayList<>();
 
 	public static void main(String[] args) {
 		launch(args);
@@ -51,7 +62,7 @@ public class Main extends GameApplication {
 
 	@Override
 	protected void initSettings(GameSettings settings) {
-		settings.setWidth(600);
+		settings.setWidth(800);
 		settings.setHeight(600);
 		settings.setTitle("JavaSpace");
 		settings.setVersion(model.getVersion());
@@ -64,11 +75,6 @@ public class Main extends GameApplication {
 		input.addAction(new UserAction("Rotate Right") {
 			@Override
 			protected void onAction() {
-//				if (player.getRotation() > 1)
-//					player.setRotation(player.getRotation() + 0.5);
-//				physicsComponent.setAngularVelocity(0.5);
-//				if e(model.getRotation() > 1)
-//					player.setRotation(player.getRotation() + 0.5);
 				physicsComponent.setAngularVelocity(0.5);
 			}
 		}, KeyCode.D);
@@ -76,7 +82,6 @@ public class Main extends GameApplication {
 		input.addAction(new UserAction("Rotate Left") {
 			@Override
 			protected void onAction() {
-				// if (physicsComponent.getBody().getAngularVelocity() > -10)
 				physicsComponent.setAngularVelocity(-0.5);
 			}
 		}, KeyCode.A);
@@ -85,7 +90,6 @@ public class Main extends GameApplication {
 			@Override
 			protected void onAction() {
 				addThrust();
-
 			}
 
 		}, KeyCode.W);
@@ -157,9 +161,16 @@ public class Main extends GameApplication {
 //			e.printStackTrace();
 //		}
 
-		getGameScene().getViewport().xProperty().bind(player.xProperty());
-		getGameScene().getViewport().yProperty().bind(player.yProperty());
 		
+		double viewWidth = getGameScene().getViewport().getWidth();
+		double viewHeight = getGameScene().getViewport().getHeight();
+		getGameScene().getViewport().xProperty().bind(player.xProperty().subtract(viewWidth/2));
+		getGameScene().getViewport().yProperty().bind(player.yProperty().subtract(viewHeight/2));
+
+		// Mecanica
+
+		mp = new MediaPlayer(new Media(new File("src/main/resources/assets/sounds/thruster.mp3").toURI().toString()));
+
 		physicsComponent = new PhysicsComponent();
 
 		physicsComponent.setBodyType(BodyType.DYNAMIC);
@@ -177,6 +188,12 @@ public class Main extends GameApplication {
 		player.addComponent(physicsComponent);
 
 		getGameWorld().addEntities(player);
+		physicsComponent.getBody().setAngularDamping(0.8f);
+
+		mp.setVolume(0);
+		mp.play();
+
+		// Estetico
 
 	}
 
@@ -204,19 +221,48 @@ public class Main extends GameApplication {
 	}
 
 	private void addThrust() {
-//		if (System.currentTimeMillis() >= coolDownEngine + 100) {
-//			coolDownEngine = System.currentTimeMillis();
-//			getAudioPlayer().playSound("thruster.mp3");
-//		}
-
-		physicsComponent.applyBodyForceToCenter(new Vec2(-Math.sin(physicsComponent.getBody().getAngle()),
-				Math.cos(physicsComponent.getBody().getAngle())));
-
+		physicsComponent.applyBodyForceToCenter(new Vec2(-Math.sin(physicsComponent.getBody().getAngle()) * 0.5,
+				Math.cos(physicsComponent.getBody().getAngle()) * 0.5));
 	}
 
 	@Override
 	protected void onUpdate(double tpf) {
 		super.onUpdate(tpf);
+
+		generateStars();
+
+//		if (getInput().isHeld(KeyCode.W))
+//			mp.setVolume(mp.getVolume() + 0.1);
+//		else
+//			mp.setVolume(mp.getVolume() - 0.05);
+	}
+
+	private void generateStars() {
+		if (System.currentTimeMillis() > coolDownStars + 100) {
+			coolDownStars = System.currentTimeMillis();
+
+			Entity newStar = new Entity();
+			newStar.setViewFromTexture("star_placeholder.png");
+			newStar.setType(EntityTypes.STAR);
+			starArray.add(newStar);
+			getGameWorld().addEntity(newStar);
+
+			newStar.setX(getGameScene().getViewport().getX() + (Math.random() * getGameScene().getViewport().getWidth())); 
+			newStar.setY(getGameScene().getViewport().getY() + (Math.random() * getGameScene().getViewport().getHeight()));
+
+			starList = new ArrayList<>();
+			
+			for (Entity entity : starArray) {
+				if (Math.random() > 0.8) {
+					starList.add(entity);
+				}
+			}
+
+			starArray.removeAll(starList);
+
+			getGameWorld().removeEntities(starList);
+			
+		}
 	}
 
 }

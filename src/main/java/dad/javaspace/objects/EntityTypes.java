@@ -4,5 +4,6 @@ public enum EntityTypes {
 	PLAYER,
 	ASTEROID,
 	LASER,
-	PLANET
+	PLANET,
+	STAR
 }
