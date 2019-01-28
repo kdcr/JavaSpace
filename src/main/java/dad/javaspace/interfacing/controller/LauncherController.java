@@ -205,7 +205,7 @@ public class LauncherController implements Initializable {
 
 		if (cfgHoverRoot != null) {
 			
-			Platform.setImplicitExit(false);
+//			TODO Platform.setImplicitExit(false);
 
 			/****************************************************************************************************
 			 * 
