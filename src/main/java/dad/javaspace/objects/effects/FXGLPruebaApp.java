@@ -78,7 +78,7 @@ public class FXGLPruebaApp extends GameApplication {
 
 //		jugador = Entities.builder().at(250, 250).viewFromNode(jugadorImage).buildAndAttach(getGameWorld());
 		jugador = Entities.builder().at(250, 250).buildAndAttach(getGameWorld());
-		jugador.setViewFromTexture("image.png");
+		jugador.setViewFromTexture("sparkle-pink.png");
 
 		emitter = ParticleEmitters.newFireEmitter();
 //		emitter.setSourceImage(this.getAssetLoader().loadImage("image.gif"));
@@ -109,31 +109,94 @@ public class FXGLPruebaApp extends GameApplication {
 
 		jugador.addComponent(component);
 
-		hiperJumpTransition(jugador, 0.3, -150, 0);
+		tinkleTransition(jugador, 0.2, 0, 0.2);
 	}
 
-	public void bulletTransition(Entity player, double duration, double tamMin, double tamMax) {
+	public void tinkleTransition(Entity player, double duration, double tamMin, double tamMax) {
 		Point2D defaultSize = new Point2D(1, 1);
 		Point2D minSize = new Point2D(tamMin, tamMin);
 		Point2D maxSize = new Point2D(tamMax, tamMax);
 		Entities.animationBuilder().duration(Duration.seconds(duration)).scale(player).from(minSize).to(maxSize)
 				.buildAndPlay().setOnFinished(() -> {
+
 					Entities.animationBuilder().duration(Duration.seconds(duration)).scale(player).from(maxSize)
-							.to(defaultSize).buildAndPlay();
+							.to(minSize).buildAndPlay().setOnFinished(() -> {
+
+								Entities.animationBuilder().duration(Duration.seconds(duration)).scale(player)
+										.from(minSize).to(maxSize).buildAndPlay().setOnFinished(() -> {
+
+											Entities.animationBuilder().duration(Duration.seconds(duration))
+													.scale(player).from(maxSize).to(minSize).buildAndPlay()
+													.setOnFinished(() -> {
+														Entities.animationBuilder().duration(Duration.seconds(duration))
+																.scale(player).from(minSize).to(maxSize).buildAndPlay()
+																.setOnFinished(() -> {
+
+																	Entities.animationBuilder()
+																			.duration(Duration.seconds(duration))
+																			.scale(player).from(maxSize).to(minSize)
+																			.buildAndPlay().setOnFinished(() -> {
+
+																				Entities.animationBuilder()
+																						.duration(Duration
+																								.seconds(duration))
+																						.scale(player).from(minSize)
+																						.to(maxSize).buildAndPlay()
+																						.setOnFinished(() -> {
+
+																							Entities.animationBuilder()
+																									.duration(Duration
+																											.seconds(
+																													duration))
+																									.scale(player)
+																									.from(maxSize)
+																									.to(minSize)
+																									.buildAndPlay();
+																						});
+																			});
+																});
+													});
+										});
+							});
 				});
 	}
 
 	public void hiperJumpTransition(Entity player, double duration, double translateX, double translateY) {
+		double playerPosX = player.getPosition().getX();
+		double playerPosY = player.getPosition().getY();
 
+		ParticleEmitter hiperJumpEmitter = ParticleEmitters.newExplosionEmitter(50);
+//		hiperJumpEmitter.setSourceImage(this.getAssetLoader().loadImage("sparkle-yellow.png"));
+		hiperJumpEmitter.setBlendMode(BlendMode.SRC_OVER);
+		hiperJumpEmitter.setStartColor(Color.BLUE);
+		hiperJumpEmitter.setEndColor(Color.YELLOW);
+		hiperJumpEmitter.setScaleFunction(new Function<Integer, Point2D>() {
+			// Tamaño de la particula
+			@Override
+			public Point2D apply(Integer arg) {
+				// TODO Auto-generated method stub
+				return new Point2D(0, 0);
+			}
+		});
+		hiperJumpEmitter.setExpireFunction(e -> Duration.seconds(5));
+		ParticleComponent hiperJumpComponent = new ParticleComponent(hiperJumpEmitter);
+		hiperJumpComponent.setOnFinished(jugador::removeFromWorld);
+		Entity space = Entities.builder().at(playerPosX + translateX, playerPosY + translateY)
+				.buildAndAttach(getGameWorld());
+		space.addComponent(hiperJumpComponent);
+
+		// Animacion aumento de tamaño
 		Point2D min = new Point2D(0, 0);
 		Point2D max = new Point2D(1, 1);
 		Entities.animationBuilder().duration(Duration.seconds(duration)).scale(player).from(min).to(max).buildAndPlay();
 
-		Point2D from = new Point2D(player.getPosition().getX() + translateX, player.getPosition().getY() + translateY);
-		Point2D to = new Point2D(player.getPosition().getX(), player.getPosition().getY());
+		// Animacion desplazamiento desde X, Y a 0, 0
+		Point2D from = new Point2D(playerPosX + translateX, playerPosY + translateY);
+		Point2D to = new Point2D(playerPosX, playerPosY);
 		Entities.animationBuilder().duration(Duration.seconds(duration)).translate(player).from(from).to(to)
-				.buildAndPlay();
-
+				.buildAndPlay().setOnFinished(() -> {
+					getGameWorld().removeEntity(space);
+				});
 	}
 
 	@Override
