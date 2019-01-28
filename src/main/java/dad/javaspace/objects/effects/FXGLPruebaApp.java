@@ -1,5 +1,7 @@
 package dad.javaspace.objects.effects;
 
+import com.almasb.fxgl.animation.Animation;
+import com.almasb.fxgl.animation.SequentialAnimation;
 import com.almasb.fxgl.app.FXGL;
 import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.core.collection.Array;
@@ -21,6 +23,7 @@ import com.almasb.fxgl.physics.box2d.collision.ContactID.Type;
 import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
 import com.almasb.fxgl.physics.box2d.dynamics.FixtureDef;
 import com.almasb.fxgl.settings.GameSettings;
+import com.almasb.fxgl.time.Timer;
 import com.almasb.fxgl.util.Function;
 import com.almasb.fxgl.util.Supplier;
 import com.fasterxml.jackson.databind.deser.impl.ExternalTypeHandler.Builder;
@@ -106,75 +109,31 @@ public class FXGLPruebaApp extends GameApplication {
 
 		jugador.addComponent(component);
 
-//		hiperJumpTransition(jugadorImage, 0.4, -350, 0);
-//		bulletTransition(jugadorImage, 0.5, 0.5, 1);
-		transition(jugador, 0.5, 0.5, 1);
+		hiperJumpTransition(jugador, 0.3, -150, 0);
 	}
 
-	public void transition(Entity player, double duration, double tamMin, double tamMax) {
-
-		Transition scaleA = new Transition() {
-			@Override
-			protected void interpolate(double frac) {
-//				player.setScaleX(tamMin);
-//				player.setScaleY(tamMin);
-					player.getView().setScaleX(0);
-			}
-		};
-		scaleA.play();
-
-		scaleA.setOnFinished(e -> {
-			scaleA.play();
-		});
-
+	public void bulletTransition(Entity player, double duration, double tamMin, double tamMax) {
+		Point2D defaultSize = new Point2D(1, 1);
+		Point2D minSize = new Point2D(tamMin, tamMin);
+		Point2D maxSize = new Point2D(tamMax, tamMax);
+		Entities.animationBuilder().duration(Duration.seconds(duration)).scale(player).from(minSize).to(maxSize)
+				.buildAndPlay().setOnFinished(() -> {
+					Entities.animationBuilder().duration(Duration.seconds(duration)).scale(player).from(maxSize)
+							.to(defaultSize).buildAndPlay();
+				});
 	}
 
-	public void bulletTransition(ImageView image, double duration, double tamMin, double tamMax) {
-		ScaleTransition scaleA = new ScaleTransition();
-		scaleA.setNode(image);
-		scaleA.setDuration(Duration.seconds(duration));
-		scaleA.setFromX(tamMax);
-		scaleA.setFromY(tamMax);
-		scaleA.setToX(tamMin);
-		scaleA.setToY(tamMin);
+	public void hiperJumpTransition(Entity player, double duration, double translateX, double translateY) {
 
-		ScaleTransition scaleB = new ScaleTransition();
-		scaleB.setNode(image);
-		scaleB.setDuration(Duration.seconds(duration));
-		scaleB.setFromX(tamMin);
-		scaleB.setFromY(tamMin);
-		scaleB.setToX(tamMax);
-		scaleB.setToY(tamMax);
+		Point2D min = new Point2D(0, 0);
+		Point2D max = new Point2D(1, 1);
+		Entities.animationBuilder().duration(Duration.seconds(duration)).scale(player).from(min).to(max).buildAndPlay();
 
-		SequentialTransition sequential = new SequentialTransition(scaleA, scaleB);
-		sequential.play();
+		Point2D from = new Point2D(player.getPosition().getX() + translateX, player.getPosition().getY() + translateY);
+		Point2D to = new Point2D(player.getPosition().getX(), player.getPosition().getY());
+		Entities.animationBuilder().duration(Duration.seconds(duration)).translate(player).from(from).to(to)
+				.buildAndPlay();
 
-		sequential.setOnFinished(e -> {
-			sequential.play();
-		});
-	}
-
-	public void hiperJumpTransition(ImageView image, double duration, double translateX, double translateY) {
-		ScaleTransition scale = new ScaleTransition();
-		scale.setNode(image);
-		scale.setDuration(Duration.seconds(duration));
-		scale.setFromX(0);
-		scale.setFromY(0);
-		scale.setToX(1);
-		scale.setToY(1);
-		scale.setInterpolator(Interpolator.EASE_IN);
-
-		TranslateTransition translate = new TranslateTransition();
-		translate.setNode(image);
-		translate.setDuration(Duration.seconds(duration));
-		translate.setFromX(translateX);
-		translate.setToX(0);
-		translate.setFromY(translateY);
-		translate.setToY(0);
-		translate.setInterpolator(Interpolator.EASE_IN);
-
-		ParallelTransition parallel = new ParallelTransition(scale, translate);
-		parallel.play();
 	}
 
 	@Override
