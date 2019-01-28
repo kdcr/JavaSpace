@@ -156,11 +156,11 @@ public class LauncherController implements Initializable {
 	double ejeY;
 
 	public LauncherController() {
-		loadView("/dad/javaspace/interfacing/MainMenuView.fxml");
-		loadView("/dad/javaspace/interfacing/EmpezarPartidaHoverView.fxml");
-		loadView("/dad/javaspace/interfacing/SalirLauncherView.fxml");
-		loadView("/dad/javaspace/interfacing/SkinSelectorView.fxml");
-		loadView("/dad/javaspace/interfacing/CFGView.fxml");
+		loadView("/fxml/MainMenuView.fxml");
+		loadView("/fxml/EmpezarPartidaHoverView.fxml");
+		loadView("/fxml/SalirLauncherView.fxml");
+		loadView("/fxml/SkinSelectorView.fxml");
+		loadView("/fxml/CFGView.fxml");
 	}
 
 	@Override
@@ -172,40 +172,40 @@ public class LauncherController implements Initializable {
 			 * CSS
 			 */
 			
-			rootView.getStylesheets().setAll("dad/javaspace/interfacing/launcher.css");
+			rootView.getStylesheets().setAll("/css/launcher.css");
 			
 			/**
 			 * Imagenes
 			 */
-			imageViewEP.setImage(new Image("/main/resources/assets/textures/imagenjugar.jpg"));
+			imageViewEP.setImage(new Image("/assets/textures/imagenjugar.jpg"));
 			rootView.setCenter(empezarPartidaHoverRoot);
-			imageViewSalir.setImage(new Image("/main/resources/assets/textures/imagensalir.jpg"));
+			imageViewSalir.setImage(new Image("/assets/textures/imagensalir.jpg"));
 
 			// Skins
-			skinUno.setGraphic(new ImageView(new Image("/main/resources/assets/textures/navePrueba.png")));
-			skinDos.setGraphic(new ImageView(new Image("/main/resources/assets/textures/navePrueba.png")));
-			skinTres.setGraphic(new ImageView(new Image("/main/resources/assets/textures/navePrueba.png")));
-			skinCuatro.setGraphic(new ImageView(new Image("/main/resources/assets/textures/navePrueba.png")));
-			skinCinco.setGraphic(new ImageView(new Image("/main/resources/assets/textures/navePrueba.png")));
-			skinSeis.setGraphic(new ImageView(new Image("/main/resources/assets/textures/navePrueba.png")));
-			skinSiete.setGraphic(new ImageView(new Image("/main/resources/assets/textures/navePrueba.png")));
-			skinOcho.setGraphic(new ImageView(new Image("/main/resources/assets/textures/navePrueba.png")));
+			skinUno.setGraphic(new ImageView(new Image("/assets/textures/navePrueba.png")));
+			skinDos.setGraphic(new ImageView(new Image("/assets/textures/navePrueba.png")));
+			skinTres.setGraphic(new ImageView(new Image("/assets/textures/navePrueba.png")));
+			skinCuatro.setGraphic(new ImageView(new Image("/assets/textures/navePrueba.png")));
+			skinCinco.setGraphic(new ImageView(new Image("/assets/textures/navePrueba.png")));
+			skinSeis.setGraphic(new ImageView(new Image("/assets/textures/navePrueba.png")));
+			skinSiete.setGraphic(new ImageView(new Image("/assets/textures/navePrueba.png")));
+			skinOcho.setGraphic(new ImageView(new Image("/assets/textures/navePrueba.png")));
 
 			/*
 			 * Audio
 			 */
 
 			// Musica menu
-			String musicFile = "src/main/resources/assets/sounds/Vigil.mp3";
-			Media mainTheme = new Media(new File(musicFile).toURI().toString());
+			String musicFile = "/assets/sounds/Vigil.mp3";
+			Media mainTheme = new Media(getClass().getResource(musicFile).toString());
 			MediaPlayer mp = new MediaPlayer(mainTheme);
 			mp.volumeProperty().bind(sonidoSlider.valueProperty().divide(100));
 			mp.setCycleCount(100);
 			mp.play();
 
 			// Efecto Sonido Hover
-			String buttonMusicFile = "src/main/resources/assets/sounds/ButtonSound1.mp3";
-			Media buttonSound = new Media(new File(buttonMusicFile).toURI().toString());
+			String buttonMusicFile = "/assets/sounds/ButtonSound1.mp3";
+			Media buttonSound = new Media(getClass().getResource(buttonMusicFile).toString());
 			mpButtons = new MediaPlayer(buttonSound);
 			mpButtons.setVolume(1);
 
@@ -214,7 +214,7 @@ public class LauncherController implements Initializable {
 			BackgroundSize bSize = new BackgroundSize(720, 360, false, false, true, true);
 
 			Background background = new Background(
-					new BackgroundImage(new Image("/main/resources/assets/textures/launcherBackground.gif"),
+					new BackgroundImage(new Image("/assets/textures/launcherBackground.gif"),
 							BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, bSize));
 
 			rootView.setBackground(background);

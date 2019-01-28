@@ -1,6 +1,4 @@
 /target/
-.gitignore
-.project
 .settings/org.eclipse.jdt.core.prefs
 *.log
 target/
