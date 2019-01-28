@@ -1,15 +1,16 @@
 package dad.javaspace.interfacing.controller;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import dad.javaspace.JavaSpaceAPP;
+import dad.javaspace.Main;
 import dad.javaspace.interfacing.ScreenResolutions;
+import dad.javaspace.launchermodel.LauncherModel;
 import javafx.animation.FadeTransition;
-import javafx.collections.FXCollections;
+import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -32,17 +33,28 @@ import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
+import javafx.util.converter.NumberStringConverter;
 
 public class LauncherController implements Initializable {
 
-	/**
+	/****************************************************************************************************
+	 * 
+	 * Modelo
+	 * 
+	 ***************************************************************************************************/
+	private LauncherModel model;
+
+	/****************************************************************************************************
+	 * 
 	 * Main Menu Components
-	 */
+	 * 
+	 ***************************************************************************************************/
 
 	@FXML
 	private BorderPane rootView;
@@ -71,12 +83,17 @@ public class LauncherController implements Initializable {
 	@FXML
 	private Label versionLabel;
 
-	/**
+	/****************************************************************************************************
+	 * 
 	 * CFGView Components
-	 */
+	 * 
+	 ***************************************************************************************************/
 
 	@FXML
-	private GridPane cfgHoverRoot;
+	private ScrollPane cfgHoverRoot;
+
+	@FXML
+	private GridPane cfgGridHoverRoot;
 
 	@FXML
 	private ComboBox<ScreenResolutions> resolutionComboBox;
@@ -88,21 +105,37 @@ public class LauncherController implements Initializable {
 	private TextField nombreField;
 
 	@FXML
-	private Slider sonidoSlider;
-
-	/**
-	 * EmpezarPartidaHoverView
-	 */
+	private Slider sonidoMusicaSlider;
 
 	@FXML
-	private HBox empezarPartidaHoverRoot;
+	private Slider sonidoFXSlider;
+
+	@FXML
+	private TextField ipTextField;
+
+	@FXML
+	private TextField puertoTextField;
+
+	/****************************************************************************************************
+	 * 
+	 * EmpezarPartidaHoverView
+	 * 
+	 ***************************************************************************************************/
+
+	@FXML
+	private StackPane empezarPartidaHoverRoot;
 
 	@FXML
 	private ImageView imageViewEP;
 
-	/**
+	@FXML
+	private Button launchButton;
+
+	/****************************************************************************************************
+	 * 
 	 * SalirPartidaView
-	 */
+	 * 
+	 ***************************************************************************************************/
 
 	@FXML
 	private HBox salirLauncherHoverRoot;
@@ -110,10 +143,11 @@ public class LauncherController implements Initializable {
 	@FXML
 	private ImageView imageViewSalir;
 
-	/**
+	/****************************************************************************************************
 	 * 
 	 * SkinSelectorView
-	 */
+	 * 
+	 ***************************************************************************************************/
 
 	@FXML
 	private ScrollPane skinTilePaneRoot;
@@ -145,12 +179,14 @@ public class LauncherController implements Initializable {
 	@FXML
 	private Button skinOcho;
 
-	/**
+	/****************************************************************************************************
+	 * 
 	 * MediaPlayer
-	 */
+	 * 
+	 ***************************************************************************************************/
 
 	private MediaPlayer mpButtons;
-	
+
 	// window Position
 	double ejeX;
 	double ejeY;
@@ -167,16 +203,30 @@ public class LauncherController implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 
 		if (cfgHoverRoot != null) {
+			
+			Platform.setImplicitExit(false);
 
-			/**
+			/****************************************************************************************************
+			 * 
+			 * Modelo
+			 * 
+			 ***************************************************************************************************/
+
+			model = new LauncherModel();
+
+			/****************************************************************************************************
+			 * 
 			 * CSS
-			 */
-			
+			 * 
+			 ***************************************************************************************************/
+
 			rootView.getStylesheets().setAll("/css/launcher.css");
-			
-			/**
+
+			/****************************************************************************************************
+			 * 
 			 * Imagenes
-			 */
+			 * 
+			 ***************************************************************************************************/
 			imageViewEP.setImage(new Image("/assets/textures/imagenjugar.jpg"));
 			rootView.setCenter(empezarPartidaHoverRoot);
 			imageViewSalir.setImage(new Image("/assets/textures/imagensalir.jpg"));
@@ -191,25 +241,32 @@ public class LauncherController implements Initializable {
 			skinSiete.setGraphic(new ImageView(new Image("/assets/textures/navePrueba.png")));
 			skinOcho.setGraphic(new ImageView(new Image("/assets/textures/navePrueba.png")));
 
-			/*
+			/****************************************************************************************************
+			 * 
 			 * Audio
-			 */
+			 * 
+			 ***************************************************************************************************/
 
 			// Musica menu
 			String musicFile = "/assets/sounds/Vigil.mp3";
 			Media mainTheme = new Media(getClass().getResource(musicFile).toString());
 			MediaPlayer mp = new MediaPlayer(mainTheme);
-			mp.volumeProperty().bind(sonidoSlider.valueProperty().divide(100));
+			sonidoMusicaSlider.setValue(100.0);
 			mp.setCycleCount(100);
 			mp.play();
 
 			// Efecto Sonido Hover
 			String buttonMusicFile = "/assets/sounds/ButtonSound1.mp3";
 			Media buttonSound = new Media(getClass().getResource(buttonMusicFile).toString());
+			sonidoFXSlider.setValue(100);
 			mpButtons = new MediaPlayer(buttonSound);
 			mpButtons.setVolume(1);
 
-			// Background
+			/****************************************************************************************************
+			 * 
+			 * BackGround Image
+			 * 
+			 ***************************************************************************************************/
 
 			BackgroundSize bSize = new BackgroundSize(720, 360, false, false, true, true);
 
@@ -218,36 +275,74 @@ public class LauncherController implements Initializable {
 							BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, bSize));
 
 			rootView.setBackground(background);
-			
-			/**
+
+			/****************************************************************************************************
+			 * 
 			 * Buttons
 			 * 
-			 */
+			 ***************************************************************************************************/
 
 			cfgButton.hoverProperty().addListener(e -> onCFGButtonHovered());
 			exitButton.hoverProperty().addListener(e -> onExitButtonHovered());
 			empezarPartidaButton.hoverProperty().addListener(e -> onEmpezarPartidaButtonHovered());
 			selectSkinButton.hoverProperty().addListener(e -> onSelectSkinButtonHovered());
-
 			exitButton.setOnAction(e -> JavaSpaceAPP.getPrimaryStage().close());
-			
-			/**
+//			launchButton.setOnAction(e -> onLaunchAction());
+
+			/****************************************************************************************************
 			 * 
 			 * Stage dragging behaviour
 			 * 
-			 */
-			
+			 ***************************************************************************************************/
+
 			rootView.setOnMousePressed(e -> onMousePressed(e));
 			rootView.setOnMouseDragged(e -> onMouseDrag(e));
-			
-			/**
+
+			/****************************************************************************************************
+			 * 
 			 * ComboBox resoluciones
-			 */
-			
+			 * 
+			 ***************************************************************************************************/
+
 			resolutionComboBox.getItems().setAll(ScreenResolutions.values());
+
+			/***************************************************************************************************
+			 * 
+			 * Bindeos con el modelo
+			 * 
+			 ***************************************************************************************************/
+			
+			// Bindeo audio con modelo
+			model.volumenMusicaProperty().bind(sonidoMusicaSlider.valueProperty().divide(100));
+			mp.volumeProperty().bind(model.volumenMusicaProperty());
+			
+			model.volumenJuegoProperty().bind(sonidoFXSlider.valueProperty().divide(100));
+			mpButtons.volumeProperty().bind(model.volumenJuegoProperty());
+			
+			// Datos del jugador
+			Bindings.bindBidirectional(nombreField.textProperty(), model.nombreJugadorProperty());
+			Bindings.bindBidirectional(ipTextField.textProperty(), model.ipProperty());
+			Bindings.bindBidirectional(puertoTextField.textProperty(), model.puertoProperty(), new NumberStringConverter());
+			Bindings.bindBidirectional(fullScreenCheckBox.selectedProperty(), model.pantallaCompletaProperty());
+// TODO		Bindings.bindBidirectional(resolutionComboBox.getSelectionModel().selectedItemProperty(), model.resolucionProperty());
+			// No puedo bindear bidireccional porque el combo es ReadOnly
+			
+
 		}
 	}
-		
+
+//	private void onLaunchAction() {
+//		dad.javaspace.Main main = new dad.javaspace.Main();
+//		String[] table = {};
+//		
+//		Platform.exit();
+//		JavaSpaceAPP.getPrimaryStage().hide();
+//		Platform.runLater(() -> {
+//		JavaSpaceAPP.getPrimaryStage().setScene(main.getGameScene());
+//		Main.main(table);
+//			
+//		});
+//	}
 
 	private void onMouseDrag(MouseEvent e) {
 		JavaSpaceAPP.getPrimaryStage().setX(e.getScreenX() + ejeX);
@@ -314,5 +409,9 @@ public class LauncherController implements Initializable {
 
 	public BorderPane getRootView() {
 		return rootView;
+	}
+
+	public LauncherModel getModel() {
+		return this.model;
 	}
 }

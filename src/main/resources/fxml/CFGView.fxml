@@ -4,34 +4,74 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane fx:id="cfgHoverRoot" alignment="CENTER" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-      <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Resolución" textAlignment="CENTER" />
-      <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Pantalla Completa" textAlignment="CENTER" GridPane.rowIndex="1" />
-      <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Nombre en el juego" textAlignment="CENTER" GridPane.rowIndex="2" />
-      <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Sonido de Efectos" GridPane.rowIndex="3" />
-      <ComboBox fx:id="resolutionComboBox" prefWidth="150.0" GridPane.columnIndex="1" />
-      <CheckBox fx:id="fullScreenCheckBox" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-      <TextField fx:id="nombreField" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="2" />
-      <Slider fx:id="sonidoSlider" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-   </children>
-   <columnConstraints>
-      <ColumnConstraints maxWidth="150.0" minWidth="150.0" prefWidth="150.0" />
-      <ColumnConstraints maxWidth="1.7976931348623157E308" />
-   </columnConstraints>
-   <rowConstraints>
-      <RowConstraints maxHeight="1.7976931348623157E308" minHeight="50.0" prefHeight="50.0" />
-      <RowConstraints maxHeight="1.7976931348623157E308" minHeight="50.0" prefHeight="50.0" />
-      <RowConstraints maxHeight="1.7976931348623157E308" minHeight="50.0" prefHeight="50.0" />
-      <RowConstraints maxHeight="1.7976931348623157E308" minHeight="50.0" prefHeight="50.0" />
-   </rowConstraints>
-   <padding>
-      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-   </padding>
-</GridPane>
+<ScrollPane fx:id="cfgHoverRoot" hbarPolicy="NEVER" maxHeight="283.0" maxWidth="501.0" minHeight="283.0" minWidth="501.0" prefHeight="283.0" prefWidth="501.0" styleClass="scrollPaneClass" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <content>
+      <GridPane fx:id="cfgGridHoverRoot" alignment="CENTER_LEFT">
+         <children>
+            <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="cfgLabels" text="Resolución" textAlignment="CENTER" GridPane.rowIndex="2">
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin>
+            </Label>
+            <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="cfgLabels" text="Pantalla Completa" textAlignment="CENTER" GridPane.rowIndex="3">
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin>
+            </Label>
+            <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="cfgLabels" text="Nombre en el juego" textAlignment="CENTER" GridPane.rowIndex="4">
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin>
+            </Label>
+            <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="cfgLabels" text="Volumen de música" GridPane.rowIndex="5">
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin>
+            </Label>
+            <ComboBox fx:id="resolutionComboBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <CheckBox fx:id="fullScreenCheckBox" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <TextField fx:id="nombreField" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="4" />
+            <Slider fx:id="sonidoMusicaSlider" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="cfgLabels" text="Volumen FX Juego" GridPane.rowIndex="6">
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin>
+            </Label>
+            <Slider fx:id="sonidoFXSlider" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+            <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="cfgLabels" text="Direccion IP Servidor" GridPane.rowIndex="9" />
+            <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="cfgLabels" text="Puerto Servidor" GridPane.rowIndex="10" />
+            <TextField fx:id="ipTextField" promptText="000.000.000.000" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+            <TextField fx:id="puertoTextField" promptText="00000" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+            <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="labelTituloCFG" text="Opciones de Juego" GridPane.columnSpan="2147483647" />
+            <Separator prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="1" />
+            <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="labelTituloCFG" text="Opciones de RED" GridPane.columnSpan="2147483647" GridPane.rowIndex="7" />
+            <Separator prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="8" />
+         </children>
+         <columnConstraints>
+            <ColumnConstraints maxWidth="120.0" minWidth="120.0" prefWidth="120.0" />
+            <ColumnConstraints maxWidth="365.0" minWidth="365.0" prefWidth="365.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints maxHeight="56.0" minHeight="56.0" prefHeight="56.0" />
+            <RowConstraints />
+            <RowConstraints maxHeight="56.0" minHeight="56.0" prefHeight="56.0" />
+            <RowConstraints maxHeight="56.0" minHeight="56.0" prefHeight="56.0" />
+            <RowConstraints maxHeight="56.0" minHeight="56.0" prefHeight="56.0" />
+            <RowConstraints maxHeight="56.0" minHeight="56.0" prefHeight="56.0" />
+            <RowConstraints maxHeight="56.0" minHeight="56.0" prefHeight="56.0" />
+            <RowConstraints maxHeight="56.0" minHeight="56.0" prefHeight="56.0" />
+            <RowConstraints />
+            <RowConstraints maxHeight="56.0" minHeight="56.0" prefHeight="56.0" />
+            <RowConstraints maxHeight="56.0" minHeight="56.0" prefHeight="56.0" />
+         </rowConstraints>
+      </GridPane>
+   </content>
+</ScrollPane>

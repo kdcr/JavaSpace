@@ -1,7 +1,9 @@
 
-/**
+/*************************************************************************
+ * 
  * Botonera Lateral
- */
+ * 
+ *************************************************************************/
 .botonesMenu {
 	-fx-background-color: rgba(255.0, 255.0, 255.0, 0.1);
 	-fx-text-fill: white;
@@ -17,9 +19,12 @@
 	-fx-background-padding-right: 20.0;
 }
 
-/**
- * Scroll Panel
- */
+/*************************************************************************
+ * 
+ * Scroll Panels
+ * 
+ *************************************************************************/
+ 
 .scroll-pane > .viewport {
 	-fx-background-color: transparent;
 }
@@ -77,9 +82,11 @@
     -fx-background-radius : 1.0em;
 }
 
-/**
+/**************************************************************************
+ * 
  * Seccion de Skins
- */
+ * 
+ *************************************************************************/
 
 .skinButtons {
 	-fx-background-color: transparent;
@@ -94,3 +101,21 @@
 	-fx-background-color: rgba(255.0, 255.0, 255.0, 0.3);
 	-fx-background-radius: 0.0;
 }
+
+/**************************************************************************
+ * 
+ * Seccion de Configuracion
+ * 
+ *************************************************************************/
+
+.cfgLabels {
+	-fx-text-fill: white;
+}
+
+.labelTituloCFG {
+	-fx-text-fill: white;
+	-fx-font-weight: bold;
+	-fx-font-size: 2em;
+	
+}
+
