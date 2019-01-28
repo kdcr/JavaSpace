@@ -1,7 +1,6 @@
 package dad.javaspace.objects.effects;
 
 import com.almasb.fxgl.animation.Animation;
-import com.almasb.fxgl.animation.SequentialAnimation;
 import com.almasb.fxgl.app.FXGL;
 import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.core.collection.Array;
@@ -9,6 +8,7 @@ import com.almasb.fxgl.core.math.Vec2;
 import com.almasb.fxgl.entity.Entities;
 import com.almasb.fxgl.entity.Entities.EntityBuilder;
 import com.almasb.fxgl.entity.Entity;
+import com.almasb.fxgl.entity.animation.ScaleAnimationBuilder;
 import com.almasb.fxgl.entity.components.CollidableComponent;
 import com.almasb.fxgl.input.Input;
 import com.almasb.fxgl.input.UserAction;
@@ -23,7 +23,6 @@ import com.almasb.fxgl.physics.box2d.collision.ContactID.Type;
 import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
 import com.almasb.fxgl.physics.box2d.dynamics.FixtureDef;
 import com.almasb.fxgl.settings.GameSettings;
-import com.almasb.fxgl.time.Timer;
 import com.almasb.fxgl.util.Function;
 import com.almasb.fxgl.util.Supplier;
 import com.fasterxml.jackson.databind.deser.impl.ExternalTypeHandler.Builder;
@@ -34,6 +33,7 @@ import javafx.animation.ScaleTransition;
 import javafx.animation.SequentialTransition;
 import javafx.animation.Transition;
 import javafx.animation.TranslateTransition;
+import javafx.concurrent.Worker.State;
 import javafx.geometry.Point2D;
 import javafx.scene.effect.BlendMode;
 import javafx.scene.image.Image;
@@ -109,31 +109,72 @@ public class FXGLPruebaApp extends GameApplication {
 
 		jugador.addComponent(component);
 
-		hiperJumpTransition(jugador, 0.3, -150, 0);
+		hiperJumpTransition(jugador, 0.2, -350, 0);
+//		bulletTransition(jugador, 0.5, 0.5, 1);
 	}
 
 	public void bulletTransition(Entity player, double duration, double tamMin, double tamMax) {
-		Point2D defaultSize = new Point2D(1, 1);
-		Point2D minSize = new Point2D(tamMin, tamMin);
-		Point2D maxSize = new Point2D(tamMax, tamMax);
-		Entities.animationBuilder().duration(Duration.seconds(duration)).scale(player).from(minSize).to(maxSize)
-				.buildAndPlay().setOnFinished(() -> {
-					Entities.animationBuilder().duration(Duration.seconds(duration)).scale(player).from(maxSize)
-							.to(defaultSize).buildAndPlay();
-				});
+		Point2D from = new Point2D(tamMin, tamMin);
+		Point2D to = new Point2D(tamMax, tamMax);
+
+		Entities.animationBuilder().duration(Duration.seconds(duration)).scale(jugador).from(from).to(to)
+				.buildAndPlay();
+	}
+
+	public void bulletTransitionImageView(ImageView image, double duration, double tamMin, double tamMax) {
+		ScaleTransition scaleA = new ScaleTransition();
+		scaleA.setNode(image);
+		scaleA.setDuration(Duration.seconds(duration));
+		scaleA.setFromX(tamMax);
+		scaleA.setFromY(tamMax);
+		scaleA.setToX(tamMin);
+		scaleA.setToY(tamMin);
+
+		ScaleTransition scaleB = new ScaleTransition();
+		scaleB.setNode(image);
+		scaleB.setDuration(Duration.seconds(duration));
+		scaleB.setFromX(tamMin);
+		scaleB.setFromY(tamMin);
+		scaleB.setToX(tamMax);
+		scaleB.setToY(tamMax);
+
+		SequentialTransition sequential = new SequentialTransition(scaleA, scaleB);
+		sequential.play();
+
+		sequential.setOnFinished(e -> {
+			sequential.play();
+		});
 	}
 
 	public void hiperJumpTransition(Entity player, double duration, double translateX, double translateY) {
+		Point2D from = new Point2D(translateX + player.getPosition().getX(), translateY + player.getPosition().getY());
+		Point2D to = player.getPosition();
 
-		Point2D min = new Point2D(0, 0);
-		Point2D max = new Point2D(1, 1);
-		Entities.animationBuilder().duration(Duration.seconds(duration)).scale(player).from(min).to(max).buildAndPlay();
-
-		Point2D from = new Point2D(player.getPosition().getX() + translateX, player.getPosition().getY() + translateY);
-		Point2D to = new Point2D(player.getPosition().getX(), player.getPosition().getY());
 		Entities.animationBuilder().duration(Duration.seconds(duration)).translate(player).from(from).to(to)
 				.buildAndPlay();
+	}
 
+	public void hiperJumpTransitionImageView(ImageView image, double duration, double translateX, double translateY) {
+		ScaleTransition scale = new ScaleTransition();
+		scale.setNode(image);
+		scale.setDuration(Duration.seconds(duration));
+		scale.setFromX(0);
+		scale.setFromY(0);
+		scale.setToX(1);
+		scale.setToY(1);
+		scale.setInterpolator(Interpolator.EASE_IN);
+
+		TranslateTransition translate = new TranslateTransition();
+		translate.setNode(image);
+		translate.setDuration(Duration.seconds(duration));
+		translate.setFromX(translateX);
+		translate.setToX(0);
+		translate.setFromY(translateY);
+		translate.setToY(0);
+		translate.setInterpolator(Interpolator.EASE_IN);
+
+		ParallelTransition parallel = new ParallelTransition(scale, translate);
+		parallel.play();
 	}
 
 	@Override
