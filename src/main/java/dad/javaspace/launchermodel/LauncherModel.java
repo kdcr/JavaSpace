@@ -51,6 +51,39 @@ public class LauncherModel {
 		}
 	}
 	
+	public static LauncherModel cargarConfig() {
+		String datos = "";
+		
+		LauncherModel model = new LauncherModel();
+		
+		File file = new File("src/main/resources/persistence/persistence.txt");
+		
+		try {
+			byte [] tablaBytes = Files.readAllBytes(file.toPath());
+			
+			for (int i = 0; i < tablaBytes.length; i++) {
+				datos += (char) tablaBytes[i];
+			}
+			
+			String [] nuevosDatos = datos.split(";");
+			
+			// TODO revisar los valores a colocar en el slider. Probablemente haciendole un bindeo bidireccional
+			model.setVolumenMusica(Double.parseDouble(nuevosDatos[0]));
+			model.setVolumenJuego(Double.parseDouble(nuevosDatos[1]));
+			model.setIp(nuevosDatos[2]);
+			model.setPuerto(Integer.parseInt(nuevosDatos[3]));
+			model.setNombreJugador(nuevosDatos[4]);
+			model.setPantallaCompleta(Boolean.parseBoolean(nuevosDatos[5]));
+			//model.setResolucion(ScreenResolutions.valueOf(nuevosDatos[6]));
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return model;
+		
+	}
+	
 	public final DoubleProperty volumenMusicaProperty() {
 		return this.volumenMusica;
 	}

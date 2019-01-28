@@ -213,7 +213,7 @@ public class LauncherController implements Initializable {
 			 * 
 			 ***************************************************************************************************/
 
-			model = new LauncherModel();
+			model = LauncherModel.cargarConfig();
 
 			/****************************************************************************************************
 			 * 
@@ -288,7 +288,7 @@ public class LauncherController implements Initializable {
 			empezarPartidaButton.hoverProperty().addListener(e -> onEmpezarPartidaButtonHovered());
 			selectSkinButton.hoverProperty().addListener(e -> onSelectSkinButtonHovered());
 			exitButton.setOnAction(e -> JavaSpaceAPP.getPrimaryStage().close());
-			launchButton.setOnAction(e -> model.guardarConfig());
+			launchButton.setOnAction(e -> model.cargarConfig());
 
 			/****************************************************************************************************
 			 * 
