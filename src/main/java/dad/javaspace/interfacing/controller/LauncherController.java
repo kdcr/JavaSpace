@@ -204,7 +204,7 @@ public class LauncherController implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 
 		if (cfgHoverRoot != null) {
-			
+
 //			TODO Platform.setImplicitExit(false);
 
 			/****************************************************************************************************
@@ -252,16 +252,15 @@ public class LauncherController implements Initializable {
 			String musicFile = "/assets/sounds/Vigil.mp3";
 			Media mainTheme = new Media(getClass().getResource(musicFile).toString());
 			MediaPlayer mp = new MediaPlayer(mainTheme);
-			sonidoMusicaSlider.setValue(100.0);
+			sonidoMusicaSlider.setMax(1.0);
 			mp.setCycleCount(100);
 			mp.play();
 
 			// Efecto Sonido Hover
 			String buttonMusicFile = "/assets/sounds/ButtonSound1.mp3";
 			Media buttonSound = new Media(getClass().getResource(buttonMusicFile).toString());
-			sonidoFXSlider.setValue(100);
+			sonidoFXSlider.setMax(1.0);
 			mpButtons = new MediaPlayer(buttonSound);
-			mpButtons.setVolume(1);
 
 			/****************************************************************************************************
 			 * 
@@ -287,8 +286,8 @@ public class LauncherController implements Initializable {
 			exitButton.hoverProperty().addListener(e -> onExitButtonHovered());
 			empezarPartidaButton.hoverProperty().addListener(e -> onEmpezarPartidaButtonHovered());
 			selectSkinButton.hoverProperty().addListener(e -> onSelectSkinButtonHovered());
-			exitButton.setOnAction(e -> JavaSpaceAPP.getPrimaryStage().close());
-			launchButton.setOnAction(e -> model.cargarConfig());
+			exitButton.setOnAction(e -> onCloseAction());
+			launchButton.setOnAction(e -> model.guardarConfig());
 
 			/****************************************************************************************************
 			 * 
@@ -312,29 +311,35 @@ public class LauncherController implements Initializable {
 			 * Bindeos con el modelo
 			 * 
 			 ***************************************************************************************************/
-			
+
 			// Bindeo audio con modelo
-			model.volumenMusicaProperty().bind(sonidoMusicaSlider.valueProperty().divide(100));
+			Bindings.bindBidirectional(sonidoMusicaSlider.valueProperty(), model.volumenMusicaProperty());
 			mp.volumeProperty().bind(model.volumenMusicaProperty());
-			
-			model.volumenJuegoProperty().bind(sonidoFXSlider.valueProperty().divide(100));
+
+			Bindings.bindBidirectional(sonidoFXSlider.valueProperty(), model.volumenJuegoProperty());
 			mpButtons.volumeProperty().bind(model.volumenJuegoProperty());
-			
+
 			// Datos del jugador
 			Bindings.bindBidirectional(nombreField.textProperty(), model.nombreJugadorProperty());
 			Bindings.bindBidirectional(ipTextField.textProperty(), model.ipProperty());
-			Bindings.bindBidirectional(puertoTextField.textProperty(), model.puertoProperty(), new NumberStringConverter());
+			Bindings.bindBidirectional(puertoTextField.textProperty(), model.puertoProperty(),
+					new NumberStringConverter());
 			Bindings.bindBidirectional(fullScreenCheckBox.selectedProperty(), model.pantallaCompletaProperty());
 // TODO		Bindings.bindBidirectional(resolutionComboBox.getSelectionModel().selectedItemProperty(), model.resolucionProperty());
-			//Provisionalmente bindeo de un solo lado
+			// Provisionalmente bindeo de un solo lado
 			model.resolucionProperty().bind(resolutionComboBox.getSelectionModel().selectedItemProperty());
 			// No puedo bindear bidireccional porque el combo es ReadOnly
-			
 
 		}
 	}
 
+	private void onCloseAction() {
+		model.guardarConfig();
+		JavaSpaceAPP.getPrimaryStage().close();
+	}
+
 //	private void onLaunchAction() {
+//		model.guardarConfig();
 //		dad.javaspace.Main main = new dad.javaspace.Main();
 //		String[] table = {};
 //		

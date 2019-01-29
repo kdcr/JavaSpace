@@ -28,8 +28,8 @@ public class LauncherModel {
 	private ObjectProperty<ScreenResolutions> resolucion;
 
 	public LauncherModel() {
-		volumenMusica = new SimpleDoubleProperty(this, "volumenMusica");
-		volumenJuego = new SimpleDoubleProperty(this, "volumenMusica");
+		volumenMusica = new SimpleDoubleProperty(this, "volumenMusica", 1.0);
+		volumenJuego = new SimpleDoubleProperty(this, "volumenMusica", 1.0);
 		ip = new SimpleStringProperty(this, "ip");
 		puerto = new SimpleIntegerProperty(this, "puerto", 2000);
 		nombreJugador = new SimpleStringProperty(this, "nombreJugador");
@@ -39,51 +39,61 @@ public class LauncherModel {
 
 	public void guardarConfig() {
 		String datos = "";
-		
+
 		File file = new File("src/main/resources/persistence/persistence.txt");
-		
-		datos += volumenMusica.getValue() + ";" + volumenJuego.getValue() + ";" + ip.get() + ";" + puerto.get() + ";" + nombreJugador.get() + ";" + pantallaCompleta.get() + ";" + resolucion.get().toString();
-		byte [] tablaBytes = datos.getBytes();
+
+		datos += volumenMusica.getValue() + ";" + volumenJuego.getValue() + ";" + ip.get() + ";" + puerto.get() + ";"
+				+ nombreJugador.get() + ";" + pantallaCompleta.get() + ";" + resolucion.get().toString();
+		byte[] tablaBytes = datos.getBytes();
 		try {
 			Files.write(file.toPath(), tablaBytes, StandardOpenOption.TRUNCATE_EXISTING);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static LauncherModel cargarConfig() {
 		String datos = "";
-		
+
 		LauncherModel model = new LauncherModel();
-		
+
 		File file = new File("src/main/resources/persistence/persistence.txt");
-		
+
 		try {
-			byte [] tablaBytes = Files.readAllBytes(file.toPath());
-			
+
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+
+			byte[] tablaBytes = Files.readAllBytes(file.toPath());
+
 			for (int i = 0; i < tablaBytes.length; i++) {
 				datos += (char) tablaBytes[i];
 			}
-			
-			String [] nuevosDatos = datos.split(";");
-			
-			// TODO revisar los valores a colocar en el slider. Probablemente haciendole un bindeo bidireccional
-			model.setVolumenMusica(Double.parseDouble(nuevosDatos[0]));
-			model.setVolumenJuego(Double.parseDouble(nuevosDatos[1]));
-			model.setIp(nuevosDatos[2]);
-			model.setPuerto(Integer.parseInt(nuevosDatos[3]));
-			model.setNombreJugador(nuevosDatos[4]);
-			model.setPantallaCompleta(Boolean.parseBoolean(nuevosDatos[5]));
-			//model.setResolucion(ScreenResolutions.valueOf(nuevosDatos[6]));
-			
+
+			String[] nuevosDatos = datos.split(";");
+
+			if (nuevosDatos.length > 1) {
+
+				// TODO revisar los valores a colocar en el slider. Probablemente haciendole un
+				// bindeo bidireccional
+				model.setVolumenMusica(Double.parseDouble(nuevosDatos[0]));
+				model.setVolumenJuego(Double.parseDouble(nuevosDatos[1]));
+				model.setIp(nuevosDatos[2]);
+				model.setPuerto(Integer.parseInt(nuevosDatos[3]));
+				model.setNombreJugador(nuevosDatos[4]);
+				model.setPantallaCompleta(Boolean.parseBoolean(nuevosDatos[5]));
+				// model.setResolucion(ScreenResolutions.valueOf(nuevosDatos[6]));
+			}
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		return model;
-		
+
 	}
-	
+
 	public final DoubleProperty volumenMusicaProperty() {
 		return this.volumenMusica;
 	}
