@@ -58,8 +58,6 @@ public class Main extends GameApplication {
 	RotationComponent rot;
 	PositionComponent pos;
 
-	private Vec2 direccion;
-
 	// Estetica
 	private ArrayList<Entity> starArray = new ArrayList<>();
 	ArrayList<Entity> starList = new ArrayList<>();
@@ -67,7 +65,7 @@ public class Main extends GameApplication {
 	public static void main(String[] args) {
 		launch(args);
 	}
-	
+
 	@Override
 	protected void initSettings(GameSettings settings) {
 		settings.setWidth(800);
@@ -84,7 +82,6 @@ public class Main extends GameApplication {
 			@Override
 			protected void onAction() {
 				physicsComponent.setAngularVelocity(0.5);
-				physicsComponent.applyTorque(20);
 			}
 		}, KeyCode.D);
 
@@ -92,6 +89,7 @@ public class Main extends GameApplication {
 			@Override
 			protected void onAction() {
 				physicsComponent.setAngularVelocity(-0.5);
+
 			}
 		}, KeyCode.A);
 
@@ -187,12 +185,7 @@ public class Main extends GameApplication {
 
 		mp = new MediaPlayer(new Media(new File("src/main/resources/assets/sounds/thruster.mp3").toURI().toString()));
 
-		// these are direct jbox2d objects, so we don't actually introduce new API
-//		FixtureDef fd = new FixtureDef();
-//		fd.setDensity(0.7f);
-//		fd.setRestitution(0.3f);
-//		physicsComponent.setFixtureDef(fd);
-
+		// Se instancia el componente de fisica y se le declaran propiedades
 		physicsComponent = new PhysicsComponent();
 
 		physicsComponent.setBodyType(BodyType.DYNAMIC);
@@ -201,20 +194,18 @@ public class Main extends GameApplication {
 
 		getPhysicsWorld().setGravity(0, 0);
 
+		// Al jugador se le asigna una textura y se agrega al mundo
+
 		player.setViewFromTexture("player.png");
 
 		getGameWorld().addEntities(player);
 
-		direccion = new Vec2(-Math.sin(physicsComponent.getBody().getAngle()) * 0.3,
-				Math.cos(physicsComponent.getBody().getAngle()) * 0.3);
+		physicsComponent.getBody().setAngularDamping(0.8f);
 
-		// physicsComponent.getBody().setAngularDamping(0.8f);
-
-		physicsComponent.getBody().setAwake(true);
-
+		// Estetico
+		
 		mp.setVolume(0);
 		mp.play();
-		// Estetico
 
 	}
 
@@ -260,7 +251,7 @@ public class Main extends GameApplication {
 	}
 
 	private void generateStars() {
-		if (System.currentTimeMillis() > coolDownStars + 100) {
+		if (System.currentTimeMillis() > coolDownStars + 80) {
 			coolDownStars = System.currentTimeMillis();
 
 			Entity newStar = new Entity();
