@@ -16,7 +16,7 @@ public class ClientModel {
 	private double xForce, yForce;
 
 	private DoubleProperty thrust = new SimpleDoubleProperty();
-
+	
 	private FloatProperty angular = new SimpleFloatProperty();
 
 	private StringProperty version = new SimpleStringProperty(this, "version", "0.0.1");
