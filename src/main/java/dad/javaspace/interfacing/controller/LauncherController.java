@@ -1,8 +1,20 @@
 package dad.javaspace.interfacing.controller;
 
+import java.awt.DisplayMode;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.io.File;
 import java.io.IOException;
+import java.lang.module.ResolutionException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
+
+import org.ini4j.InvalidFileFormatException;
+import org.ini4j.Wini;
 
 import dad.javaspace.ClientModel;
 import dad.javaspace.JavaSpaceAPP;
@@ -12,9 +24,13 @@ import dad.javaspace.launchermodel.LauncherModel;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.ListProperty;
+import javafx.beans.property.SimpleListProperty;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -50,6 +66,7 @@ public class LauncherController implements Initializable {
 	 * 
 	 ***************************************************************************************************/
 	private LauncherModel model;
+	private ListProperty<ScreenResolutions> listaResoluciones;
 
 	/****************************************************************************************************
 	 * 
@@ -213,7 +230,9 @@ public class LauncherController implements Initializable {
 			 * 
 			 ***************************************************************************************************/
 
-			model = LauncherModel.cargarConfig();
+			model = cargarConfig();
+
+			listaResoluciones = ScreenResolutions.getScreenResolutions();
 
 			/****************************************************************************************************
 			 * 
@@ -287,7 +306,7 @@ public class LauncherController implements Initializable {
 			empezarPartidaButton.hoverProperty().addListener(e -> onEmpezarPartidaButtonHovered());
 			selectSkinButton.hoverProperty().addListener(e -> onSelectSkinButtonHovered());
 			exitButton.setOnAction(e -> onCloseAction());
-			launchButton.setOnAction(e -> model.guardarConfig());
+			launchButton.setOnAction(e -> guardarConfig());
 
 			/****************************************************************************************************
 			 * 
@@ -295,8 +314,10 @@ public class LauncherController implements Initializable {
 			 * 
 			 ***************************************************************************************************/
 
-			rootView.setOnMousePressed(e -> onMousePressed(e));
-			rootView.setOnMouseDragged(e -> onMouseDrag(e));
+			/*
+			 * rootView.setOnMousePressed(e -> onMousePressed(e));
+			 * rootView.setOnMouseDragged(e -> onMouseDrag(e));
+			 */
 
 			/****************************************************************************************************
 			 * 
@@ -304,7 +325,8 @@ public class LauncherController implements Initializable {
 			 * 
 			 ***************************************************************************************************/
 
-			resolutionComboBox.getItems().setAll(ScreenResolutions.values());
+			resolutionComboBox.itemsProperty().bind(listaResoluciones);
+			resolutionComboBox.getSelectionModel().select(model.getResolucion());
 
 			/***************************************************************************************************
 			 * 
@@ -325,17 +347,14 @@ public class LauncherController implements Initializable {
 			Bindings.bindBidirectional(puertoTextField.textProperty(), model.puertoProperty(),
 					new NumberStringConverter());
 			Bindings.bindBidirectional(fullScreenCheckBox.selectedProperty(), model.pantallaCompletaProperty());
-// TODO		Bindings.bindBidirectional(resolutionComboBox.getSelectionModel().selectedItemProperty(), model.resolucionProperty());
-			// Provisionalmente bindeo de un solo lado
 			model.resolucionProperty().bind(resolutionComboBox.getSelectionModel().selectedItemProperty());
-			// No puedo bindear bidireccional porque el combo es ReadOnly
 
 		}
 	}
 
 	private void onCloseAction() {
-		model.guardarConfig();
-		JavaSpaceAPP.getPrimaryStage().close();
+		guardarConfig();
+		Platform.exit();
 	}
 
 //	private void onLaunchAction() {
@@ -352,15 +371,15 @@ public class LauncherController implements Initializable {
 //		});
 //	}
 
-	private void onMouseDrag(MouseEvent e) {
-		JavaSpaceAPP.getPrimaryStage().setX(e.getScreenX() + ejeX);
-		JavaSpaceAPP.getPrimaryStage().setY(e.getScreenY() + ejeY);
-	}
-
-	private void onMousePressed(MouseEvent e) {
-		ejeX = JavaSpaceAPP.getPrimaryStage().getX() - e.getScreenX();
-		ejeY = JavaSpaceAPP.getPrimaryStage().getY() - e.getScreenY();
-	}
+	/*
+	 * private void onMouseDrag(MouseEvent e) {
+	 * JavaSpaceAPP.getPrimaryStage().setX(e.getScreenX() + ejeX);
+	 * JavaSpaceAPP.getPrimaryStage().setY(e.getScreenY() + ejeY); }
+	 * 
+	 * private void onMousePressed(MouseEvent e) { ejeX =
+	 * JavaSpaceAPP.getPrimaryStage().getX() - e.getScreenX(); ejeY =
+	 * JavaSpaceAPP.getPrimaryStage().getY() - e.getScreenY(); }
+	 */
 
 	private void onSelectSkinButtonHovered() {
 		if (selectSkinButton.isHover()) {
@@ -403,6 +422,61 @@ public class LauncherController implements Initializable {
 		fade.setToValue(1);
 		fade.setDuration(new Duration(700));
 		fade.play();
+	}
+
+	public void guardarConfig() {
+		LauncherModel model = new LauncherModel();
+
+		File file = new File(System.getProperty("user.home") + "/.javaspace/" + model.getNombreJugador() + ".ini");
+
+		if (!file.exists())
+			try {
+				file.createNewFile();
+
+				Wini ini = new Wini(file);
+
+				ini.put("Opciones de Juego", "Resolución", model.getResolucion());
+				ini.put("Opciones de Juego", "Pantalla Completa", model.isPantallaCompleta());
+				ini.put("Opciones de Juego", "Nombre", model.getNombreJugador());
+				ini.put("Opciones de Juego", "Volumen Música", model.getVolumenMusica());
+				ini.put("Opciones de Juego", "Volumen Juego", model.getVolumenJuego());
+				ini.put("Opciones de RED", "Direccion IP", model.getIp());
+				ini.put("Opciones de RED", "Puerto", model.getPuerto());
+				ini.store();
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	}
+
+	public LauncherModel cargarConfig() {
+
+		try {
+			File file = new File(System.getProperty("user.home") + "/.javaspace");
+
+			if (!file.exists())
+				file.mkdir();
+
+			file = new File(System.getProperty("user.home") + "/.javaspace/" + model.getNombreJugador() + ".ini");
+
+			Wini ini = new Wini(file);
+
+			model.setResolucion(new ScreenResolutions(ini.get("Opciones de Juego", "Resolución", String.class)));
+			model.setPantallaCompleta(ini.get("Opciones de Juego", "Pantalla Completa", boolean.class));
+			// TODO seguir por aqui
+			model.setResolucion(new ScreenResolutions(ini.get("Opciones de Juego", "Nombre", String.class)));
+			model.setResolucion(new ScreenResolutions(ini.get("Opciones de Juego", "Volumen Música", String.class)));
+			model.setResolucion(new ScreenResolutions(ini.get("Opciones de Juego", "Volumen Juego", String.class)));
+			
+			
+		} catch (InvalidFileFormatException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return null;
+
 	}
 
 	private void loadView(String ruta) {

@@ -1,35 +1,33 @@
 package dad.javaspace;
 
+import com.almasb.fxgl.app.GameApplication;
+import com.almasb.fxgl.entity.view.EntityView;
+import com.almasb.fxgl.settings.GameSettings;
+
 import dad.javaspace.interfacing.controller.LauncherController;
-import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-public class JavaSpaceAPP extends Application {
+public class JavaSpaceAPP extends GameApplication {
 
-	private static Stage primaryStage;
+
 	@Override
-	public void start(Stage primaryStage) throws Exception {
-		JavaSpaceAPP.primaryStage = primaryStage;
-		LauncherController controller = new LauncherController();
-		
-		Scene scene = new Scene(controller.getRootView());
-		
-		primaryStage.setScene(scene);
-		primaryStage.setResizable(false);
-		primaryStage.setTitle("Prueba JavaSpaceLauncher");
-		primaryStage.initStyle(StageStyle.UNDECORATED);
-		primaryStage.show();
-		
+	protected void initGame() {
+		super.initGame();			
+			getGameScene().addGameView(new EntityView(new LauncherController().getRootView()));
 	}
 
 	public static void main(String[] args) {
 		launch(args);
 	}
-	
-	public static Stage getPrimaryStage() {
-		return primaryStage;
+
+
+	@Override
+	protected void initSettings(GameSettings settings) {
+		// TODO Auto-generated method stub
+		settings.setStageStyle(StageStyle.UNDECORATED);
+		settings.setWidth(720);
+		settings.setHeight(360);
+		
 	}
 }
