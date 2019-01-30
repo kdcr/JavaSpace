@@ -4,42 +4,27 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 
 import com.almasb.fxgl.app.GameApplication;
-import com.almasb.fxgl.core.math.Vec2;
 import com.almasb.fxgl.entity.Entity;
+import com.almasb.fxgl.entity.RenderLayer;
 import com.almasb.fxgl.entity.components.PositionComponent;
 import com.almasb.fxgl.entity.components.RotationComponent;
-import com.almasb.fxgl.entity.view.EntityView;
 import com.almasb.fxgl.input.*;
-import com.almasb.fxgl.physics.PhysicsComponent;
-import com.almasb.fxgl.physics.box2d.collision.shapes.MassData;
-import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
-import com.almasb.fxgl.physics.box2d.dynamics.FixtureDef;
-import com.almasb.fxgl.scene.Viewport;
 import com.almasb.fxgl.settings.GameSettings;
 
 import dad.javaspace.objects.EntityTypes;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.geometry.Point2D;
-import javafx.scene.Node;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Text;
 
 public class Main extends GameApplication {
+
+	// Interfaz
+	Text textPixels;
 
 	// Conectividad
 	private String ip = "10.2.2.64", name = "jugador_test", skin = "0";
@@ -48,7 +33,6 @@ public class Main extends GameApplication {
 	private OutputStreamWriter flujoSalida;
 
 	// Mecanica interna
-	PhysicsComponent physicsComponent;
 	Entity player = new Entity();
 	private ClientModel model = new ClientModel();
 	private MediaPlayer mp;
@@ -81,29 +65,27 @@ public class Main extends GameApplication {
 		input.addAction(new UserAction("Rotate Right") {
 			@Override
 			protected void onAction() {
-				physicsComponent.setAngularVelocity(0.5);
+				player.rotateBy(0.5);
 			}
 		}, KeyCode.D);
 
 		input.addAction(new UserAction("Rotate Left") {
 			@Override
 			protected void onAction() {
-				physicsComponent.setAngularVelocity(-0.5);
-
+				player.rotateBy(-0.5);
 			}
 		}, KeyCode.A);
 
 		input.addAction(new UserAction("Center") {
 			@Override
 			protected void onAction() {
-				physicsComponent.setAngularVelocity(0);
 			}
 		}, KeyCode.Q);
 
 		input.addAction(new UserAction("Add thrust") {
 			@Override
 			protected void onAction() {
-				addThrust();
+				//addThrust();
 			}
 
 		}, KeyCode.W);
@@ -119,11 +101,12 @@ public class Main extends GameApplication {
 
 	@Override
 	protected void initUI() {
-		Text textPixels = new Text();
+		textPixels = new Text();
 		textPixels.setTranslateX(50); // x = 50
 		textPixels.setTranslateY(100); // y = 100
 
 		getGameScene().addUINode(textPixels); // add to the scene graph
+
 	}
 
 	@Override
@@ -185,25 +168,16 @@ public class Main extends GameApplication {
 
 		mp = new MediaPlayer(new Media(new File("src/main/resources/assets/sounds/thruster.mp3").toURI().toString()));
 
-		// Se instancia el componente de fisica y se le declaran propiedades
-		physicsComponent = new PhysicsComponent();
-
-		physicsComponent.setBodyType(BodyType.DYNAMIC);
-
-		player.addComponent(physicsComponent);
-
-		getPhysicsWorld().setGravity(0, 0);
-
 		// Al jugador se le asigna una textura y se agrega al mundo
 
 		player.setViewFromTexture("player.png");
 
 		getGameWorld().addEntities(player);
 
-		physicsComponent.getBody().setAngularDamping(0.8f);
+		player.setRenderLayer(RenderLayer.TOP);
 
 		// Estetico
-		
+
 		mp.setVolume(0);
 		mp.play();
 
@@ -233,20 +207,32 @@ public class Main extends GameApplication {
 	}
 
 	private void addThrust() {
-		physicsComponent.applyBodyForceToCenter(new Vec2(-Math.sin(physicsComponent.getBody().getAngle()) * 0.3,
-				Math.cos(physicsComponent.getBody().getAngle()) * 0.3));
+		if (model.getThrust() < 1)
+			model.setThrust(model.getThrust() + 0.1);
+
 	}
 
 	@Override
 	protected void onUpdate(double tpf) {
 		super.onUpdate(tpf);
+		textPixels.setText("PosX: " + player.getX() + " PosY: " + player.getY() + " ForceX: " + model.getxForce()
+				+ " ForceY: " + model.getyForce());
 
 		generateStars();
 
-//		if (getInput().isHeld(KeyCode.W))
-//			mp.setVolume(mp.getVolume() + 0.1);
-//		else
-//			mp.setVolume(mp.getVolume() - 0.05);
+		calcPhysics();
+
+		movePlayer();
+		
+		if (getInput().isHeld(KeyCode.W))
+			addThrust();
+		else
+			model.setThrust(0);
+
+		// if (getInput().isHeld(KeyCode.W))
+		// mp.setVolume(mp.getVolume() + 0.1);
+		// else
+		// mp.setVolume(mp.getVolume() - 0.05);
 
 	}
 
@@ -278,6 +264,37 @@ public class Main extends GameApplication {
 			getGameWorld().removeEntities(starList);
 
 		}
+	}
+
+	private void calcPhysics() {
+		Double playerRotation = Math.toRadians(player.getRotation());
+		int maxForce = 1;
+		float x, y;
+		if (model.getThrust() != 0) {
+			x = (float) (model.getxForce() + (model.getThrust() / 50 * Math.sin((playerRotation))));
+			y = (float) (model.getyForce() + (model.getThrust() / 50 * -Math.cos((playerRotation))));
+
+			model.setxForce(x);
+			model.setyForce(y);
+
+			if (model.getxForce() > maxForce)
+				model.setxForce(maxForce);
+
+			if (model.getxForce() < -maxForce)
+				model.setxForce(-maxForce);
+
+			if (model.getyForce() > maxForce)
+				model.setyForce(maxForce);
+
+			if (model.getyForce() < -maxForce)
+				model.setyForce(-maxForce);
+
+		}
+	}
+
+	private void movePlayer() {
+		player.setX(player.getX() + model.getxForce());
+		player.setY(player.getY() + model.getyForce());
 	}
 
 }
