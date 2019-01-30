@@ -9,6 +9,9 @@ import com.almasb.fxgl.core.math.Vec2;
 import com.almasb.fxgl.entity.Entities;
 import com.almasb.fxgl.entity.Entities.EntityBuilder;
 import com.almasb.fxgl.entity.Entity;
+import com.almasb.fxgl.entity.RenderLayer;
+import com.almasb.fxgl.entity.animation.RotationAnimationBuilder;
+import com.almasb.fxgl.entity.animation.ScaleAnimationBuilder;
 import com.almasb.fxgl.entity.components.CollidableComponent;
 import com.almasb.fxgl.input.Input;
 import com.almasb.fxgl.input.UserAction;
@@ -64,8 +67,7 @@ public class FXGLPruebaApp extends GameApplication {
 	private Entity jugador;
 
 //	Particle
-	private ParticleComponent component;
-	private ParticleEmitter emitter;
+	ParticleEmitter emitter;
 
 //	Variables
 	private double velocidad = 0;
@@ -78,87 +80,66 @@ public class FXGLPruebaApp extends GameApplication {
 
 //		jugador = Entities.builder().at(250, 250).viewFromNode(jugadorImage).buildAndAttach(getGameWorld());
 		jugador = Entities.builder().at(250, 250).buildAndAttach(getGameWorld());
-		jugador.setViewFromTexture("sparkle-pink.png");
+		jugador.setViewFromTexture("image.png");
+		jugador.setRenderLayer(RenderLayer.TOP);
 
-		emitter = ParticleEmitters.newFireEmitter();
-//		emitter.setSourceImage(this.getAssetLoader().loadImage("image.gif"));
+		emitter = darPropulcion(jugador);
+
+		hiperJumpTransition(jugador, 0.3, -150, 0);
+//		tinkleTransition(jugador, 50, 0.05, 0.2);
+	}
+
+	public void propulsar() {
+		emitter.setEmissionRate(velocidad / 10 + 0.33);
+		
+		emitter.setAccelerationFunction(new Supplier<Point2D>() {
+			@Override
+			public Point2D get() {
+//				TODO gravedad contraria a la direccion a la que apunta la nave
+				return new Point2D(0, 0);
+			}
+		});
+	}
+
+	public ParticleEmitter darPropulcion(Entity player) {
+		ParticleEmitter emitter;
+
+//		.newFireEmitter() es distinto a .newFireEmitter(int), el segundo da ya una textura tora flama
+		emitter = ParticleEmitters.newFireEmitter(0);
 		emitter.setAccelerationFunction(new Supplier<Point2D>() {
 
 			@Override
 			public Point2D get() {
-				// TODO Auto-generated method stub
-				return new Point2D(-50, 50);
+//				TODO gravedad contraria a la direccion a la que apunta la nave
+				return new Point2D(0, 0);
 			}
 		});
 		emitter.setSpawnPointFunction(new Function<Integer, Point2D>() {
-
 			@Override
 			public Point2D apply(Integer arg) {
-				// TODO Auto-generated method stub
-				return new Point2D(15, 15);
+//				TODO posicion alejada x de la nave
+				return new Point2D(0, 0);
 			}
 		});
-		emitter.setBlendMode(BlendMode.SRC_OVER);
-		emitter.setStartColor(Color.ORANGERED);
-		emitter.setEndColor(Color.YELLOW);
-		emitter.setExpireFunction(e -> Duration.seconds(0.5));
+		emitter.setExpireFunction(e -> Duration.seconds(0.3));
+		emitter.setAllowParticleRotation(true);
 		emitter.setEmissionRate(velocidad / 10);
-		component = new ParticleComponent(emitter);
 
+		ParticleComponent component = new ParticleComponent(emitter);
 		component.setOnFinished(jugador::removeFromWorld);
-
 		jugador.addComponent(component);
-
-		tinkleTransition(jugador, 0.2, 0, 0.2);
+		return emitter;
 	}
 
-	public void tinkleTransition(Entity player, double duration, double tamMin, double tamMax) {
-		Point2D defaultSize = new Point2D(1, 1);
+	public void tinkleTransition(Entity player, int duration, double tamMin, double tamMax) {
 		Point2D minSize = new Point2D(tamMin, tamMin);
 		Point2D maxSize = new Point2D(tamMax, tamMax);
-		Entities.animationBuilder().duration(Duration.seconds(duration)).scale(player).from(minSize).to(maxSize)
-				.buildAndPlay().setOnFinished(() -> {
 
-					Entities.animationBuilder().duration(Duration.seconds(duration)).scale(player).from(maxSize)
-							.to(minSize).buildAndPlay().setOnFinished(() -> {
+		ScaleAnimationBuilder maxToMin = Entities.animationBuilder().duration(Duration.seconds(0.15)).repeat(duration)
+				.scale(player).from(maxSize).to(minSize);
 
-								Entities.animationBuilder().duration(Duration.seconds(duration)).scale(player)
-										.from(minSize).to(maxSize).buildAndPlay().setOnFinished(() -> {
+		maxToMin.buildAndPlay();
 
-											Entities.animationBuilder().duration(Duration.seconds(duration))
-													.scale(player).from(maxSize).to(minSize).buildAndPlay()
-													.setOnFinished(() -> {
-														Entities.animationBuilder().duration(Duration.seconds(duration))
-																.scale(player).from(minSize).to(maxSize).buildAndPlay()
-																.setOnFinished(() -> {
-
-																	Entities.animationBuilder()
-																			.duration(Duration.seconds(duration))
-																			.scale(player).from(maxSize).to(minSize)
-																			.buildAndPlay().setOnFinished(() -> {
-
-																				Entities.animationBuilder()
-																						.duration(Duration
-																								.seconds(duration))
-																						.scale(player).from(minSize)
-																						.to(maxSize).buildAndPlay()
-																						.setOnFinished(() -> {
-
-																							Entities.animationBuilder()
-																									.duration(Duration
-																											.seconds(
-																													duration))
-																									.scale(player)
-																									.from(maxSize)
-																									.to(minSize)
-																									.buildAndPlay();
-																						});
-																			});
-																});
-													});
-										});
-							});
-				});
 	}
 
 	public void hiperJumpTransition(Entity player, double duration, double translateX, double translateY) {
@@ -168,22 +149,25 @@ public class FXGLPruebaApp extends GameApplication {
 		ParticleEmitter hiperJumpEmitter = ParticleEmitters.newExplosionEmitter(50);
 //		hiperJumpEmitter.setSourceImage(this.getAssetLoader().loadImage("sparkle-yellow.png"));
 		hiperJumpEmitter.setBlendMode(BlendMode.SRC_OVER);
-		hiperJumpEmitter.setStartColor(Color.BLUE);
-		hiperJumpEmitter.setEndColor(Color.YELLOW);
+		hiperJumpEmitter.setStartColor(Color.VIOLET);
+		hiperJumpEmitter.setEndColor(Color.CYAN);
 		hiperJumpEmitter.setScaleFunction(new Function<Integer, Point2D>() {
 			// Tamaño de la particula
 			@Override
 			public Point2D apply(Integer arg) {
-				// TODO Auto-generated method stub
-				return new Point2D(0, 0);
+				return new Point2D(-0.1, -0.1);
 			}
 		});
-		hiperJumpEmitter.setExpireFunction(e -> Duration.seconds(5));
+		hiperJumpEmitter.setExpireFunction(e -> Duration.seconds(duration * 10));
+
 		ParticleComponent hiperJumpComponent = new ParticleComponent(hiperJumpEmitter);
 		hiperJumpComponent.setOnFinished(jugador::removeFromWorld);
-		Entity space = Entities.builder().at(playerPosX + translateX, playerPosY + translateY)
+		Entity hiperJump = Entities.builder().at(playerPosX + translateX, playerPosY + translateY)
 				.buildAndAttach(getGameWorld());
-		space.addComponent(hiperJumpComponent);
+		hiperJumpComponent.setOnFinished(() -> {
+			getGameWorld().removeEntity(hiperJump);
+		});
+		hiperJump.addComponent(hiperJumpComponent);
 
 		// Animacion aumento de tamaño
 		Point2D min = new Point2D(0, 0);
@@ -194,9 +178,7 @@ public class FXGLPruebaApp extends GameApplication {
 		Point2D from = new Point2D(playerPosX + translateX, playerPosY + translateY);
 		Point2D to = new Point2D(playerPosX, playerPosY);
 		Entities.animationBuilder().duration(Duration.seconds(duration)).translate(player).from(from).to(to)
-				.buildAndPlay().setOnFinished(() -> {
-					getGameWorld().removeEntity(space);
-				});
+				.buildAndPlay();
 	}
 
 	@Override
@@ -372,8 +354,7 @@ public class FXGLPruebaApp extends GameApplication {
 	@Override
 	protected void onUpdate(double tpf) {
 
-		emitter.setEmissionRate(velocidad / 10);
-//		jugador.setPosition(getInput().getMousePositionWorld());
+		propulsar();
 
 		if (jugador.getPosition().getX() > (getWidth() - 32)) {
 			jugador.setPosition(getWidth() - 32, jugador.getPosition().getY());
