@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
 import org.ini4j.Wini;
 
@@ -425,57 +426,68 @@ public class LauncherController implements Initializable {
 	}
 
 	public void guardarConfig() {
-		LauncherModel model = new LauncherModel();
-
-		File file = new File(System.getProperty("user.home") + "/.javaspace/" + model.getNombreJugador() + ".ini");
+		File file = new File(System.getProperty("user.home") + "/.javaspace/" + "config.ini");
 
 		if (!file.exists())
 			try {
 				file.createNewFile();
-
-				Wini ini = new Wini(file);
-
-				ini.put("Opciones de Juego", "Resolución", model.getResolucion());
-				ini.put("Opciones de Juego", "Pantalla Completa", model.isPantallaCompleta());
-				ini.put("Opciones de Juego", "Nombre", model.getNombreJugador());
-				ini.put("Opciones de Juego", "Volumen Música", model.getVolumenMusica());
-				ini.put("Opciones de Juego", "Volumen Juego", model.getVolumenJuego());
-				ini.put("Opciones de RED", "Direccion IP", model.getIp());
-				ini.put("Opciones de RED", "Puerto", model.getPuerto());
-				ini.store();
-
-			} catch (IOException e) {
-				e.printStackTrace();
+			} catch (IOException e1) {
+				e1.printStackTrace();
 			}
+		try {
+
+			Wini ini = new Wini(file);
+
+			ini.put("opciones", "resolucion", model.getResolucion());
+			ini.put("opciones", "pantallaCompleta", model.isPantallaCompleta());
+			ini.put("opciones", "nombre", model.getNombreJugador());
+			ini.put("opciones", "volumenMusica", model.getVolumenMusica());
+			ini.put("opciones", "volumenJuego", model.getVolumenJuego());
+			ini.put("red", "ip", model.getIp());
+			ini.put("red", "puerto", model.getPuerto());
+			ini.store();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public LauncherModel cargarConfig() {
 
-		try {
-			File file = new File(System.getProperty("user.home") + "/.javaspace");
+		LauncherModel modelCarga = new LauncherModel();
+		File directorio = new File(System.getProperty("user.home") + "/.javaspace");
+		File archivo = new File(System.getProperty("user.home") + "/.javaspace" + "config.ini");
 
-			if (!file.exists())
-				file.mkdir();
+		if (!directorio.exists())
+			directorio.mkdir();
 
-			file = new File(System.getProperty("user.home") + "/.javaspace/" + model.getNombreJugador() + ".ini");
+		if (!archivo.exists())
+			try {
+				archivo.createNewFile();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		else {
+			try {
+				Wini ini = new Wini(archivo);
 
-			Wini ini = new Wini(file);
+				modelCarga.setResolucion(new ScreenResolutions(ini.get("opciones", "resolucion", String.class)));
+				boolean prueba = ini.get("opciones", "pantallaCompleta", boolean.class);
+				System.out.println(prueba);
+				modelCarga.setPantallaCompleta(ini.get("opciones", "pantallaCompleta", boolean.class));
+				modelCarga.setNombreJugador(ini.get("opciones", "nombre", String.class));
+				modelCarga.setVolumenMusica(ini.get("opciones", "volumenMusica", double.class));
+				modelCarga.setVolumenJuego(ini.get("opciones", "volumenJuego", double.class));
+				modelCarga.setIp(ini.get("red", "ip", String.class));
+				modelCarga.setPuerto(ini.get("red", "puerto", int.class));
 
-			model.setResolucion(new ScreenResolutions(ini.get("Opciones de Juego", "Resolución", String.class)));
-			model.setPantallaCompleta(ini.get("Opciones de Juego", "Pantalla Completa", boolean.class));
-			// TODO seguir por aqui
-			model.setResolucion(new ScreenResolutions(ini.get("Opciones de Juego", "Nombre", String.class)));
-			model.setResolucion(new ScreenResolutions(ini.get("Opciones de Juego", "Volumen Música", String.class)));
-			model.setResolucion(new ScreenResolutions(ini.get("Opciones de Juego", "Volumen Juego", String.class)));
-			
-			
-		} catch (InvalidFileFormatException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+			} catch (InvalidFileFormatException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
-
-		return null;
+		return modelCarga;
 
 	}
 

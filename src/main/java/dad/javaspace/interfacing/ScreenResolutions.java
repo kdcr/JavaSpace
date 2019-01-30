@@ -13,35 +13,46 @@ import javafx.collections.FXCollections;
 public class ScreenResolutions {
 	private IntegerProperty x;
 	private IntegerProperty y;
-	
+
 	public ScreenResolutions() {
+		x = new SimpleIntegerProperty(this, "x", 1280);
+		y = new SimpleIntegerProperty(this, "y", 720);
 	}
 
 	public ScreenResolutions(int x, int y) {
-		this.x = new SimpleIntegerProperty(this, "x", x);
-		this.y = new SimpleIntegerProperty(this, "y", y);
+		this();
+		this.x.set(x);
+		this.y.set(y);
 	}
-	
-	public ScreenResolutions(String res) {
-		String [] coordenadas = res.split("x");
-		this.x = new SimpleIntegerProperty(this, "x", Integer.parseInt(coordenadas[0]));
-		this.y = new SimpleIntegerProperty(this, "y", Integer.parseInt(coordenadas[1]));
-	}
-	
-	public static ListProperty<ScreenResolutions> getScreenResolutions() {
 
-		ListProperty<ScreenResolutions> listaResoluciones = new SimpleListProperty<>(ScreenResolutions.class, "listaResoluciones", FXCollections.observableArrayList());
+	public ScreenResolutions(String res) {
+		this();
+		if (null != res) {
+			String[] coordenadas = res.split("x");
+			this.x = new SimpleIntegerProperty(this, "x", Integer.parseInt(coordenadas[0]));
+			this.y = new SimpleIntegerProperty(this, "y", Integer.parseInt(coordenadas[1]));
+		}
+
+	}
+
+	public static ListProperty<ScreenResolutions> getScreenResolutions() {
+		ListProperty<ScreenResolutions> listaResoluciones = new SimpleListProperty<>(ScreenResolutions.class,
+				"listaResoluciones", FXCollections.observableArrayList());
 		GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 		DisplayMode[] modes = device.getDisplayModes();
-		
+
 		for (int j = 0; j < modes.length; j++) {
 			DisplayMode m = modes[j];
 			ScreenResolutions res = new ScreenResolutions((int) m.getWidth(), (int) m.getHeight());
 			if (!listaResoluciones.contains(res))
 				listaResoluciones.add(res);
 		}
-		
+
 		return listaResoluciones;
+	}
+	
+	public static ScreenResolutions resolucionMinima() {
+		return ScreenResolutions.getScreenResolutions().get(0);
 	}
 
 	@Override
