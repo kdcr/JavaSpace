@@ -17,7 +17,7 @@ public class ClientModel {
 
 	private DoubleProperty thrust = new SimpleDoubleProperty();
 	
-	private FloatProperty angular = new SimpleFloatProperty();
+	private DoubleProperty angular = new SimpleDoubleProperty();
 
 	private StringProperty version = new SimpleStringProperty(this, "version", "0.0.1");
 
@@ -85,15 +85,15 @@ public class ClientModel {
 		this.versionProperty().set(version);
 	}
 
-	public final FloatProperty angularProperty() {
+	public final DoubleProperty angularProperty() {
 		return this.angular;
 	}
 
-	public final float getAngular() {
+	public final double getAngular() {
 		return this.angularProperty().get();
 	}
 
-	public final void setAngular(final float angular) {
+	public final void setAngular(final double angular) {
 		this.angularProperty().set(angular);
 	}
 

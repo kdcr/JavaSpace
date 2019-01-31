@@ -65,30 +65,33 @@ public class Main extends GameApplication {
 		input.addAction(new UserAction("Rotate Right") {
 			@Override
 			protected void onAction() {
-				player.rotateBy(0.5);
+				if (model.getAngular() < 1)
+					model.setAngular(model.getAngular() + 0.005);
 			}
 		}, KeyCode.D);
 
 		input.addAction(new UserAction("Rotate Left") {
 			@Override
 			protected void onAction() {
-				player.rotateBy(-0.5);
+				if (model.getAngular() > -1)
+					model.setAngular(model.getAngular() - 0.005);
 			}
 		}, KeyCode.A);
 
 		input.addAction(new UserAction("Center") {
 			@Override
 			protected void onAction() {
+				model.setAngular(model.getAngular() * 0.99);
 			}
 		}, KeyCode.Q);
 
-		input.addAction(new UserAction("Add thrust") {
-			@Override
-			protected void onAction() {
-				//addThrust();
-			}
-
-		}, KeyCode.W);
+//		input.addAction(new UserAction("Add thrust") {
+//			@Override
+//			protected void onAction() {
+//				addThrust();
+//			}
+//
+//		}, KeyCode.W);
 
 		input.addAction(new UserAction("Shoot") {
 			@Override
@@ -167,10 +170,12 @@ public class Main extends GameApplication {
 		// Mecanica
 
 		mp = new MediaPlayer(new Media(new File("src/main/resources/assets/sounds/thruster.mp3").toURI().toString()));
+		mp.setCycleCount(MediaPlayer.INDEFINITE);
 
+		mp.volumeProperty().bind(model.thrustProperty());
 		// Al jugador se le asigna una textura y se agrega al mundo
 
-		player.setViewFromTexture("player.png");
+		player.setViewFromTexture("navePruebaSmall.png");
 
 		getGameWorld().addEntities(player);
 
@@ -178,9 +183,56 @@ public class Main extends GameApplication {
 
 		// Estetico
 
-		mp.setVolume(0);
+		// mp.setVolume(0);
 		mp.play();
 
+	}
+
+	@Override
+	protected void onUpdate(double tpf) {
+		super.onUpdate(tpf);
+		textPixels.setText("PosX: " + player.getX() + " PosY: " + player.getY() + " ForceX: " + model.getxForce()
+				+ " ForceY: " + model.getyForce());
+
+		player.rotateBy(model.getAngular());
+
+		generateStars();
+
+		calcPhysics();
+
+		movePlayer();
+
+		if (getInput().isHeld(KeyCode.W))
+			addThrust();
+		else
+			model.setThrust(model.getThrust() * 0.99);
+
+	}
+
+	private void calcPhysics() {
+		Double playerRotation = Math.toRadians(player.getRotation());
+		int maxForce = 1;
+		float x, y;
+		if (model.getThrust() != 0) {
+			x = (float) (model.getxForce() + (model.getThrust() / 50 * Math.sin((playerRotation))));
+			y = (float) (model.getyForce() + (model.getThrust() / 50 * -Math.cos((playerRotation))));
+
+			model.setxForce(x);
+			model.setyForce(y);
+
+			if (model.getxForce() > maxForce)
+				model.setxForce(maxForce);
+
+			if (model.getxForce() < -maxForce)
+				model.setxForce(-maxForce);
+
+			if (model.getyForce() > maxForce)
+				model.setyForce(maxForce);
+
+			if (model.getyForce() < -maxForce)
+				model.setyForce(-maxForce);
+
+		}
 	}
 
 	private void makeShoot() {
@@ -208,32 +260,12 @@ public class Main extends GameApplication {
 
 	private void addThrust() {
 		if (model.getThrust() < 1)
-			model.setThrust(model.getThrust() + 0.1);
-
+			model.setThrust(model.getThrust() + 0.005);
 	}
 
-	@Override
-	protected void onUpdate(double tpf) {
-		super.onUpdate(tpf);
-		textPixels.setText("PosX: " + player.getX() + " PosY: " + player.getY() + " ForceX: " + model.getxForce()
-				+ " ForceY: " + model.getyForce());
-
-		generateStars();
-
-		calcPhysics();
-
-		movePlayer();
-		
-		if (getInput().isHeld(KeyCode.W))
-			addThrust();
-		else
-			model.setThrust(0);
-
-		// if (getInput().isHeld(KeyCode.W))
-		// mp.setVolume(mp.getVolume() + 0.1);
-		// else
-		// mp.setVolume(mp.getVolume() - 0.05);
-
+	private void movePlayer() {
+		player.setX(player.getX() + model.getxForce() * 0.7);
+		player.setY(player.getY() + model.getyForce() * 0.7);
 	}
 
 	private void generateStars() {
@@ -264,37 +296,6 @@ public class Main extends GameApplication {
 			getGameWorld().removeEntities(starList);
 
 		}
-	}
-
-	private void calcPhysics() {
-		Double playerRotation = Math.toRadians(player.getRotation());
-		int maxForce = 1;
-		float x, y;
-		if (model.getThrust() != 0) {
-			x = (float) (model.getxForce() + (model.getThrust() / 50 * Math.sin((playerRotation))));
-			y = (float) (model.getyForce() + (model.getThrust() / 50 * -Math.cos((playerRotation))));
-
-			model.setxForce(x);
-			model.setyForce(y);
-
-			if (model.getxForce() > maxForce)
-				model.setxForce(maxForce);
-
-			if (model.getxForce() < -maxForce)
-				model.setxForce(-maxForce);
-
-			if (model.getyForce() > maxForce)
-				model.setyForce(maxForce);
-
-			if (model.getyForce() < -maxForce)
-				model.setyForce(-maxForce);
-
-		}
-	}
-
-	private void movePlayer() {
-		player.setX(player.getX() + model.getxForce());
-		player.setY(player.getY() + model.getyForce());
 	}
 
 }
