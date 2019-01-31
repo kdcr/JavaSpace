@@ -161,18 +161,19 @@ public class Main extends GameApplication {
 //			e.printStackTrace();
 //		}
 
-		// Estas cuatro lineas se encargan de mover la camara con el jugador
+		// Estas cuatro lineas se encargan de mover la camara con el jugador, se hace
+		// asi para evitar que la camara rote
 		double viewWidth = getGameScene().getViewport().getWidth();
 		double viewHeight = getGameScene().getViewport().getHeight();
 		getGameScene().getViewport().xProperty().bind(player.xProperty().subtract(viewWidth / 2));
 		getGameScene().getViewport().yProperty().bind(player.yProperty().subtract(viewHeight / 2));
 
-		// Mecanica
-
+		// Sonido del motor
 		mp = new MediaPlayer(new Media(new File("src/main/resources/assets/sounds/thruster.mp3").toURI().toString()));
 		mp.setCycleCount(MediaPlayer.INDEFINITE);
-
 		mp.volumeProperty().bind(model.thrustProperty());
+		mp.play();
+
 		// Al jugador se le asigna una textura y se agrega al mundo
 
 		player.setViewFromTexture("navePruebaSmall.png");
@@ -180,11 +181,6 @@ public class Main extends GameApplication {
 		getGameWorld().addEntities(player);
 
 		player.setRenderLayer(RenderLayer.TOP);
-
-		// Estetico
-
-		// mp.setVolume(0);
-		mp.play();
 
 	}
 
@@ -209,6 +205,10 @@ public class Main extends GameApplication {
 
 	}
 
+	/*
+	 * Si se está usando el motor de la nave, se aplica la fuerza relativa entre 50
+	 * de la impulsion del motor en ambos ejes
+	 */
 	private void calcPhysics() {
 		Double playerRotation = Math.toRadians(player.getRotation());
 		int maxForce = 1;
@@ -263,11 +263,18 @@ public class Main extends GameApplication {
 			model.setThrust(model.getThrust() + 0.005);
 	}
 
+	/*
+	 * se coge la posicion actual del jugador y directamente se reposiciona sumando
+	 * 0.7 veces la fuerza en cada eje
+	 */
 	private void movePlayer() {
 		player.setX(player.getX() + model.getxForce() * 0.7);
 		player.setY(player.getY() + model.getyForce() * 0.7);
 	}
 
+	/*
+	 * genera una estrella cada 80 milisegundos, ademas borra de forma aleatoria algunas que ya existian de antes
+	 */
 	private void generateStars() {
 		if (System.currentTimeMillis() > coolDownStars + 80) {
 			coolDownStars = System.currentTimeMillis();
