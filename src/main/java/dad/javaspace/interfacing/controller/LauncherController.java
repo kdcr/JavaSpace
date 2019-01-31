@@ -273,7 +273,7 @@ public class LauncherController implements Initializable {
 			Media mainTheme = new Media(getClass().getResource(musicFile).toString());
 			MediaPlayer mp = new MediaPlayer(mainTheme);
 			sonidoMusicaSlider.setMax(1.0);
-			mp.setCycleCount(100);
+			mp.setCycleCount(MediaPlayer.INDEFINITE);
 			mp.play();
 
 			// Efecto Sonido Hover
