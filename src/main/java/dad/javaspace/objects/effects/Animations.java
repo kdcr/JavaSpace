@@ -17,7 +17,7 @@ import javafx.util.Duration;
 
 public class Animations {
 	
-	public ParticleEmitter propulcionEmitter(Entity player) {
+	public static ParticleEmitter propulcionEmitter(Entity player) {
 		ParticleEmitter emitter;
 
 //		.newFireEmitter() es distinto a .newFireEmitter(int), el segundo da ya una textura toa flama
