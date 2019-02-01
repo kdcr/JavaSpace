@@ -13,7 +13,7 @@ public class Animations {
 		Point2D minSize = new Point2D(tamMin, tamMin);
 		Point2D maxSize = new Point2D(tamMax, tamMax);
 
-		ScaleAnimationBuilder maxToMin = Entities.animationBuilder().duration(Duration.seconds(0.15)).repeat(duration)
+		ScaleAnimationBuilder maxToMin = Entities.animationBuilder().duration(Duration.seconds(0.3)).repeat(duration)
 				.scale(player).from(maxSize).to(minSize);
 
 		maxToMin.buildAndPlay();
