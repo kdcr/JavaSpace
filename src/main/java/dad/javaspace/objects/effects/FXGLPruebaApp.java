@@ -47,6 +47,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 
+
 import java.util.Map;
 
 public class FXGLPruebaApp extends GameApplication {
@@ -63,6 +64,9 @@ public class FXGLPruebaApp extends GameApplication {
 //	ImageView jugadorImage = new ImageView(getAssetLoader().loadImage("image.png"));
 //	ImageView bulletImage = new ImageView(this.getAssetLoader().loadImage("preloader.gif"));
 
+//	Fisicas
+	PhysicsComponent physics;
+	
 //	Entidades
 	private Entity jugador;
 
@@ -186,7 +190,7 @@ public class FXGLPruebaApp extends GameApplication {
 		// 3. get physics world and register a collision handler
 		// between Type.PLAYER and Type.ENEMY
 
-		PhysicsComponent physics = new PhysicsComponent();
+		physics = new PhysicsComponent();
 
 		physics.setBodyType(BodyType.DYNAMIC);
 
@@ -240,20 +244,17 @@ public class FXGLPruebaApp extends GameApplication {
 		}, KeyCode.SPACE);
 
 		input.addAction(new UserAction("Move Right") {
-			ParticleComponent component;
-			ParticleEmitter emitter;
 
 			@Override
 			protected void onActionBegin() {
-
 			}
 
 			@Override
 			protected void onAction() {
 				direccion = 'd';
-				moverJugador(direccion, 1);
-				if (velocidad < MAX_SPEED)
-					velocidad = velocidad + 2;
+//				moverJugador(direccion, 1);
+//				if (velocidad < MAX_SPEED)
+//					velocidad = velocidad + 2;
 			}
 
 			@Override
@@ -263,7 +264,6 @@ public class FXGLPruebaApp extends GameApplication {
 		}, KeyCode.D);
 
 		input.addAction(new UserAction("Move Left") {
-			Entity explosion;
 
 			@Override
 			protected void onActionBegin() {
@@ -287,7 +287,6 @@ public class FXGLPruebaApp extends GameApplication {
 		}, KeyCode.A);
 
 		input.addAction(new UserAction("Move Up") {
-			Entity explosion;
 
 			@Override
 			protected void onActionBegin() {
@@ -311,7 +310,6 @@ public class FXGLPruebaApp extends GameApplication {
 		}, KeyCode.W);
 
 		input.addAction(new UserAction("Move Down") {
-			Entity explosion;
 
 			@Override
 			protected void onActionBegin() {
@@ -368,9 +366,9 @@ public class FXGLPruebaApp extends GameApplication {
 		if (jugador.getPosition().getY() < 0) {
 			jugador.setPosition(jugador.getPosition().getX(), 0);
 		}
-		if (velocidad != 0) {
+		if (velocidad >= 0) {
 			moverJugador(direccion, 0);
-			velocidad = velocidad - 0.5;
+			velocidad = velocidad - 0.1;
 		}
 
 	}

@@ -16,6 +16,7 @@ import com.almasb.fxgl.input.*;
 import com.almasb.fxgl.settings.GameSettings;
 
 import dad.javaspace.objects.EntityTypes;
+import dad.javaspace.objects.effects.Animations;
 import javafx.scene.input.KeyCode;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -281,6 +282,7 @@ public class Main extends GameApplication {
 
 			Entity newStar = new Entity();
 			newStar.setViewFromTexture("star_placeholder.png");
+			Animations.tinkleTransition(newStar, 8, 1, 2);
 			newStar.setType(EntityTypes.STAR);
 			starArray.add(newStar);
 			getGameWorld().addEntity(newStar);
