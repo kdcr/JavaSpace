@@ -16,17 +16,17 @@ import javafx.util.Duration;
 
 public class Animations {
 	
-	public static void tinkleTransition(Entity player, int duration, double tamMin, double tamMax) {
+	public static void tinkleTransition(Entity player, int duration, double tamMin, double tamMax, double velocity) {
 		Point2D minSize = new Point2D(tamMin, tamMin);
 		Point2D maxSize = new Point2D(tamMax, tamMax);
 
-		ScaleAnimationBuilder maxToMin = Entities.animationBuilder().duration(Duration.seconds(0.3)).repeat(duration)
+		ScaleAnimationBuilder maxToMin = Entities.animationBuilder().duration(Duration.seconds(velocity)).repeat(duration)
 				.scale(player).from(maxSize).to(minSize);
 
 		maxToMin.buildAndPlay();
 	}
 
-	public void hiperJumpTransition(Entity player, double duration, double translateX, double translateY, GameWorld gameWorld) {
+	public static void hiperJumpTransition(Entity player, double duration, double translateX, double translateY, GameWorld gameWorld) {
 		double playerPosX = player.getPosition().getX();
 		double playerPosY = player.getPosition().getY();
 
@@ -36,7 +36,7 @@ public class Animations {
 		hiperJumpEmitter.setStartColor(Color.VIOLET);
 		hiperJumpEmitter.setEndColor(Color.CYAN);
 		hiperJumpEmitter.setScaleFunction(new Function<Integer, Point2D>() {
-			// Tamaño de la particula
+			// Tamaï¿½o de la particula
 			@Override
 			public Point2D apply(Integer arg) {
 				return new Point2D(-0.1, -0.1);
@@ -53,7 +53,7 @@ public class Animations {
 		});
 		hiperJump.addComponent(hiperJumpComponent);
 
-		// Animacion aumento de tamaño
+		// Animacion aumento de tamaï¿½o
 		Point2D min = new Point2D(0, 0);
 		Point2D max = new Point2D(1, 1);
 		Entities.animationBuilder().duration(Duration.seconds(duration)).scale(player).from(min).to(max).buildAndPlay();

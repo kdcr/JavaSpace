@@ -20,6 +20,7 @@ import dad.javaspace.objects.effects.Animations;
 import javafx.scene.input.KeyCode;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 public class Main extends GameApplication {
@@ -56,6 +57,7 @@ public class Main extends GameApplication {
 		settings.setWidth(800);
 		settings.setHeight(600);
 		settings.setTitle("JavaSpace");
+		settings.setFullScreenAllowed(true);
 		settings.setVersion(model.getVersion());
 	}
 
@@ -106,6 +108,7 @@ public class Main extends GameApplication {
 	@Override
 	protected void initUI() {
 		textPixels = new Text();
+		textPixels.setFill(Color.WHITE);
 		textPixels.setTranslateX(50); // x = 50
 		textPixels.setTranslateY(100); // y = 100
 
@@ -168,7 +171,7 @@ public class Main extends GameApplication {
 		double viewHeight = getGameScene().getViewport().getHeight();
 		getGameScene().getViewport().xProperty().bind(player.xProperty().subtract(viewWidth / 2));
 		getGameScene().getViewport().yProperty().bind(player.yProperty().subtract(viewHeight / 2));
-
+		player.setRotation(200);
 		// Sonido del motor
 		mp = new MediaPlayer(new Media(new File("src/main/resources/assets/sounds/thruster.mp3").toURI().toString()));
 		mp.setCycleCount(MediaPlayer.INDEFINITE);
@@ -182,6 +185,11 @@ public class Main extends GameApplication {
 		getGameWorld().addEntities(player);
 
 		player.setRenderLayer(RenderLayer.TOP);
+
+		getGameScene().setBackgroundColor(Color.BLACK);
+
+		Animations.hiperJumpTransition(player, 1, -Math.sin(Math.toRadians(player.getRotation())) * 100,
+				Math.cos(Math.toRadians(player.getRotation())) * 100, getGameWorld());
 
 	}
 
@@ -207,16 +215,16 @@ public class Main extends GameApplication {
 	}
 
 	/*
-	 * Si se está usando el motor de la nave, se aplica la fuerza relativa entre 50
+	 * Si se está usando el motor de la nave, se aplica la fuerza relativa entre 80
 	 * de la impulsion del motor en ambos ejes
 	 */
 	private void calcPhysics() {
 		Double playerRotation = Math.toRadians(player.getRotation());
-		int maxForce = 1;
+		double maxForce = 1.5;
 		float x, y;
 		if (model.getThrust() != 0) {
-			x = (float) (model.getxForce() + (model.getThrust() / 50 * Math.sin((playerRotation))));
-			y = (float) (model.getyForce() + (model.getThrust() / 50 * -Math.cos((playerRotation))));
+			x = (float) (model.getxForce() + (model.getThrust() / 80 * Math.sin((playerRotation))));
+			y = (float) (model.getyForce() + (model.getThrust() / 80 * -Math.cos((playerRotation))));
 
 			model.setxForce(x);
 			model.setyForce(y);
@@ -274,15 +282,19 @@ public class Main extends GameApplication {
 	}
 
 	/*
-	 * genera una estrella cada 80 milisegundos, ademas borra de forma aleatoria algunas que ya existian de antes
+	 * genera una estrella cada 80 milisegundos, ademas borra de forma aleatoria
+	 * algunas que ya existian de antes
 	 */
 	private void generateStars() {
-		if (System.currentTimeMillis() > coolDownStars + 80) {
+		if (System.currentTimeMillis() > coolDownStars + 160) {
 			coolDownStars = System.currentTimeMillis();
 
 			Entity newStar = new Entity();
+			newStar.setRenderLayer(RenderLayer.BACKGROUND);
 			newStar.setViewFromTexture("star_placeholder.png");
-			Animations.tinkleTransition(newStar, 8, 1, 2);
+
+			Animations.tinkleTransition(newStar, 50, Math.random(), (Math.random() * 1) + 1,
+					(Math.random() * 1.5) + 0.5);
 			newStar.setType(EntityTypes.STAR);
 			starArray.add(newStar);
 			getGameWorld().addEntity(newStar);
