@@ -59,6 +59,7 @@ public class Main extends GameApplication {
 		settings.setTitle("JavaSpace");
 		settings.setFullScreenAllowed(true);
 		settings.setVersion(model.getVersion());
+		settings.setProfilingEnabled(true);
 	}
 
 	@Override
@@ -68,16 +69,16 @@ public class Main extends GameApplication {
 		input.addAction(new UserAction("Rotate Right") {
 			@Override
 			protected void onAction() {
-				if (model.getAngular() < 1)
-					model.setAngular(model.getAngular() + 0.005);
+				if (model.getAngular() < 3)
+					model.setAngular(model.getAngular() + 0.08);
 			}
 		}, KeyCode.D);
 
 		input.addAction(new UserAction("Rotate Left") {
 			@Override
 			protected void onAction() {
-				if (model.getAngular() > -1)
-					model.setAngular(model.getAngular() - 0.005);
+				if (model.getAngular() > -3)
+					model.setAngular(model.getAngular() - 0.08);
 			}
 		}, KeyCode.A);
 
@@ -109,8 +110,8 @@ public class Main extends GameApplication {
 	protected void initUI() {
 		textPixels = new Text();
 		textPixels.setFill(Color.WHITE);
-		textPixels.setTranslateX(50); // x = 50
-		textPixels.setTranslateY(100); // y = 100
+		textPixels.setTranslateX(0);
+		textPixels.setTranslateY(20);
 
 		getGameScene().addUINode(textPixels); // add to the scene graph
 
@@ -196,8 +197,8 @@ public class Main extends GameApplication {
 	@Override
 	protected void onUpdate(double tpf) {
 		super.onUpdate(tpf);
-		textPixels.setText("PosX: " + player.getX() + " PosY: " + player.getY() + " ForceX: " + model.getxForce()
-				+ " ForceY: " + model.getyForce());
+		textPixels.setText("PosX: " + player.getX() + " PosY: " + player.getY() + "\nForceX: " + model.getxForce()
+				+ " ForceY: " + model.getyForce() + "\nFPS: " );
 
 		player.rotateBy(model.getAngular());
 
@@ -220,11 +221,11 @@ public class Main extends GameApplication {
 	 */
 	private void calcPhysics() {
 		Double playerRotation = Math.toRadians(player.getRotation());
-		double maxForce = 1.5;
+		double maxForce = 20;
 		float x, y;
 		if (model.getThrust() != 0) {
-			x = (float) (model.getxForce() + (model.getThrust() / 80 * Math.sin((playerRotation))));
-			y = (float) (model.getyForce() + (model.getThrust() / 80 * -Math.cos((playerRotation))));
+			x = (float) (model.getxForce() + (model.getThrust() * Math.sin((playerRotation))));
+			y = (float) (model.getyForce() + (model.getThrust() * -Math.cos((playerRotation))));
 
 			model.setxForce(x);
 			model.setyForce(y);
