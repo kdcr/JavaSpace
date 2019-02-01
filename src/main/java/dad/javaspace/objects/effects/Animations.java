@@ -40,7 +40,7 @@ public class Animations {
 		emitter.setExpireFunction(e -> Duration.seconds(0.3));
 		emitter.setAllowParticleRotation(true);
 //		emitter.setEmissionRate(velocidad / 10);
-		emitter.setEmissionRate(0.5);
+		emitter.setEmissionRate(0.33);
 
 		ParticleComponent component = new ParticleComponent(emitter);
 		component.setOnFinished(player::removeFromWorld);

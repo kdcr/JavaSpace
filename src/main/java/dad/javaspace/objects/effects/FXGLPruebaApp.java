@@ -95,7 +95,7 @@ public class FXGLPruebaApp extends GameApplication {
 	}
 
 	public void propulsar() {
-		emitter.setEmissionRate(velocidad / 10 + 0.33);
+		emitter.setEmissionRate(0.33);
 		
 		emitter.setAccelerationFunction(new Supplier<Point2D>() {
 			@Override
@@ -128,7 +128,8 @@ public class FXGLPruebaApp extends GameApplication {
 		});
 		emitter.setExpireFunction(e -> Duration.seconds(0.3));
 		emitter.setAllowParticleRotation(true);
-		emitter.setEmissionRate(velocidad / 10);
+//		emitter.setEmissionRate(velocidad / 10);
+		emitter.setEmissionRate(0.5);
 
 		ParticleComponent component = new ParticleComponent(emitter);
 		component.setOnFinished(jugador::removeFromWorld);
@@ -205,50 +206,9 @@ public class FXGLPruebaApp extends GameApplication {
 
 	@Override
 	protected void initInput() {
-
 		input = getInput();
 
-		input.addAction(new UserAction("Shoot") {
-			Entity explosion;
-
-			@Override
-			protected void onActionBegin() {
-				explosion = new Entity();
-				explosion.setPosition(input.getMousePositionWorld());
-
-				// 2. create and configure emitter + component
-				ParticleEmitter emitter = ParticleEmitters.newFireEmitter();
-				emitter.setBlendMode(BlendMode.SRC_OVER);
-				// emitter.setEndColor(Color.WHITE);
-				// emitter.setExpireFunction((i, x, y) -> Duration.seconds(5));
-				ParticleComponent component = new ParticleComponent(emitter);
-
-				// we also want the entity to destroy itself when particle component is done
-				component.setOnFinished(explosion::removeFromWorld);
-
-				// 3. add control to entity
-				explosion.addComponent(component);
-
-				// 4. add entity to game world
-				getGameWorld().addEntity(explosion);
-			}
-
-			@Override
-			protected void onAction() {
-
-			}
-
-			@Override
-			protected void onActionEnd() {
-				getGameWorld().removeEntity(explosion);
-			}
-		}, KeyCode.SPACE);
-
 		input.addAction(new UserAction("Move Right") {
-
-			@Override
-			protected void onActionBegin() {
-			}
 
 			@Override
 			protected void onAction() {
@@ -258,19 +218,9 @@ public class FXGLPruebaApp extends GameApplication {
 					velocidad = velocidad + 2;
 			}
 
-			@Override
-			protected void onActionEnd() {
-			}
-
 		}, KeyCode.D);
 
 		input.addAction(new UserAction("Move Left") {
-
-			@Override
-			protected void onActionBegin() {
-				// TODO Auto-generated method stub
-				super.onActionBegin();
-			}
 
 			@Override
 			protected void onAction() {
@@ -280,20 +230,9 @@ public class FXGLPruebaApp extends GameApplication {
 					velocidad = velocidad + 2;
 			}
 
-			@Override
-			protected void onActionEnd() {
-				// TODO Auto-generated method stub
-				super.onActionEnd();
-			}
 		}, KeyCode.A);
 
 		input.addAction(new UserAction("Move Up") {
-
-			@Override
-			protected void onActionBegin() {
-				// TODO Auto-generated method stub
-				super.onActionBegin();
-			}
 
 			@Override
 			protected void onAction() {
@@ -302,22 +241,9 @@ public class FXGLPruebaApp extends GameApplication {
 				if (velocidad < MAX_SPEED)
 					velocidad = velocidad + 2;
 			}
-
-			@Override
-			protected void onActionEnd() {
-				// TODO Auto-generated method stub
-				super.onActionEnd();
-			}
 		}, KeyCode.W);
 
 		input.addAction(new UserAction("Move Down") {
-
-			@Override
-			protected void onActionBegin() {
-				// TODO Auto-generated method stub
-				super.onActionBegin();
-			}
-
 			@Override
 			protected void onAction() {
 				direccion = 's';
@@ -326,11 +252,6 @@ public class FXGLPruebaApp extends GameApplication {
 					velocidad = velocidad + 2;
 			}
 
-			@Override
-			protected void onActionEnd() {
-				// TODO Auto-generated method stub
-				super.onActionEnd();
-			}
 		}, KeyCode.S);
 	}
 
