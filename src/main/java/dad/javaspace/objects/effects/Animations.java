@@ -20,7 +20,7 @@ public class Animations {
 	public ParticleEmitter propulcionEmitter(Entity player) {
 		ParticleEmitter emitter;
 
-//		.newFireEmitter() es distinto a .newFireEmitter(int), el segundo da ya una textura tora flama
+//		.newFireEmitter() es distinto a .newFireEmitter(int), el segundo da ya una textura toa flama
 		emitter = ParticleEmitters.newFireEmitter(0);
 		emitter.setAccelerationFunction(new Supplier<Point2D>() {
 
