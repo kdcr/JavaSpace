@@ -19,6 +19,7 @@ import dad.javaspace.interfacing.controller.LauncherController;
 import dad.javaspace.objects.EntityTypes;
 import dad.javaspace.objects.effects.Animations;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
@@ -127,13 +128,17 @@ public class Main extends GameApplication {
 	protected void initGame() {
 		super.initGame();
 
-		LauncherController controller = new LauncherController();
-		getGameScene().addUINode(controller.getRootView());
-		
-		controller.getLaunchButton().setOnAction(e -> {
-			getGameScene().clearUINodes();
-			metodoKevinInit();
-		});
+//		LauncherController controller = new LauncherController();
+//		
+//		BorderPane rootView = controller.getRootView();
+//		getGameScene().addUINode(rootView);
+//		
+//		controller.getLaunchButton().setOnAction(e -> {
+//		getGameScene().removeUINode(rootView);
+//			metodoKevinInit();
+//		});
+
+		metodoKevinInit();
 
 	}
 
