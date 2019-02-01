@@ -9,6 +9,7 @@ import com.almasb.fxgl.core.math.Vec2;
 import com.almasb.fxgl.entity.Entities;
 import com.almasb.fxgl.entity.Entities.EntityBuilder;
 import com.almasb.fxgl.entity.Entity;
+import com.almasb.fxgl.entity.GameWorld;
 import com.almasb.fxgl.entity.RenderLayer;
 import com.almasb.fxgl.entity.animation.RotationAnimationBuilder;
 import com.almasb.fxgl.entity.animation.ScaleAnimationBuilder;
@@ -89,7 +90,7 @@ public class FXGLPruebaApp extends GameApplication {
 
 		emitter = darPropulcion(jugador);
 
-		hiperJumpTransition(jugador, 0.3, -150, 0);
+		hiperJumpTransition(jugador, 0.3, -150, 0, getGameWorld());
 //		tinkleTransition(jugador, 50, 0.05, 0.2);
 	}
 
@@ -146,7 +147,7 @@ public class FXGLPruebaApp extends GameApplication {
 
 	}
 
-	public void hiperJumpTransition(Entity player, double duration, double translateX, double translateY) {
+	public void hiperJumpTransition(Entity player, double duration, double translateX, double translateY, GameWorld gameWorld) {
 		double playerPosX = player.getPosition().getX();
 		double playerPosY = player.getPosition().getY();
 
@@ -165,11 +166,11 @@ public class FXGLPruebaApp extends GameApplication {
 		hiperJumpEmitter.setExpireFunction(e -> Duration.seconds(duration * 10));
 
 		ParticleComponent hiperJumpComponent = new ParticleComponent(hiperJumpEmitter);
-		hiperJumpComponent.setOnFinished(jugador::removeFromWorld);
+		hiperJumpComponent.setOnFinished(player::removeFromWorld);
 		Entity hiperJump = Entities.builder().at(playerPosX + translateX, playerPosY + translateY)
-				.buildAndAttach(getGameWorld());
+				.buildAndAttach(gameWorld);
 		hiperJumpComponent.setOnFinished(() -> {
-			getGameWorld().removeEntity(hiperJump);
+			gameWorld.removeEntity(hiperJump);
 		});
 		hiperJump.addComponent(hiperJumpComponent);
 
@@ -252,9 +253,9 @@ public class FXGLPruebaApp extends GameApplication {
 			@Override
 			protected void onAction() {
 				direccion = 'd';
-//				moverJugador(direccion, 1);
-//				if (velocidad < MAX_SPEED)
-//					velocidad = velocidad + 2;
+				moverJugador(direccion, 1);
+				if (velocidad < MAX_SPEED)
+					velocidad = velocidad + 2;
 			}
 
 			@Override
