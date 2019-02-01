@@ -209,6 +209,8 @@ public class Main extends GameApplication {
 
 		Animations.hiperJumpTransition(player, 1, -Math.sin(Math.toRadians(player.getRotation())) * 100,
 				Math.cos(Math.toRadians(player.getRotation())) * 100, getGameWorld());
+		
+		Animations.propulcionEmitter(player);
 	}
 
 	@Override
