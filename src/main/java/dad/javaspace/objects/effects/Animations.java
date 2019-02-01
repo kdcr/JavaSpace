@@ -8,6 +8,7 @@ import com.almasb.fxgl.particle.ParticleComponent;
 import com.almasb.fxgl.particle.ParticleEmitter;
 import com.almasb.fxgl.particle.ParticleEmitters;
 import com.almasb.fxgl.util.Function;
+import com.almasb.fxgl.util.Supplier;
 
 import javafx.geometry.Point2D;
 import javafx.scene.effect.BlendMode;
@@ -15,6 +16,37 @@ import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 public class Animations {
+	
+	public ParticleEmitter propulcionEmitter(Entity player) {
+		ParticleEmitter emitter;
+
+//		.newFireEmitter() es distinto a .newFireEmitter(int), el segundo da ya una textura tora flama
+		emitter = ParticleEmitters.newFireEmitter(0);
+		emitter.setAccelerationFunction(new Supplier<Point2D>() {
+
+			@Override
+			public Point2D get() {
+//				TODO gravedad contraria a la direccion a la que apunta la nave
+				return new Point2D(0, 0);
+			}
+		});
+		emitter.setSpawnPointFunction(new Function<Integer, Point2D>() {
+			@Override
+			public Point2D apply(Integer arg) {
+//				TODO posicion alejada x de la nave
+				return new Point2D(0, 0);
+			}
+		});
+		emitter.setExpireFunction(e -> Duration.seconds(0.3));
+		emitter.setAllowParticleRotation(true);
+//		emitter.setEmissionRate(velocidad / 10);
+		emitter.setEmissionRate(0.5);
+
+		ParticleComponent component = new ParticleComponent(emitter);
+		component.setOnFinished(player::removeFromWorld);
+		player.addComponent(component);
+		return emitter;
+	}
 	
 	public static void tinkleTransition(Entity player, int duration, double tamMin, double tamMax, double velocity) {
 		Point2D minSize = new Point2D(tamMin, tamMin);
