@@ -504,6 +504,10 @@ public class LauncherController implements Initializable {
 	public BorderPane getRootView() {
 		return rootView;
 	}
+	
+	public Button getLaunchButton() {
+		return launchButton;
+	}
 
 	public LauncherModel getModel() {
 		return this.model;

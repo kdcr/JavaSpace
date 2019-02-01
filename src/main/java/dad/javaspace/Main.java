@@ -15,6 +15,7 @@ import com.almasb.fxgl.entity.components.RotationComponent;
 import com.almasb.fxgl.input.*;
 import com.almasb.fxgl.settings.GameSettings;
 
+import dad.javaspace.interfacing.controller.LauncherController;
 import dad.javaspace.objects.EntityTypes;
 import dad.javaspace.objects.effects.Animations;
 import javafx.scene.input.KeyCode;
@@ -126,45 +127,57 @@ public class Main extends GameApplication {
 	protected void initGame() {
 		super.initGame();
 
-//		try {
-//			Socket sk;
-//
-//			System.out.println("Buscando conexion...");
-//
-//			sk = new Socket(ip, 2000);
-//
-//			// Espera para que le de tiempo al servidor de mover la conexión a otro puerto
-//			Thread.sleep(3000);
-//
-//			flujoEntrada = new InputStreamReader(sk.getInputStream(), "UTF-8");
-//
-//			flujoSalida = new OutputStreamWriter(sk.getOutputStream(), "UTF-8");
-//
-//			flujoSalida.write(name + "," + skin + "\n");
-//
-//			flujoSalida.flush();
-//
-//			System.out.println("nombre enviado");
-//
-//			model.setIdentity(flujoEntrada.read());
-//
-//			Scanner input = new Scanner(flujoEntrada);
-//
-//			model.setPlayers(input.nextLine().split("_"));
-//
-//			System.out.println(model.getPlayers()[0]);
-//
-//			System.out.println("id recibida");
-//
-//			System.out.println(model.getIdentity());
-//
-//		} catch (UnknownHostException e) {
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		} catch (InterruptedException e) {
-//			e.printStackTrace();
-//		}
+		LauncherController controller = new LauncherController();
+		getGameScene().addUINode(controller.getRootView());
+		
+		controller.getLaunchButton().setOnAction(e -> {
+			getGameScene().clearUINodes();
+			metodoKevinInit();
+		});
+
+	}
+
+	private void metodoKevinInit() {
+		// try {
+		// Socket sk;
+		//
+		// System.out.println("Buscando conexion...");
+		//
+		// sk = new Socket(ip, 2000);
+		//
+		// // Espera para que le de tiempo al servidor de mover la conexión a otro
+		// puerto
+		// Thread.sleep(3000);
+		//
+		// flujoEntrada = new InputStreamReader(sk.getInputStream(), "UTF-8");
+		//
+		// flujoSalida = new OutputStreamWriter(sk.getOutputStream(), "UTF-8");
+		//
+		// flujoSalida.write(name + "," + skin + "\n");
+		//
+		// flujoSalida.flush();
+		//
+		// System.out.println("nombre enviado");
+		//
+		// model.setIdentity(flujoEntrada.read());
+		//
+		// Scanner input = new Scanner(flujoEntrada);
+		//
+		// model.setPlayers(input.nextLine().split("_"));
+		//
+		// System.out.println(model.getPlayers()[0]);
+		//
+		// System.out.println("id recibida");
+		//
+		// System.out.println(model.getIdentity());
+		//
+		// } catch (UnknownHostException e) {
+		// e.printStackTrace();
+		// } catch (IOException e) {
+		// e.printStackTrace();
+		// } catch (InterruptedException e) {
+		// e.printStackTrace();
+		// }
 
 		// Estas cuatro lineas se encargan de mover la camara con el jugador, se hace
 		// asi para evitar que la camara rote
@@ -191,14 +204,13 @@ public class Main extends GameApplication {
 
 		Animations.hiperJumpTransition(player, 1, -Math.sin(Math.toRadians(player.getRotation())) * 100,
 				Math.cos(Math.toRadians(player.getRotation())) * 100, getGameWorld());
-
 	}
 
 	@Override
 	protected void onUpdate(double tpf) {
 		super.onUpdate(tpf);
 		textPixels.setText("PosX: " + player.getX() + " PosY: " + player.getY() + "\nForceX: " + model.getxForce()
-				+ " ForceY: " + model.getyForce() + "\nFPS: " );
+				+ " ForceY: " + model.getyForce() + "\nFPS: ");
 
 		player.rotateBy(model.getAngular());
 
