@@ -156,7 +156,7 @@ public class Main extends GameApplication {
 		startGame();
 
 	}
-	
+
 	@Override
 	protected void onUpdate(double tpf) {
 		super.onUpdate(tpf);
@@ -213,14 +213,15 @@ public class Main extends GameApplication {
 		// e.printStackTrace();
 		// }
 
-		
-
 		// Estas cuatro lineas se encargan de mover la camara con el jugador, se hace
 		// asi para evitar que la camara rote
 		double viewWidth = getGameScene().getViewport().getWidth();
 		double viewHeight = getGameScene().getViewport().getHeight();
-		getGameScene().getViewport().xProperty().bind(player.xProperty().subtract(viewWidth / 2));
-		getGameScene().getViewport().yProperty().bind(player.yProperty().subtract(viewHeight / 2));
+		// FIXME arreglar la posicion de la camara para centrar la vista
+		getGameScene().getViewport().xProperty()
+				.bind(player.xProperty().subtract(viewWidth / 2).add((player.getRightX() - player.getX()) / 2));
+		getGameScene().getViewport().yProperty()
+				.bind(player.yProperty().subtract(viewHeight / 2).subtract((player.getBottomY() - player.getY()) / 2));
 		// player.setRotation(200);
 		// Sonido del motor
 		mp = new MediaPlayer(new Media(new File("src/main/resources/assets/sounds/thruster.mp3").toURI().toString()));
