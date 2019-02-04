@@ -7,13 +7,19 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Map;
 
+import com.almasb.fxgl.app.FXGL;
 import com.almasb.fxgl.app.GameApplication;
+import com.almasb.fxgl.core.math.Vec2;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.RenderLayer;
 import com.almasb.fxgl.entity.components.PositionComponent;
 import com.almasb.fxgl.entity.components.RotationComponent;
 import com.almasb.fxgl.input.*;
+import com.almasb.fxgl.physics.PhysicsComponent;
+import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
+import com.almasb.fxgl.scene.GameScene;
 import com.almasb.fxgl.settings.GameSettings;
+import com.almasb.fxgl.settings.ReadOnlyGameSettings;
 
 import dad.javaspace.interfacing.controller.LauncherController;
 import dad.javaspace.objects.EntityTypes;
@@ -24,6 +30,9 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.stage.Screen;
+import javafx.stage.Stage;
+import javafx.stage.Window;
 
 public class Main extends GameApplication {
 
@@ -50,18 +59,25 @@ public class Main extends GameApplication {
 	private ArrayList<Entity> starArray = new ArrayList<>();
 	ArrayList<Entity> starList = new ArrayList<>();
 
+	private ReadOnlyGameSettings settings;
+	private Stage gameStage = new Stage();
+
+	private PhysicsComponent physics;
+
 	public static void main(String[] args) {
 		launch(args);
 	}
 
 	@Override
 	protected void initSettings(GameSettings settings) {
-		settings.setWidth(800);
-		settings.setHeight(600);
+		settings.setWidth((int) Screen.getPrimary().getBounds().getWidth());
+		settings.setHeight((int) Screen.getPrimary().getBounds().getHeight());
 		settings.setTitle("JavaSpace");
 		settings.setFullScreenAllowed(true);
 		settings.setVersion(model.getVersion());
-		settings.setProfilingEnabled(true);
+		this.settings = settings.toReadOnly();
+		gameStage.setFullScreen(true);
+		FXGL.configure(this, settings.toReadOnly(), gameStage);
 	}
 
 	@Override
@@ -71,33 +87,34 @@ public class Main extends GameApplication {
 		input.addAction(new UserAction("Rotate Right") {
 			@Override
 			protected void onAction() {
-				if (model.getAngular() < 3)
-					model.setAngular(model.getAngular() + 0.08);
+				if (model.getAngular() + 0.5 < 3)
+					model.setAngular(model.getAngular() + 0.5);
 			}
 		}, KeyCode.D);
 
 		input.addAction(new UserAction("Rotate Left") {
 			@Override
 			protected void onAction() {
-				if (model.getAngular() > -3)
-					model.setAngular(model.getAngular() - 0.08);
+				if (model.getAngular() - 0.5 > -3)
+					model.setAngular(model.getAngular() - 0.5);
 			}
 		}, KeyCode.A);
 
 		input.addAction(new UserAction("Center") {
 			@Override
 			protected void onAction() {
-				model.setAngular(model.getAngular() * 0.99);
+				model.setAngular(model.getAngular() * 0.8);
+
 			}
 		}, KeyCode.Q);
 
-//		input.addAction(new UserAction("Add thrust") {
-//			@Override
-//			protected void onAction() {
-//				addThrust();
-//			}
-//
-//		}, KeyCode.W);
+		input.addAction(new UserAction("Add thrust") {
+			@Override
+			protected void onAction() {
+				addThrust();
+			}
+
+		}, KeyCode.W);
 
 		input.addAction(new UserAction("Shoot") {
 			@Override
@@ -114,7 +131,6 @@ public class Main extends GameApplication {
 		textPixels.setFill(Color.WHITE);
 		textPixels.setTranslateX(0);
 		textPixels.setTranslateY(20);
-
 		getGameScene().addUINode(textPixels); // add to the scene graph
 
 	}
@@ -129,20 +145,33 @@ public class Main extends GameApplication {
 		super.initGame();
 
 //		LauncherController controller = new LauncherController();
-//		
 //		BorderPane rootView = controller.getRootView();
 //		getGameScene().addUINode(rootView);
-//		
+//
 //		controller.getLaunchButton().setOnAction(e -> {
-//		getGameScene().removeUINode(rootView);
-//			metodoKevinInit();
+//			getGameScene().removeUINode(rootView);
+//			startGame();
 //		});
 
-		metodoKevinInit();
+		startGame();
 
 	}
+	
+	@Override
+	protected void onUpdate(double tpf) {
+		super.onUpdate(tpf);
+		textPixels
+				.setText("PosX: " + player.getX() + " PosY: " + player.getY() + "\nVel:" + physics.getLinearVelocity());
 
-	private void metodoKevinInit() {
+		physics.setAngularVelocity(model.getAngular());
+		generateStars();
+
+		if (!getInput().isHeld(KeyCode.W))
+			model.setThrust(model.getThrust() * 0.80);
+		maxVel();
+	}
+
+	private void startGame() {
 		// try {
 		// Socket sk;
 		//
@@ -184,18 +213,26 @@ public class Main extends GameApplication {
 		// e.printStackTrace();
 		// }
 
+		
+
 		// Estas cuatro lineas se encargan de mover la camara con el jugador, se hace
 		// asi para evitar que la camara rote
 		double viewWidth = getGameScene().getViewport().getWidth();
 		double viewHeight = getGameScene().getViewport().getHeight();
 		getGameScene().getViewport().xProperty().bind(player.xProperty().subtract(viewWidth / 2));
 		getGameScene().getViewport().yProperty().bind(player.yProperty().subtract(viewHeight / 2));
-		player.setRotation(200);
+		// player.setRotation(200);
 		// Sonido del motor
 		mp = new MediaPlayer(new Media(new File("src/main/resources/assets/sounds/thruster.mp3").toURI().toString()));
 		mp.setCycleCount(MediaPlayer.INDEFINITE);
 		mp.volumeProperty().bind(model.thrustProperty());
 		mp.play();
+
+		physics = new PhysicsComponent();
+
+		player.addComponent(physics);
+
+		physics.setBodyType(BodyType.DYNAMIC);
 
 		// Al jugador se le asigna una textura y se agrega al mundo
 
@@ -203,65 +240,38 @@ public class Main extends GameApplication {
 
 		getGameWorld().addEntities(player);
 
+		getPhysicsWorld().setGravity(0, 0);
+
 		player.setRenderLayer(RenderLayer.TOP);
 
 		getGameScene().setBackgroundColor(Color.BLACK);
 
 		Animations.hiperJumpTransition(player, 1, -Math.sin(Math.toRadians(player.getRotation())) * 100,
 				Math.cos(Math.toRadians(player.getRotation())) * 100, getGameWorld());
-		
+
 		Animations.propulcionEmitter(player);
 	}
 
-	@Override
-	protected void onUpdate(double tpf) {
-		super.onUpdate(tpf);
-		textPixels.setText("PosX: " + player.getX() + " PosY: " + player.getY() + "\nForceX: " + model.getxForce()
-				+ " ForceY: " + model.getyForce() + "\nFPS: ");
+	private void maxVel() {
+		double maxVelocity = 1000;
+		double x, y;
+		if (physics.getLinearVelocity().getX() > maxVelocity || physics.getLinearVelocity().getX() < -maxVelocity) {
+			if (physics.getLinearVelocity().getX() > 0)
+				x = maxVelocity;
+			else
+				x = -maxVelocity;
+		} else
+			x = physics.getLinearVelocity().getX();
 
-		player.rotateBy(model.getAngular());
+		if (physics.getLinearVelocity().getY() > maxVelocity || physics.getLinearVelocity().getY() < -maxVelocity) {
+			if (physics.getLinearVelocity().getY() > 0)
+				y = maxVelocity;
+			else
+				y = -maxVelocity;
+		} else
+			y = physics.getLinearVelocity().getY();
 
-		generateStars();
-
-		calcPhysics();
-
-		movePlayer();
-
-		if (getInput().isHeld(KeyCode.W))
-			addThrust();
-		else
-			model.setThrust(model.getThrust() * 0.99);
-
-	}
-
-	/*
-	 * Si se está usando el motor de la nave, se aplica la fuerza relativa entre 80
-	 * de la impulsion del motor en ambos ejes
-	 */
-	private void calcPhysics() {
-		Double playerRotation = Math.toRadians(player.getRotation());
-		double maxForce = 20;
-		float x, y;
-		if (model.getThrust() != 0) {
-			x = (float) (model.getxForce() + (model.getThrust() * Math.sin((playerRotation))));
-			y = (float) (model.getyForce() + (model.getThrust() * -Math.cos((playerRotation))));
-
-			model.setxForce(x);
-			model.setyForce(y);
-
-			if (model.getxForce() > maxForce)
-				model.setxForce(maxForce);
-
-			if (model.getxForce() < -maxForce)
-				model.setxForce(-maxForce);
-
-			if (model.getyForce() > maxForce)
-				model.setyForce(maxForce);
-
-			if (model.getyForce() < -maxForce)
-				model.setyForce(-maxForce);
-
-		}
+		physics.setLinearVelocity(x, y);
 	}
 
 	private void makeShoot() {
@@ -288,17 +298,11 @@ public class Main extends GameApplication {
 	}
 
 	private void addThrust() {
-		if (model.getThrust() < 1)
-			model.setThrust(model.getThrust() + 0.005);
-	}
+		if (model.getThrust() + 0.5 < 8)
+			model.setThrust(model.getThrust() + 0.5);
 
-	/*
-	 * se coge la posicion actual del jugador y directamente se reposiciona sumando
-	 * 0.7 veces la fuerza en cada eje
-	 */
-	private void movePlayer() {
-		player.setX(player.getX() + model.getxForce() * 0.7);
-		player.setY(player.getY() + model.getyForce() * 0.7);
+		physics.applyBodyForceToCenter(new Vec2(model.getThrust() * -Math.sin(physics.getBody().getAngle()),
+				model.getThrust() * Math.cos(physics.getBody().getAngle())));
 	}
 
 	/*
@@ -315,6 +319,7 @@ public class Main extends GameApplication {
 
 			Animations.tinkleTransition(newStar, 50, Math.random(), (Math.random() * 1) + 1,
 					(Math.random() * 1.5) + 0.5);
+
 			newStar.setType(EntityTypes.STAR);
 			starArray.add(newStar);
 			getGameWorld().addEntity(newStar);
