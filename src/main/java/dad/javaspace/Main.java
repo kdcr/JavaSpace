@@ -28,6 +28,9 @@ import dad.javaspace.interfacing.controller.LauncherController;
 import dad.javaspace.objects.EntityTypes;
 import dad.javaspace.objects.effects.Animations;
 import dad.javaspace.objects.effects.Componente;
+import dad.javaspace.ui.ThrustIndicator;
+import javafx.concurrent.Task;
+import javafx.geometry.Point2D;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.media.Media;
@@ -42,6 +45,9 @@ public class Main extends GameApplication {
 
 	// Interfaz
 	Text textPixels;
+	ThrustIndicator thrustIndicator;
+	double viewWidth;
+	double viewHeight;
 
 	// Conectividad
 	private String ip = "10.2.2.64", name = "jugador_test", skin = "0";
@@ -56,8 +62,7 @@ public class Main extends GameApplication {
 	long coolDown = 0, coolDownStars = 0;
 	private boolean canShoot = false;
 
-	RotationComponent rot;
-	PositionComponent pos;
+	private PhysicsComponent physics;
 
 	// Estetica
 	private ArrayList<Entity> starArray = new ArrayList<>();
@@ -65,8 +70,8 @@ public class Main extends GameApplication {
 
 	private ReadOnlyGameSettings settings;
 	private Stage gameStage = new Stage();
-
-	private PhysicsComponent physics;
+	
+	
 
 	public static void main(String[] args) {
 		launch(args);
@@ -109,7 +114,7 @@ public class Main extends GameApplication {
 		input.addAction(new UserAction("Center") {
 			@Override
 			protected void onAction() {
-				model.setAngular(model.getAngular() * 0.8);
+				model.setAngular(model.getAngular() * 0.9);
 
 			}
 		}, KeyCode.Q);
@@ -133,12 +138,21 @@ public class Main extends GameApplication {
 
 	@Override
 	protected void initUI() {
+		super.initUI();
 		textPixels = new Text();
 		textPixels.setFill(Color.WHITE);
 		textPixels.setTranslateX(0);
 		textPixels.setTranslateY(20);
-		getGameScene().addUINode(textPixels); // add to the scene graph
-
+		//getGameScene().addUINode(textPixels); // add to the scene graph
+		
+		thrustIndicator = new ThrustIndicator();
+		
+		thrustIndicator.setTranslateX(0);
+		thrustIndicator.setTranslateY(20/*viewHeight - thrustIndicator.getHeight()*/);
+		
+		getGameScene().addUINode(thrustIndicator);
+		thrustIndicator.setMaxSize(0, 8);
+		thrustIndicator.progressProperty().bind(model.thrustProperty());
 	}
 
 	@Override
@@ -221,14 +235,14 @@ public class Main extends GameApplication {
 
 		// Estas cuatro lineas se encargan de mover la camara con el jugador, se hace
 		// asi para evitar que la camara rote
-		double viewWidth = getGameScene().getViewport().getWidth();
-		double viewHeight = getGameScene().getViewport().getHeight();
-		// FIXME arreglar la posicion de la camara para centrar la vista
+		viewWidth = getGameScene().getViewport().getWidth();
+		viewHeight = getGameScene().getViewport().getHeight();
+
 		getGameScene().getViewport().xProperty()
 				.bind(player.xProperty().subtract(viewWidth / 2).add(player.widthProperty()));
 		getGameScene().getViewport().yProperty()
 				.bind(player.yProperty().subtract(viewHeight / 2).add((player.heightProperty())));
-		// player.setRotation(200);
+
 		// Sonido del motor
 		mp = new MediaPlayer(new Media(new File("src/main/resources/assets/sounds/thruster.mp3").toURI().toString()));
 		mp.setCycleCount(MediaPlayer.INDEFINITE);
@@ -236,12 +250,11 @@ public class Main extends GameApplication {
 		mp.play();
 
 		physics = new PhysicsComponent();
-		player.getBoundingBoxComponent().addHitBox(new HitBox(BoundingShape.polygon(0,0,25,50,50,0)));
 
+		player.getBoundingBoxComponent().addHitBox(new HitBox(BoundingShape.polygon(0, 0, 25, 50, 50, 0)));
 		player.addComponent(physics);
 
 		physics.setBodyType(BodyType.DYNAMIC);
-
 		// Al jugador se le asigna una textura y se agrega al mundo
 
 		player.setViewFromTexture("navePruebaSmall.png");
@@ -251,9 +264,8 @@ public class Main extends GameApplication {
 		getPhysicsWorld().setGravity(0, 0);
 
 		player.setRenderLayer(RenderLayer.TOP);
-
 		getGameScene().setBackgroundColor(Color.BLACK);
-
+		
 		Animations.hiperJumpTransition(player, 1, -Math.sin(Math.toRadians(player.getRotation())) * 100,
 				Math.cos(Math.toRadians(player.getRotation())) * 100, getGameWorld());
 
@@ -289,6 +301,7 @@ public class Main extends GameApplication {
 			canShoot = true;
 //			sendPlayerPosition();
 			getAudioPlayer().playSound("laser.mp3");
+			Animations.shootTransition(player, getGameWorld());
 		}
 	}
 
