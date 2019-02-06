@@ -24,7 +24,6 @@ public class JavaSpaceAPP extends GameApplication {
 
 	@Override
 	protected void initSettings(GameSettings settings) {
-		// TODO Auto-generated method stub
 		settings.setStageStyle(StageStyle.UNDECORATED);
 		settings.setWidth(720);
 		settings.setHeight(360);
