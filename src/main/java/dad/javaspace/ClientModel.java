@@ -1,7 +1,9 @@
 package dad.javaspace;
 
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.FloatProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -14,6 +16,8 @@ public class ClientModel {
 	private String[] players;
 
 	private double xForce, yForce;
+	
+	private BooleanProperty enPartida = new SimpleBooleanProperty(this, "enPartida", false);
 
 	private DoubleProperty thrust = new SimpleDoubleProperty();
 	
@@ -96,5 +100,20 @@ public class ClientModel {
 	public final void setAngular(final double angular) {
 		this.angularProperty().set(angular);
 	}
+
+	public final BooleanProperty enPartidaProperty() {
+		return this.enPartida;
+	}
+	
+
+	public final boolean isEnPartida() {
+		return this.enPartidaProperty().get();
+	}
+	
+
+	public final void setEnPartida(final boolean enPartida) {
+		this.enPartidaProperty().set(enPartida);
+	}
+	
 
 }

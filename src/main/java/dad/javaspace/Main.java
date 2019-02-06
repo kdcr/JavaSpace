@@ -24,6 +24,7 @@ import com.almasb.fxgl.settings.ReadOnlyGameSettings;
 import dad.javaspace.interfacing.controller.LauncherController;
 import dad.javaspace.objects.EntityTypes;
 import dad.javaspace.objects.effects.Animations;
+import dad.javaspace.objects.effects.Componente;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.media.Media;
@@ -32,6 +33,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.stage.Window;
 
 public class Main extends GameApplication {
@@ -48,6 +50,7 @@ public class Main extends GameApplication {
 	// Mecanica interna
 	Entity player = new Entity();
 	private ClientModel model = new ClientModel();
+	private LauncherController controller = new LauncherController();
 	private MediaPlayer mp;
 	long coolDown = 0, coolDownStars = 0;
 	private boolean canShoot = false;
@@ -59,7 +62,7 @@ public class Main extends GameApplication {
 	private ArrayList<Entity> starArray = new ArrayList<>();
 	ArrayList<Entity> starList = new ArrayList<>();
 
-	private ReadOnlyGameSettings settings;
+	private GameSettings settings;
 	private Stage gameStage = new Stage();
 
 	private PhysicsComponent physics;
@@ -70,14 +73,29 @@ public class Main extends GameApplication {
 
 	@Override
 	protected void initSettings(GameSettings settings) {
-		settings.setWidth((int) Screen.getPrimary().getBounds().getWidth());
-		settings.setHeight((int) Screen.getPrimary().getBounds().getHeight());
+		
+		
+		settings.setWidth(controller.getModel().getResolucion().getX());
+		settings.setHeight(controller.getModel().getResolucion().getY());
 		settings.setTitle("JavaSpace");
-		settings.setFullScreenAllowed(true);
+		settings.setFullScreenAllowed(controller.getModel().isPantallaCompleta());
+		gameStage.setFullScreen(controller.getModel().isPantallaCompleta());
 		settings.setVersion(model.getVersion());
-		this.settings = settings.toReadOnly();
-		gameStage.setFullScreen(true);
+		this.settings = settings;
 		FXGL.configure(this, settings.toReadOnly(), gameStage);
+		
+		/**
+		 * Las del juego
+		 */
+//		settings.setWidth((int) Screen.getPrimary().getBounds().getWidth());
+//		settings.setHeight((int) Screen.getPrimary().getBounds().getHeight());
+//		settings.setTitle("JavaSpace");
+//		settings.setFullScreenAllowed(true);
+//		settings.setVersion(model.getVersion());
+//		this.settings = settings;
+//		gameStage.setFullScreen(true);
+//		FXGL.configure(this, settings.toReadOnly(), gameStage);
+
 	}
 
 	@Override
@@ -144,31 +162,34 @@ public class Main extends GameApplication {
 	protected void initGame() {
 		super.initGame();
 
-//		LauncherController controller = new LauncherController();
-//		BorderPane rootView = controller.getRootView();
-//		getGameScene().addUINode(rootView);
-//
-//		controller.getLaunchButton().setOnAction(e -> {
-//			getGameScene().removeUINode(rootView);
-//			startGame();
-//		});
+		BorderPane rootView = controller.getRootView();
+		getGameScene().addUINode(rootView);
 
-		startGame();
+		controller.getLaunchButton().setOnAction(e -> {
+			getGameScene().removeUINode(rootView);
+			controller.guardarConfig();
+			model.setEnPartida(true);
+			startGame();
+		});
+
+//		startGame();
 
 	}
 
 	@Override
 	protected void onUpdate(double tpf) {
 		super.onUpdate(tpf);
-		textPixels
-				.setText("PosX: " + player.getX() + " PosY: " + player.getY() + "\nVel:" + physics.getLinearVelocity());
+		if (model.isEnPartida()) {
+			textPixels.setText(
+					"PosX: " + player.getX() + " PosY: " + player.getY() + "\nVel:" + physics.getLinearVelocity());
 
-		physics.setAngularVelocity(model.getAngular());
-		generateStars();
+			physics.setAngularVelocity(model.getAngular());
+			generateStars();
 
-		if (!getInput().isHeld(KeyCode.W))
-			model.setThrust(model.getThrust() * 0.80);
-		maxVel();
+			if (!getInput().isHeld(KeyCode.W))
+				model.setThrust(model.getThrust() * 0.80);
+			maxVel();
+		}
 	}
 
 	private void startGame() {
@@ -250,7 +271,9 @@ public class Main extends GameApplication {
 		Animations.hiperJumpTransition(player, 1, -Math.sin(Math.toRadians(player.getRotation())) * 100,
 				Math.cos(Math.toRadians(player.getRotation())) * 100, getGameWorld());
 
-		Animations.propulcionEmitter(player);
+		Componente componente = new Componente(player);
+		componente.emitterEmissionPropertyProperty().bind(model.thrustProperty());
+
 	}
 
 	private void maxVel() {
@@ -281,6 +304,7 @@ public class Main extends GameApplication {
 			canShoot = true;
 //			sendPlayerPosition();
 			getAudioPlayer().playSound("laser.mp3");
+			Animations.shootTransition(player, getGameWorld());
 		}
 	}
 

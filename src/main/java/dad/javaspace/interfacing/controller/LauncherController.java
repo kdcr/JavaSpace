@@ -438,13 +438,13 @@ public class LauncherController implements Initializable {
 
 			Wini ini = new Wini(file);
 
-			ini.put("opciones", "resolucion", model.getResolucion());
-			ini.put("opciones", "pantallaCompleta", model.isPantallaCompleta());
-			ini.put("opciones", "nombre", model.getNombreJugador());
-			ini.put("opciones", "volumenMusica", model.getVolumenMusica());
-			ini.put("opciones", "volumenJuego", model.getVolumenJuego());
-			ini.put("red", "ip", model.getIp());
-			ini.put("red", "puerto", model.getPuerto());
+			ini.put("Opciones de Juego", "resolucion", model.getResolucion());
+			ini.put("Opciones de Juego", "pantallaCompleta", model.isPantallaCompleta());
+			ini.put("Opciones de Juego", "nombre", model.getNombreJugador());
+			ini.put("Opciones de Juego", "volumenMusica", model.getVolumenMusica());
+			ini.put("Opciones de Juego", "volumenJuego", model.getVolumenJuego());
+			ini.put("Opciones de RED", "ip", model.getIp());
+			ini.put("Opciones de RED", "puerto", model.getPuerto());
 			ini.store();
 
 		} catch (IOException e) {
@@ -456,7 +456,7 @@ public class LauncherController implements Initializable {
 
 		LauncherModel modelCarga = new LauncherModel();
 		File directorio = new File(System.getProperty("user.home") + "/.javaspace");
-		File archivo = new File(System.getProperty("user.home") + "/.javaspace" + "config.ini");
+		File archivo = new File(System.getProperty("user.home") + "/.javaspace" + "/config.ini");
 
 		if (!directorio.exists())
 			directorio.mkdir();
@@ -471,15 +471,15 @@ public class LauncherController implements Initializable {
 			try {
 				Wini ini = new Wini(archivo);
 
-				modelCarga.setResolucion(new ScreenResolutions(ini.get("opciones", "resolucion", String.class)));
-				boolean prueba = ini.get("opciones", "pantallaCompleta", boolean.class);
+				modelCarga.setResolucion(new ScreenResolutions(ini.get("Opciones de Juego", "resolucion", String.class)));
+				boolean prueba = ini.get("Opciones de Juego", "pantallaCompleta", boolean.class);
 				System.out.println(prueba);
-				modelCarga.setPantallaCompleta(ini.get("opciones", "pantallaCompleta", boolean.class));
-				modelCarga.setNombreJugador(ini.get("opciones", "nombre", String.class));
-				modelCarga.setVolumenMusica(ini.get("opciones", "volumenMusica", double.class));
-				modelCarga.setVolumenJuego(ini.get("opciones", "volumenJuego", double.class));
-				modelCarga.setIp(ini.get("red", "ip", String.class));
-				modelCarga.setPuerto(ini.get("red", "puerto", int.class));
+				modelCarga.setPantallaCompleta(ini.get("Opciones de Juego", "pantallaCompleta", boolean.class));
+				modelCarga.setNombreJugador(ini.get("Opciones de Juego", "nombre", String.class));
+				modelCarga.setVolumenMusica(ini.get("Opciones de Juego", "volumenMusica", double.class));
+				modelCarga.setVolumenJuego(ini.get("Opciones de Juego", "volumenJuego", double.class));
+				modelCarga.setIp(ini.get("Opciones de RED", "ip", String.class));
+				modelCarga.setPuerto(ini.get("Opciones de RED", "puerto", int.class));
 
 			} catch (InvalidFileFormatException e) {
 				e.printStackTrace();
