@@ -1,5 +1,6 @@
 package dad.javaspace.objects.effects;
 
+import com.almasb.fxgl.asset.AssetLoader;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.component.Component;
 import com.almasb.fxgl.particle.ParticleComponent;
@@ -22,6 +23,7 @@ public class Componente extends Component {
 	private Entity player = new Entity();
 
 	public Componente(Entity player) {
+		
 		this.player = player;
 		emitter = ParticleEmitters.newFireEmitter(0);
 		emitter.setAccelerationFunction(new Supplier<Point2D>() {
