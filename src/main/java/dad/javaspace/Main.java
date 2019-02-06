@@ -12,9 +12,12 @@ import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.core.math.Vec2;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.RenderLayer;
+import com.almasb.fxgl.entity.components.BoundingBoxComponent;
 import com.almasb.fxgl.entity.components.PositionComponent;
 import com.almasb.fxgl.entity.components.RotationComponent;
 import com.almasb.fxgl.input.*;
+import com.almasb.fxgl.physics.BoundingShape;
+import com.almasb.fxgl.physics.HitBox;
 import com.almasb.fxgl.physics.PhysicsComponent;
 import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
 import com.almasb.fxgl.scene.GameScene;
@@ -24,6 +27,7 @@ import com.almasb.fxgl.settings.ReadOnlyGameSettings;
 import dad.javaspace.interfacing.controller.LauncherController;
 import dad.javaspace.objects.EntityTypes;
 import dad.javaspace.objects.effects.Animations;
+import dad.javaspace.objects.effects.Componente;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.media.Media;
@@ -72,6 +76,8 @@ public class Main extends GameApplication {
 	protected void initSettings(GameSettings settings) {
 		settings.setWidth((int) Screen.getPrimary().getBounds().getWidth());
 		settings.setHeight((int) Screen.getPrimary().getBounds().getHeight());
+		// settings.setWidth(720);
+		// settings.setHeight(300);
 		settings.setTitle("JavaSpace");
 		settings.setFullScreenAllowed(true);
 		settings.setVersion(model.getVersion());
@@ -219,9 +225,9 @@ public class Main extends GameApplication {
 		double viewHeight = getGameScene().getViewport().getHeight();
 		// FIXME arreglar la posicion de la camara para centrar la vista
 		getGameScene().getViewport().xProperty()
-				.bind(player.xProperty().subtract(viewWidth / 2).add((player.getRightX() - player.getX()) / 2));
+				.bind(player.xProperty().subtract(viewWidth / 2).add(player.widthProperty()));
 		getGameScene().getViewport().yProperty()
-				.bind(player.yProperty().subtract(viewHeight / 2).subtract((player.getBottomY() - player.getY()) / 2));
+				.bind(player.yProperty().subtract(viewHeight / 2).add((player.heightProperty())));
 		// player.setRotation(200);
 		// Sonido del motor
 		mp = new MediaPlayer(new Media(new File("src/main/resources/assets/sounds/thruster.mp3").toURI().toString()));
@@ -230,6 +236,7 @@ public class Main extends GameApplication {
 		mp.play();
 
 		physics = new PhysicsComponent();
+		player.getBoundingBoxComponent().addHitBox(new HitBox(BoundingShape.polygon(0,0,25,50,50,0)));
 
 		player.addComponent(physics);
 
@@ -250,7 +257,8 @@ public class Main extends GameApplication {
 		Animations.hiperJumpTransition(player, 1, -Math.sin(Math.toRadians(player.getRotation())) * 100,
 				Math.cos(Math.toRadians(player.getRotation())) * 100, getGameWorld());
 
-		Animations.propulcionEmitter(player);
+		Componente componente = new Componente(player);
+		componente.emitterEmissionPropertyProperty().bind(model.thrustProperty());
 	}
 
 	private void maxVel() {
@@ -300,7 +308,7 @@ public class Main extends GameApplication {
 
 	private void addThrust() {
 		if (model.getThrust() + 0.5 < 8)
-			model.setThrust(model.getThrust() + 0.5);
+			model.setThrust(model.getThrust() + 0.1);
 
 		physics.applyBodyForceToCenter(new Vec2(model.getThrust() * -Math.sin(physics.getBody().getAngle()),
 				model.getThrust() * Math.cos(physics.getBody().getAngle())));
