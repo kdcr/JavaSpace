@@ -1,4 +1,6 @@
-
+.root {
+	-fx-background-color: transparent;
+}
 /*************************************************************************
  * 
  * Botonera Lateral
