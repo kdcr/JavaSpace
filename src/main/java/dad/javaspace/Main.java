@@ -175,6 +175,7 @@ public class Main extends GameApplication {
 			getGameScene().removeUINode(rootView);
 			controller.guardarConfig();
 			model.setEnPartida(true);
+			controller.getMp().stop();
 			startGame();
 		});
 
