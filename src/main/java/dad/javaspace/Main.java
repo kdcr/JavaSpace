@@ -208,6 +208,7 @@ public class Main extends GameApplication {
 			if (!getInput().isHeld(KeyCode.W))
 				model.setThrust(model.getThrust() * 0.80);
 			maxVel();
+//			sendPlayerPosition();
 		}
 	}
 
@@ -252,7 +253,7 @@ public class Main extends GameApplication {
 		// } catch (InterruptedException e) {
 		// e.printStackTrace();
 		// }
-
+		//
 		// Estas cuatro lineas se encargan de mover la camara con el jugador, se hace
 		// asi para evitar que la camara rote
 		viewWidth = getGameScene().getViewport().getWidth();
