@@ -28,6 +28,7 @@ import dad.javaspace.interfacing.controller.LauncherController;
 import dad.javaspace.objects.EntityTypes;
 import dad.javaspace.objects.effects.Animations;
 import dad.javaspace.objects.effects.ComponentePropulsor;
+import dad.javaspace.ui.ThrustIndicator;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.media.Media;
