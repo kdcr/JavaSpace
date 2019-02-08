@@ -70,13 +70,14 @@ public class Connection extends Thread {
 			while (true) {
 
 				itemStateString = identity+","+entrada.nextLine().toString() + "_";
-				salida.write(itemStateString);
+				
 
 				for (Connection con : connectionsArray) {
-					if(con.getIdentity()!=this.identity)
+					//if(con.getIdentity()!=this.identity)
 					playerState += con.getItemStateString();
 				}
 				salida.write(playerState);
+				salida.flush();
 
 			}
 
