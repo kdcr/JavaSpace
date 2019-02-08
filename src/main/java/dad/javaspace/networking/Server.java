@@ -10,6 +10,9 @@ public class Server {
 	 static final int NPLAYERS=2;
 	private static ArrayList<Connection> connectionsArray=new ArrayList<Connection>();
 	private static String players="";
+	private static boolean gameFinished=false;
+	
+	
 	public static String getPlayers() {
 		return players;
 	}
@@ -63,18 +66,19 @@ public class Server {
 				con.start();
 				
 			}
-			
+			for (Connection con : connectionsArray) {
+				players+=con.getIdentity()+","+con.getNombre()+","+con.getSkin()+"_";
+			}
 			
 			//TODO cambiar el sleep por una barrera que se abra ina vez se hayan inicializado todas la conexiones
 			Thread.sleep(4000);
 			
 			
-			for (Connection con : connectionsArray) {
-				players+=con.getIdentity()+","+con.getNombre()+","+con.getSkin()+"_";
-			}
 			
 			players+="\n";
 			System.out.println(players.toString());
+			
+			
 			
 
 		} catch (Exception e) {

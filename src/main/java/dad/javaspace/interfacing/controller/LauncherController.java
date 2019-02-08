@@ -205,6 +205,7 @@ public class LauncherController implements Initializable {
 	 ***************************************************************************************************/
 
 	private MediaPlayer mpButtons;
+	private MediaPlayer mp;
 
 	// window Position
 	double ejeX;
@@ -271,7 +272,7 @@ public class LauncherController implements Initializable {
 			// Musica menu
 			String musicFile = "/assets/sounds/Vigil.mp3";
 			Media mainTheme = new Media(getClass().getResource(musicFile).toString());
-			MediaPlayer mp = new MediaPlayer(mainTheme);
+			mp = new MediaPlayer(mainTheme);
 			sonidoMusicaSlider.setMax(1.0);
 			mp.setCycleCount(MediaPlayer.INDEFINITE);
 			mp.play();
@@ -499,6 +500,10 @@ public class LauncherController implements Initializable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public MediaPlayer getMp() {
+		return mp;
 	}
 
 	public BorderPane getRootView() {

@@ -27,10 +27,7 @@ import com.almasb.fxgl.settings.ReadOnlyGameSettings;
 import dad.javaspace.interfacing.controller.LauncherController;
 import dad.javaspace.objects.EntityTypes;
 import dad.javaspace.objects.effects.Animations;
-import dad.javaspace.objects.effects.Componente;
-import dad.javaspace.ui.ThrustIndicator;
-import javafx.concurrent.Task;
-import javafx.geometry.Point2D;
+import dad.javaspace.objects.effects.ComponentePropulsor;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.media.Media;
@@ -189,6 +186,7 @@ public class Main extends GameApplication {
 			getGameScene().removeUINode(rootView);
 			controller.guardarConfig();
 			model.setEnPartida(true);
+			controller.getMp().stop();
 			startGame();
 		});
 
@@ -290,8 +288,8 @@ public class Main extends GameApplication {
 		Animations.hiperJumpTransition(player, 1, -Math.sin(Math.toRadians(player.getRotation())) * 100,
 				Math.cos(Math.toRadians(player.getRotation())) * 100, getGameWorld());
 
-		Componente componente = new Componente(player);
-		componente.emitterEmissionPropertyProperty().bind(model.thrustProperty());
+		ComponentePropulsor componente = new ComponentePropulsor(player);
+		componente.emissionRateProperty().bind(model.thrustProperty());
 
 	}
 

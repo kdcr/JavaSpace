@@ -13,19 +13,19 @@ public class Connection extends Thread {
 
 	private Socket sk;
 	private String[] itemState;
-	
+
 	private boolean isDamaged;
 
 	private int identity;
 
 	private String[] nombreSkin;
-	private String nombre, skin;
+	private String nombre, skin, playerState;
 
 	private static ArrayList<Connection> connectionsArray;
 
 //	private static CyclicBarrier barrera = new CyclicBarrier(Server.NPLAYERS);
-	
-	private static ArrayList<Entity> bulletsArray=new ArrayList<Entity>();
+
+	private static ArrayList<Entity> bulletsArray = new ArrayList<Entity>();
 
 	private static Entity player = new Entity();
 
@@ -67,27 +67,22 @@ public class Connection extends Thread {
 			salida.write(Server.getPlayers());
 			salida.flush();
 
+			while (true) {
+
+				itemStateString = entrada.nextLine().toString() + "_";
+				salida.write(itemStateString);
+
+				for (Connection con : connectionsArray) {
+					playerState += con.getItemStateString();
+				}
+				salida.write(playerState);
+
+			}
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
-		while (true) {
-
-			itemStateString = entrada.nextLine().toString();
-			itemState = itemStateString.split(",");
-
-			bulletManager(itemState[3].compareTo("true") == 0);
-
-			
-			
-		}
-
-	}
-
-	private void bulletManager(Boolean b) {
-		// TODO crear un entity para la bala si recibo true, que esta tenga una duración
-		// de vida y compuebe si ha colisonado con otro objeto
-		// TODO CREAR ARRAY DE BALAS
 	}
 
 	public String getNombre() {
