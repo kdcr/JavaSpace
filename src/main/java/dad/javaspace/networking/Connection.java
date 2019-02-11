@@ -5,6 +5,7 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 
 import com.almasb.fxgl.entity.Entity;
@@ -20,10 +21,10 @@ public class Connection extends Thread {
 
 	private String[] nombreSkin;
 	private String nombre, skin, playerState;
+	static CyclicBarrier barrera = new CyclicBarrier(Server.NPLAYERS + 1);
 
 	private static ArrayList<Connection> connectionsArray;
 
-//	private static CyclicBarrier barrera = new CyclicBarrier(Server.NPLAYERS);
 
 	private static ArrayList<Entity> bulletsArray = new ArrayList<Entity>();
 
@@ -39,14 +40,6 @@ public class Connection extends Thread {
 
 		entrada = new Scanner(sk.getInputStream(), "UTF8");
 		salida = new OutputStreamWriter(sk.getOutputStream(), "UTF8");
-//		
-//		try {
-//			barrera.await();
-//		} catch (InterruptedException e) {
-//			e.printStackTrace();
-//		} catch (BrokenBarrierException e) {
-//			e.printStackTrace();
-//		}
 
 	}
 
@@ -62,24 +55,38 @@ public class Connection extends Thread {
 		System.out.println("nombre: " + nombreSkin[0] + " skin: " + nombreSkin[1] + "\n");
 
 		try {
-			salida.write(identity);
+			barrera.await();
+			salida.write(identity + "\n");
 			salida.flush();
+
+			barrera.await();
+
+			System.out.println(Server.getPlayers());
 			salida.write(Server.getPlayers());
 			salida.flush();
 
-			while (true) {
-
-				itemStateString = entrada.nextLine().toString() + "_";
-				salida.write(itemStateString);
-
-				for (Connection con : connectionsArray) {
-					playerState += con.getItemStateString();
-				}
-				salida.write(playerState);
-
-			}
+//			while (true) {
+//
+//				itemStateString = identity+","+entrada.nextLine().toString() + "_";
+//				
+//
+//				for (Connection con : connectionsArray) {
+//					//if(con.getIdentity()!=this.identity)
+//					playerState += con.getItemStateString();
+//				}
+//				System.out.println(playerState);
+//				salida.write(playerState);
+//				salida.flush();
+//
+//			}
 
 		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (BrokenBarrierException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

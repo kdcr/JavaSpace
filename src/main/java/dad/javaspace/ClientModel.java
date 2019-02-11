@@ -1,11 +1,12 @@
 package dad.javaspace;
 
+import java.util.ArrayList;
+
+import dad.javaspace.networking.NetworkingPlayer;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.FloatProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -13,14 +14,14 @@ public class ClientModel {
 
 	private int identity, numPlayers;
 
-	private String[] players;
-
 	private double xForce, yForce;
-	
+
+	private ArrayList<NetworkingPlayer> jugadores = new ArrayList<>();
+
 	private BooleanProperty enPartida = new SimpleBooleanProperty(this, "enPartida", false);
 
 	private DoubleProperty thrust = new SimpleDoubleProperty();
-	
+
 	private DoubleProperty angular = new SimpleDoubleProperty();
 
 	private StringProperty version = new SimpleStringProperty(this, "version", "0.0.1");
@@ -51,14 +52,6 @@ public class ClientModel {
 
 	public void setNumPlayers(int numPlayers) {
 		this.numPlayers = numPlayers;
-	}
-
-	public String[] getPlayers() {
-		return players;
-	}
-
-	public void setPlayers(String[] players) {
-		this.players = players;
 	}
 
 	public double getxForce() {
@@ -104,16 +97,21 @@ public class ClientModel {
 	public final BooleanProperty enPartidaProperty() {
 		return this.enPartida;
 	}
-	
 
 	public final boolean isEnPartida() {
 		return this.enPartidaProperty().get();
 	}
-	
 
 	public final void setEnPartida(final boolean enPartida) {
 		this.enPartidaProperty().set(enPartida);
 	}
-	
+
+	public ArrayList<NetworkingPlayer> getJugadores() {
+		return jugadores;
+	}
+
+	public void setJugadores(ArrayList<NetworkingPlayer> jugadores) {
+		this.jugadores = jugadores;
+	}
 
 }

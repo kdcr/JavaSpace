@@ -4,30 +4,29 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Scanner;
 
 import com.almasb.fxgl.app.FXGL;
 import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.core.math.Vec2;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.RenderLayer;
-import com.almasb.fxgl.entity.components.BoundingBoxComponent;
-import com.almasb.fxgl.entity.components.PositionComponent;
-import com.almasb.fxgl.entity.components.RotationComponent;
 import com.almasb.fxgl.input.*;
 import com.almasb.fxgl.physics.BoundingShape;
 import com.almasb.fxgl.physics.HitBox;
 import com.almasb.fxgl.physics.PhysicsComponent;
 import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
-import com.almasb.fxgl.scene.GameScene;
 import com.almasb.fxgl.settings.GameSettings;
-import com.almasb.fxgl.settings.ReadOnlyGameSettings;
-
 import dad.javaspace.interfacing.controller.LauncherController;
+import dad.javaspace.networking.NetworkingPlayer;
 import dad.javaspace.objects.EntityTypes;
 import dad.javaspace.objects.effects.Animations;
 import dad.javaspace.objects.effects.ComponentePropulsor;
+import dad.javaspace.ui.ThrustIndicator;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -35,15 +34,15 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import javafx.stage.Window;
 
 public class Main extends GameApplication {
 
 	// Interfaz
 	Text textPixels;
+	ThrustIndicator thrustIndicator;
+	double viewWidth;
+	double viewHeight;
 
 	// Conectividad
 	private String ip = "10.2.2.64", name = "jugador_test", skin = "0";
@@ -59,8 +58,9 @@ public class Main extends GameApplication {
 	long coolDown = 0, coolDownStars = 0;
 	private boolean canShoot = false;
 
-	RotationComponent rot;
-	PositionComponent pos;
+	private ClientConnectionThread clientConnectionThread;
+
+	private PhysicsComponent physics;
 
 	// Estetica
 	private ArrayList<Entity> starArray = new ArrayList<>();
@@ -68,8 +68,6 @@ public class Main extends GameApplication {
 
 	private GameSettings settings;
 	private Stage gameStage = new Stage();
-
-	private PhysicsComponent physics;
 
 	public static void main(String[] args) {
 		launch(args);
@@ -128,7 +126,7 @@ public class Main extends GameApplication {
 		input.addAction(new UserAction("Center") {
 			@Override
 			protected void onAction() {
-				model.setAngular(model.getAngular() * 0.8);
+				model.setAngular(model.getAngular() * 0.9);
 
 			}
 		}, KeyCode.Q);
@@ -152,12 +150,21 @@ public class Main extends GameApplication {
 
 	@Override
 	protected void initUI() {
+		super.initUI();
 		textPixels = new Text();
 		textPixels.setFill(Color.WHITE);
 		textPixels.setTranslateX(0);
 		textPixels.setTranslateY(20);
-		getGameScene().addUINode(textPixels); // add to the scene graph
+		// getGameScene().addUINode(textPixels); // add to the scene graph
 
+		thrustIndicator = new ThrustIndicator();
+
+		thrustIndicator.setTranslateX(0);
+		thrustIndicator.setTranslateY(20/* viewHeight - thrustIndicator.getHeight() */);
+
+		getGameScene().addUINode(thrustIndicator);
+		thrustIndicator.setMaxSize(0, 8);
+		thrustIndicator.progressProperty().bind(model.thrustProperty());
 	}
 
 	@Override
@@ -197,61 +204,69 @@ public class Main extends GameApplication {
 			if (!getInput().isHeld(KeyCode.W))
 				model.setThrust(model.getThrust() * 0.80);
 			maxVel();
+//			sendPlayerPosition();
 		}
 	}
 
 	private void startGame() {
-		// try {
-		// Socket sk;
-		//
-		// System.out.println("Buscando conexion...");
-		//
-		// sk = new Socket(ip, 2000);
-		//
-		// // Espera para que le de tiempo al servidor de mover la conexión a otro
-		// puerto
-		// Thread.sleep(3000);
-		//
-		// flujoEntrada = new InputStreamReader(sk.getInputStream(), "UTF-8");
-		//
-		// flujoSalida = new OutputStreamWriter(sk.getOutputStream(), "UTF-8");
-		//
-		// flujoSalida.write(name + "," + skin + "\n");
-		//
-		// flujoSalida.flush();
-		//
-		// System.out.println("nombre enviado");
-		//
-		// model.setIdentity(flujoEntrada.read());
-		//
-		// Scanner input = new Scanner(flujoEntrada);
-		//
-		// model.setPlayers(input.nextLine().split("_"));
-		//
-		// System.out.println(model.getPlayers()[0]);
-		//
-		// System.out.println("id recibida");
-		//
-		// System.out.println(model.getIdentity());
-		//
-		// } catch (UnknownHostException e) {
-		// e.printStackTrace();
-		// } catch (IOException e) {
-		// e.printStackTrace();
-		// } catch (InterruptedException e) {
-		// e.printStackTrace();
-		// }
+		try {
+
+			Socket sk;
+
+			System.out.println("Buscando conexion...");
+
+			sk = new Socket(ip, 2000);
+
+			// Espera para que le de tiempo al servidor de mover la conexión a otro puerto
+			Thread.sleep(3000);
+
+			flujoEntrada = new InputStreamReader(sk.getInputStream(), "UTF-8");
+
+			flujoSalida = new OutputStreamWriter(sk.getOutputStream(), "UTF-8");
+
+			flujoSalida.write(name + "," + skin + "\n");
+
+			flujoSalida.flush();
+
+			System.out.println("nombre enviado");
+
+			model.setIdentity(flujoEntrada.read());
+
+			Scanner input = new Scanner(flujoEntrada);
+
+			System.out.println("id recibida");
+
+			for (String str : input.nextLine().split("_")) {
+				model.getJugadores().add(new NetworkingPlayer(str.split(",")[1], str.split(",")[2],
+						Integer.parseInt(str.split(",")[0])));
+			}
+
+			for (NetworkingPlayer netPlayers : model.getJugadores()) {
+				getGameWorld().addEntity(netPlayers.getEntity());
+			}
+
+			clientConnectionThread = new ClientConnectionThread(input, model);
+
+			clientConnectionThread.run();
+
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 
 		// Estas cuatro lineas se encargan de mover la camara con el jugador, se hace
 		// asi para evitar que la camara rote
-		double viewWidth = getGameScene().getViewport().getWidth();
-		double viewHeight = getGameScene().getViewport().getHeight();
-		// FIXME arreglar la posicion de la camara para centrar la vista
+		viewWidth = getGameScene().getViewport().getWidth();
+		viewHeight = getGameScene().getViewport().getHeight();
+
 		getGameScene().getViewport().xProperty()
 				.bind(player.xProperty().subtract(viewWidth / 2).add(player.widthProperty()));
 		getGameScene().getViewport().yProperty()
 				.bind(player.yProperty().subtract(viewHeight / 2).add((player.heightProperty())));
-		// player.setRotation(200);
+
 		// Sonido del motor
 		mp = new MediaPlayer(new Media(new File("src/main/resources/assets/sounds/thruster.mp3").toURI().toString()));
 		mp.setCycleCount(MediaPlayer.INDEFINITE);
@@ -259,12 +274,11 @@ public class Main extends GameApplication {
 		mp.play();
 
 		physics = new PhysicsComponent();
-		player.getBoundingBoxComponent().addHitBox(new HitBox(BoundingShape.polygon(0,0,25,50,50,0)));
 
+		player.getBoundingBoxComponent().addHitBox(new HitBox(BoundingShape.polygon(0, 0, 25, 50, 50, 0)));
 		player.addComponent(physics);
 
 		physics.setBodyType(BodyType.DYNAMIC);
-
 		// Al jugador se le asigna una textura y se agrega al mundo
 
 		player.setViewFromTexture("navePruebaSmall.png");
@@ -274,7 +288,6 @@ public class Main extends GameApplication {
 		getPhysicsWorld().setGravity(0, 0);
 
 		player.setRenderLayer(RenderLayer.TOP);
-
 		getGameScene().setBackgroundColor(Color.BLACK);
 
 		Animations.hiperJumpTransition(player, 1, -Math.sin(Math.toRadians(player.getRotation())) * 100,
