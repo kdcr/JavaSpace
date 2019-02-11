@@ -5,13 +5,12 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.StackPane?>
 
-
 <StackPane fx:id="empezarPartidaHoverRoot" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <ImageView fx:id="imageViewEP" fitHeight="283.0" fitWidth="501.0" pickOnBounds="true" preserveRatio="true" />
-      <Button fx:id="launchButton" alignment="BOTTOM_CENTER" contentDisplay="BOTTOM" mnemonicParsing="false" text="Jugar" StackPane.alignment="BOTTOM_CENTER">
+      <ImageView fx:id="imageViewEP" fitHeight="460.0" fitWidth="1000.0" pickOnBounds="true" preserveRatio="true" />
+      <Button fx:id="launchButton" alignment="BOTTOM_CENTER" contentDisplay="BOTTOM" mnemonicParsing="false" styleClass="launchButton" text="Jugar" StackPane.alignment="BOTTOM_CENTER">
          <StackPane.margin>
-            <Insets bottom="30.0" />
+            <Insets bottom="230.0" />
          </StackPane.margin>
       </Button>
    </children>

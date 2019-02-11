@@ -21,6 +21,24 @@
 	-fx-background-padding-right: 20.0;
 }
 
+.launchButton {
+	-fx-background-color: rgba(059, 131, 189, 0.3);
+	-fx-text-fill: white;
+	-fx-pref-width: 150;
+	-fx-pref-height: 100;
+	-fx-background-insets: 0.0;
+	-fx-background-radius: 0.0;
+	-fx-background-padding: 20;
+}
+
+.launchButton:hover {
+	-fx-background-color: rgba(059, 131, 189, 0.5);
+	-fx-text-fill: white;
+	-fx-background-insets: 0.0;
+	-fx-background-radius: 0.0;
+	-fx-background-padding: 20;
+}
+
 /*************************************************************************
  * 
  * Scroll Panels

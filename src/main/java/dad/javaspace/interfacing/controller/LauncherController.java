@@ -1,38 +1,22 @@
 package dad.javaspace.interfacing.controller;
 
-import java.awt.DisplayMode;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.io.IOException;
-import java.lang.module.ResolutionException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 
-import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
 import org.ini4j.Wini;
 
-import dad.javaspace.ClientModel;
-import dad.javaspace.JavaSpaceAPP;
-import dad.javaspace.Main;
 import dad.javaspace.interfacing.ScreenResolutions;
 import dad.javaspace.launchermodel.LauncherModel;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ListProperty;
-import javafx.beans.property.SimpleListProperty;
-import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -43,7 +27,6 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
@@ -79,7 +62,7 @@ public class LauncherController implements Initializable {
 
 	@FXML
 	private AnchorPane rootView;
-	
+
 	@FXML
 	private BorderPane rootBorderPaneView;
 
@@ -172,7 +155,6 @@ public class LauncherController implements Initializable {
 	 * SkinSelectorView
 	 * 
 	 ***************************************************************************************************/
-
 	@FXML
 	private ScrollPane skinTilePaneRoot;
 
@@ -294,7 +276,7 @@ public class LauncherController implements Initializable {
 			 * 
 			 ***************************************************************************************************/
 
-			BackgroundSize bSize = new BackgroundSize(720, 360, false, false, true, true);
+			BackgroundSize bSize = new BackgroundSize(model.getResolucion().getX(), model.getResolucion().getY(), false, false, true, true);
 
 			Background background = new Background(
 					new BackgroundImage(new Image("/assets/textures/launcherBackground.gif"),
@@ -314,6 +296,14 @@ public class LauncherController implements Initializable {
 			selectSkinButton.hoverProperty().addListener(e -> onSelectSkinButtonHovered());
 			exitButton.setOnAction(e -> onCloseAction());
 			launchButton.setOnAction(e -> guardarConfig());
+			skinUno.setOnAction(e -> onSkinUnoAction());
+			skinDos.setOnAction(e -> onSkinDosAction());
+			skinTres.setOnAction(e -> onSkinTresAction());
+			skinCuatro.setOnAction(e -> onSkinCuatroAction());
+			skinCinco.setOnAction(e -> onSkinCincoAction());
+			skinSeis.setOnAction(e -> onSkinSeisAction());
+			skinSiete.setOnAction(e -> onSkinSieteAction());
+			skinOcho.setOnAction(e -> onSkinOchoAction());
 
 			/****************************************************************************************************
 			 * 
@@ -355,7 +345,7 @@ public class LauncherController implements Initializable {
 					new NumberStringConverter());
 			Bindings.bindBidirectional(fullScreenCheckBox.selectedProperty(), model.pantallaCompletaProperty());
 			model.resolucionProperty().bind(resolutionComboBox.getSelectionModel().selectedItemProperty());
-			
+
 			// Tamaño Launcher
 			rootView.setPrefSize(model.getResolucion().getX(), model.getResolucion().getY());
 
@@ -454,6 +444,7 @@ public class LauncherController implements Initializable {
 			ini.put("Opciones de Juego", "volumenJuego", model.getVolumenJuego());
 			ini.put("Opciones de RED", "ip", model.getIp());
 			ini.put("Opciones de RED", "puerto", model.getPuerto());
+			ini.put("Skins", "Skin Seleccionada", model.getSelectedSkin());
 			ini.store();
 
 		} catch (IOException e) {
@@ -480,7 +471,8 @@ public class LauncherController implements Initializable {
 			try {
 				Wini ini = new Wini(archivo);
 
-				modelCarga.setResolucion(new ScreenResolutions(ini.get("Opciones de Juego", "resolucion", String.class)));
+				modelCarga
+						.setResolucion(new ScreenResolutions(ini.get("Opciones de Juego", "resolucion", String.class)));
 				boolean prueba = ini.get("Opciones de Juego", "pantallaCompleta", boolean.class);
 				System.out.println(prueba);
 				modelCarga.setPantallaCompleta(ini.get("Opciones de Juego", "pantallaCompleta", boolean.class));
@@ -489,6 +481,7 @@ public class LauncherController implements Initializable {
 				modelCarga.setVolumenJuego(ini.get("Opciones de Juego", "volumenJuego", double.class));
 				modelCarga.setIp(ini.get("Opciones de RED", "ip", String.class));
 				modelCarga.setPuerto(ini.get("Opciones de RED", "puerto", int.class));
+				modelCarga.setSelectedSkin(ini.get("Skin", "Skin Seleccionada", int.class));
 
 			} catch (InvalidFileFormatException e) {
 				e.printStackTrace();
@@ -509,7 +502,40 @@ public class LauncherController implements Initializable {
 			e.printStackTrace();
 		}
 	}
-	
+
+	private void onSkinUnoAction() {
+		model.setSelectedSkin(0);
+	}
+
+	private void onSkinDosAction() {
+		model.setSelectedSkin(1);
+	}
+
+	private void onSkinTresAction() {
+		model.setSelectedSkin(2);
+	}
+
+	private void onSkinCuatroAction() {
+		model.setSelectedSkin(3);
+	}
+
+	private void onSkinCincoAction() {
+		model.setSelectedSkin(4);
+	}
+
+	private void onSkinSeisAction() {
+		model.setSelectedSkin(5);
+	}
+
+	private void onSkinSieteAction() {
+		model.setSelectedSkin(6);
+	}
+
+	private void onSkinOchoAction() {
+		model.setSelectedSkin(7);
+	}
+
+
 	public MediaPlayer getMp() {
 		return mp;
 	}
@@ -517,7 +543,7 @@ public class LauncherController implements Initializable {
 	public AnchorPane getRootView() {
 		return rootView;
 	}
-	
+
 	public Button getLaunchButton() {
 		return launchButton;
 	}

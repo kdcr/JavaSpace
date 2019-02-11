@@ -4,9 +4,9 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.TilePane?>
 
-<ScrollPane fx:id="skinTilePaneRoot" hbarPolicy="NEVER" styleClass="scrollPaneClass" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<ScrollPane fx:id="skinTilePaneRoot" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" styleClass="scrollPaneClass" vbarPolicy="ALWAYS" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <content>
-      <TilePane fx:id="skinTilePane" alignment="TOP_CENTER" hgap="5.0" maxHeight="293.0" maxWidth="511.0" prefHeight="293.0" prefWidth="511.0" styleClass="tilePaneClass" vgap="5.0">
+      <TilePane fx:id="skinTilePane" alignment="CENTER" hgap="5.0" styleClass="tilePaneClass" vgap="5.0">
          <children>
             <Button fx:id="skinUno" maxHeight="140.0" maxWidth="140.0" mnemonicParsing="false" prefHeight="140.0" prefWidth="140.0" styleClass="skinButtons" />
             <Button fx:id="skinDos" maxHeight="140.0" maxWidth="140.0" mnemonicParsing="false" prefHeight="140.0" prefWidth="140.0" styleClass="skinButtons" />

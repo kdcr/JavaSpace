@@ -17,6 +17,7 @@ public class LauncherModel {
 	private DoubleProperty volumenJuego;
 	private StringProperty ip;
 	private IntegerProperty puerto;
+	private IntegerProperty selectedSkin;
 	private StringProperty nombreJugador;
 	private BooleanProperty pantallaCompleta;
 	private ObjectProperty<ScreenResolutions> resolucion;
@@ -26,6 +27,7 @@ public class LauncherModel {
 		volumenJuego = new SimpleDoubleProperty(this, "volumenMusica", 1.0);
 		ip = new SimpleStringProperty(this, "ip");
 		puerto = new SimpleIntegerProperty(this, "puerto", 2000);
+		selectedSkin = new SimpleIntegerProperty(this, "selectedSkin", 0);
 		nombreJugador = new SimpleStringProperty(this, "nombreJugador", "DefaultPlayerName");
 		pantallaCompleta = new SimpleBooleanProperty(this, "pantallaCompleta", true);
 		resolucion = new SimpleObjectProperty<>(this, "resolucion");
@@ -113,6 +115,18 @@ public class LauncherModel {
 
 	public final void setResolucion(final ScreenResolutions resolucion) {
 		this.resolucionProperty().set(resolucion);
+	}
+
+	public final IntegerProperty selectedSkinProperty() {
+		return this.selectedSkin;
+	}
+
+	public final int getSelectedSkin() {
+		return this.selectedSkinProperty().get();
+	}
+
+	public final void setSelectedSkin(final int selectedSkin) {
+		this.selectedSkinProperty().set(selectedSkin);
 	}
 
 }
