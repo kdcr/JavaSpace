@@ -29,6 +29,7 @@ import dad.javaspace.objects.EntityTypes;
 import dad.javaspace.objects.effects.Animations;
 import dad.javaspace.objects.effects.ComponentePropulsor;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -168,7 +169,7 @@ public class Main extends GameApplication {
 	protected void initGame() {
 		super.initGame();
 
-		BorderPane rootView = controller.getRootView();
+		AnchorPane rootView = controller.getRootView();
 		getGameScene().addUINode(rootView);
 
 		controller.getLaunchButton().setOnAction(e -> {

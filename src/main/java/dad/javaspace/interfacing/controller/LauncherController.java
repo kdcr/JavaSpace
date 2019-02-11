@@ -31,6 +31,7 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -43,6 +44,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
@@ -76,7 +78,10 @@ public class LauncherController implements Initializable {
 	 ***************************************************************************************************/
 
 	@FXML
-	private BorderPane rootView;
+	private AnchorPane rootView;
+	
+	@FXML
+	private BorderPane rootBorderPaneView;
 
 	@FXML
 	private VBox cajaBotones;
@@ -250,7 +255,7 @@ public class LauncherController implements Initializable {
 			 * 
 			 ***************************************************************************************************/
 			imageViewEP.setImage(new Image("/assets/textures/imagenjugar.jpg"));
-			rootView.setCenter(empezarPartidaHoverRoot);
+			rootBorderPaneView.setCenter(empezarPartidaHoverRoot);
 			imageViewSalir.setImage(new Image("/assets/textures/imagensalir.jpg"));
 
 			// Skins
@@ -350,6 +355,9 @@ public class LauncherController implements Initializable {
 					new NumberStringConverter());
 			Bindings.bindBidirectional(fullScreenCheckBox.selectedProperty(), model.pantallaCompletaProperty());
 			model.resolucionProperty().bind(resolutionComboBox.getSelectionModel().selectedItemProperty());
+			
+			// Tamaño Launcher
+			rootView.setPrefSize(model.getResolucion().getX(), model.getResolucion().getY());
 
 		}
 	}
@@ -385,21 +393,21 @@ public class LauncherController implements Initializable {
 
 	private void onSelectSkinButtonHovered() {
 		if (selectSkinButton.isHover()) {
-			rootView.getCenter().setOpacity(0);
+			rootBorderPaneView.getCenter().setOpacity(0);
 			hoverAnimation(skinTilePaneRoot);
 		}
 	}
 
 	private void onExitButtonHovered() {
 		if (exitButton.isHover()) {
-			rootView.getCenter().setOpacity(0);
+			rootBorderPaneView.getCenter().setOpacity(0);
 			hoverAnimation(salirLauncherHoverRoot);
 		}
 	}
 
 	private void onCFGButtonHovered() {
 		if (cfgButton.isHover()) {
-			rootView.getCenter().setOpacity(0);
+			rootBorderPaneView.getCenter().setOpacity(0);
 			hoverAnimation(cfgHoverRoot);
 		}
 
@@ -407,7 +415,7 @@ public class LauncherController implements Initializable {
 
 	private void onEmpezarPartidaButtonHovered() {
 		if (empezarPartidaButton.isHover()) {
-			rootView.getCenter().setOpacity(0);
+			rootBorderPaneView.getCenter().setOpacity(0);
 			hoverAnimation(empezarPartidaHoverRoot);
 		}
 
@@ -417,7 +425,7 @@ public class LauncherController implements Initializable {
 		mpButtons.stop();
 		mpButtons.play();
 
-		rootView.setCenter(nodo);
+		rootBorderPaneView.setCenter(nodo);
 		FadeTransition fade = new FadeTransition();
 		fade.setNode(nodo);
 		fade.setFromValue(0);
@@ -506,7 +514,7 @@ public class LauncherController implements Initializable {
 		return mp;
 	}
 
-	public BorderPane getRootView() {
+	public AnchorPane getRootView() {
 		return rootView;
 	}
 	
