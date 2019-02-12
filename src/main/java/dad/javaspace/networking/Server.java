@@ -7,9 +7,9 @@ import java.util.ArrayList;
 public class Server {
 	Socket skCliente;
 	
-	 static final int NPLAYERS=2;
+	 static final int NPLAYERS=1;
 	private static ArrayList<Connection> connectionsArray=new ArrayList<Connection>();
-	private static String players="_";
+	private static String players="";
 	private static boolean gameFinished=false;
 	
 	
@@ -75,7 +75,7 @@ public class Server {
 				players+=con.getIdentity()+","+con.getNombre()+","+con.getSkin()+"_";
 			}
 				
-			players+="\n";
+			players.concat("\n");
 			Connection.barrera.await();
 			
 			

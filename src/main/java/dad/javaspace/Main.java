@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 import com.almasb.fxgl.app.FXGL;
@@ -45,7 +46,7 @@ public class Main extends GameApplication {
 	double viewHeight;
 
 	// Conectividad
-	private String ip = "10.2.2.64", name = "jugador_test", skin = "0";
+	private String ip, name = "jugadorTest", skin = "0";
 
 	private InputStreamReader flujoEntrada;
 	private OutputStreamWriter flujoSalida;
@@ -231,12 +232,23 @@ public class Main extends GameApplication {
 			System.out.println("nombre enviado");
 
 			model.setIdentity(flujoEntrada.read());
-
+			
+			System.out.println(model.getIdentity());
 			Scanner input = new Scanner(flujoEntrada);
+			
 
 			System.out.println("id recibida");
+			flujoSalida.write("ready\n");
+			flujoSalida.flush();
+			
+			
+					System.out.println(input.nextLine());
 
-			for (String str : input.nextLine().split("_")) {
+				
+			String string=input.nextLine();
+			System.out.println(string);
+
+			for (String str : string.split("_")) {
 				model.getJugadores().add(new NetworkingPlayer(str.split(",")[1], str.split(",")[2],
 						Integer.parseInt(str.split(",")[0])));
 			}

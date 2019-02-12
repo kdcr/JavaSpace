@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
@@ -26,9 +27,6 @@ public class Connection extends Thread {
 	private static ArrayList<Connection> connectionsArray;
 
 
-	private static ArrayList<Entity> bulletsArray = new ArrayList<Entity>();
-
-	private static Entity player = new Entity();
 
 	Scanner entrada;
 	OutputStreamWriter salida;
@@ -46,7 +44,7 @@ public class Connection extends Thread {
 	@Override
 	public void run() {
 		super.run();
-
+		boolean aux = false;
 		nombreSkin = entrada.nextLine().toString().split(",");
 
 		nombre = nombreSkin[0];
@@ -56,29 +54,38 @@ public class Connection extends Thread {
 
 		try {
 			barrera.await();
-			salida.write(identity + "\n");
+			salida.write(identity);
 			salida.flush();
 
-			barrera.await();
+			 barrera.await();
+				do {
+					try {
+						aux = false;
+						System.out.println(entrada.nextLine());
 
-			System.out.println(Server.getPlayers());
-			salida.write(Server.getPlayers());
+					} catch (NoSuchElementException e) {
+						aux = true;
+					}
+				} while (aux);
+				salida.write("ready\n");
+				salida.flush();
+
+			System.out.println(Server.getPlayers().toString());
+			salida.write(Server.getPlayers().toString()+"\n");
 			salida.flush();
+			while (true) {
 
-//			while (true) {
-//
-//				itemStateString = identity+","+entrada.nextLine().toString() + "_";
-//				
-//
-//				for (Connection con : connectionsArray) {
-//					//if(con.getIdentity()!=this.identity)
-//					playerState += con.getItemStateString();
-//				}
-//				System.out.println(playerState);
-//				salida.write(playerState);
-//				salida.flush();
-//
-//			}
+				itemStateString = identity + "," + entrada.nextLine().toString() + "_";
+
+				for (Connection con : connectionsArray) {
+					// if(con.getIdentity()!=this.identity)
+					playerState += con.getItemStateString();
+				}
+				System.out.println(playerState);
+				salida.write(playerState);
+				salida.flush();
+
+			}
 
 		} catch (IOException e) {
 			e.printStackTrace();
