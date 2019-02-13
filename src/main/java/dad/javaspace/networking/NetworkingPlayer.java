@@ -12,6 +12,9 @@ public class NetworkingPlayer {
 		this.nombre = nombre;
 		this.skin = skin;
 		this.id = id;
+		
+		entity = new Entity();
+		entity.setViewFromTexture("navePruebaSmall.png");
 	}
 
 	public Entity getEntity() {

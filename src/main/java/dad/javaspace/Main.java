@@ -8,7 +8,6 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 import com.almasb.fxgl.app.FXGL;
@@ -30,7 +29,6 @@ import dad.javaspace.objects.effects.ComponentePropulsor;
 import dad.javaspace.ui.ThrustIndicator;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
@@ -216,7 +214,7 @@ public class Main extends GameApplication {
 
 			System.out.println("Buscando conexion...");
 
-			sk = new Socket(ip, 2000);
+			sk = new Socket("10.2.2.64", 2000);
 
 			// Espera para que le de tiempo al servidor de mover la conexión a otro puerto
 			Thread.sleep(3000);
@@ -255,12 +253,13 @@ public class Main extends GameApplication {
 			System.out.println("Jugadores recibidos");
 
 			for (NetworkingPlayer netPlayers : model.getJugadores()) {
+				System.out.println(netPlayers.getNombre());
 				getGameWorld().addEntity(netPlayers.getEntity());
 			}
 
 			clientConnectionThread = new ClientConnectionThread(input, model);
 
-			clientConnectionThread.run();
+			clientConnectionThread.start();
 
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
