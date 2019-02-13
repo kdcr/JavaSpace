@@ -16,8 +16,9 @@ public class Connection extends Thread {
 	private Socket sk;
 	private String[] itemState;
 
-	private boolean isDamaged;
-
+	
+	
+	
 	private int identity;
 
 	private String[] nombreSkin;
@@ -94,10 +95,8 @@ public class Connection extends Thread {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (BrokenBarrierException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
