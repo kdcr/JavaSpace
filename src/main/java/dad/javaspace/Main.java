@@ -55,7 +55,7 @@ public class Main extends GameApplication {
 	private LauncherController controller = new LauncherController();
 	private MediaPlayer mp;
 	long coolDown = 0, coolDownStars = 0;
-	private boolean canShoot = false;
+	
 
 	private ClientConnectionThread clientConnectionThread;
 
@@ -203,13 +203,16 @@ public class Main extends GameApplication {
 			if (!getInput().isHeld(KeyCode.W))
 				model.setThrust(model.getThrust() * 0.80);
 			maxVel();
-			sendPlayerPosition();
 		}
 	}
 
 	private void startGame() {
 		try {
-
+			model.playerXProperty().bind(player.xProperty());
+			model.playerYProperty().bind(player.yProperty());
+			model.angularProperty().bind(player.angleProperty());
+			// TODO add angular
+			
 			Socket sk;
 
 			System.out.println("Buscando conexion...");
@@ -255,11 +258,10 @@ public class Main extends GameApplication {
 				getGameWorld().addEntity(netPlayers.getEntity());
 			}
 
-			clientConnectionThread = new ClientConnectionThread(input, model);
+			clientConnectionThread = new ClientConnectionThread(input, model, new OutputStreamWriter(sk.getOutputStream()));
 
-			clientConnectionThread.start();
 			
-			input.nextLine();
+			clientConnectionThread.start();
 
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
@@ -335,24 +337,12 @@ public class Main extends GameApplication {
 	private void makeShoot() {
 		if (System.currentTimeMillis() >= coolDown + 500) {
 			coolDown = System.currentTimeMillis();
-			canShoot = true;
+			model.setCanShoot(true);
 			getAudioPlayer().playSound("laser.mp3");
 			Animations.shootTransition(player, getGameWorld());
 		}
 	}
 
-	private void sendPlayerPosition() {
-		try {
-			if (canShoot) {
-				canShoot = false;
-				flujoSalida.write(player.getX() + "," + player.getY() + "," + player.getRotation() + "," + true + "\n");
-			} else
-				flujoSalida
-						.write(player.getX() + "," + player.getY() + "," + player.getRotation() + "," + false + "\n");
-
-		} catch (IOException e) {
-		}
-	}
 
 	private void addThrust() {
 		if (model.getThrust() + 0.5 < 8)

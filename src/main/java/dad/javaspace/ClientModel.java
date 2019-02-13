@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import dad.javaspace.networking.NetworkingPlayer;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -15,6 +16,20 @@ public class ClientModel {
 	private int identity, numPlayers;
 
 	private double xForce, yForce;
+
+	private DoubleProperty playerX = new SimpleDoubleProperty(this, "playerX");
+	private DoubleProperty playerY = new SimpleDoubleProperty(this, "playerY");
+	private DoubleProperty playerRotation = new SimpleDoubleProperty(this, "playerRotation");
+
+	private boolean canShoot = false;
+
+	public boolean isCanShoot() {
+		return canShoot;
+	}
+
+	public void setCanShoot(boolean canShoot) {
+		this.canShoot = canShoot;
+	}
 
 	private ArrayList<NetworkingPlayer> jugadores = new ArrayList<>();
 
@@ -112,6 +127,30 @@ public class ClientModel {
 
 	public void setJugadores(ArrayList<NetworkingPlayer> jugadores) {
 		this.jugadores = jugadores;
+	}
+
+	public final DoubleProperty playerXProperty() {
+		return this.playerX;
+	}
+
+	public final double getPlayerX() {
+		return this.playerXProperty().get();
+	}
+
+	public final DoubleProperty playerYProperty() {
+		return this.playerY;
+	}
+
+	public final double getPlayerY() {
+		return this.playerYProperty().get();
+	}
+
+	public final DoubleProperty playerRotationProperty() {
+		return this.playerRotation;
+	}
+
+	public final double getPlayerRotation() {
+		return this.playerRotationProperty().get();
 	}
 
 }

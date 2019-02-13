@@ -1,5 +1,7 @@
 package dad.javaspace;
 
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.Scanner;
 
 import dad.javaspace.networking.NetworkingPlayer;
@@ -7,11 +9,13 @@ import dad.javaspace.networking.NetworkingPlayer;
 public class ClientConnectionThread extends Thread {
 
 	private Scanner scanner;
+	private OutputStreamWriter writer;
 	ClientModel model;
 
-	public ClientConnectionThread(Scanner sc, ClientModel model) {
+	public ClientConnectionThread(Scanner sc, ClientModel model, OutputStreamWriter out) {
 		scanner = sc;
 		this.model = model;
+		this.writer = out;
 	}
 
 	@Override
@@ -19,10 +23,15 @@ public class ClientConnectionThread extends Thread {
 		super.run();
 
 		System.out.println("Thread conexiones up");
+		scanner.nextLine();
 
 		while (true) {
-			desempaquetarPosiciones(scanner.nextLine());
-			System.out.println("paquete recibido");
+			try {
+				sendPlayerPosition();
+				desempaquetarPosiciones(scanner.nextLine());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 
 	}
@@ -39,6 +48,21 @@ public class ClientConnectionThread extends Thread {
 				bufferPlayer.getEntity().setY(Double.parseDouble(str.split(",")[2].toString()));
 				bufferPlayer.getEntity().setRotation(Double.parseDouble(str.split(",")[3].toString()));
 			}
+		}
+	}
+
+	private void sendPlayerPosition() {
+		try {
+			if (model.isCanShoot()) {
+				model.setCanShoot(false);
+
+				writer.write(model.getPlayerX() + "," + model.getPlayerY() + "," + model.playerRotationProperty() + ","
+						+ true + "\n");
+			} else
+				writer.write(model.getPlayerX() + "," + model.getPlayerY() + "," + model.playerRotationProperty() + ","
+						+ false + "\n");
+
+		} catch (IOException e) {
 		}
 	}
 
