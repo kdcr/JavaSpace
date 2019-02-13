@@ -244,14 +244,15 @@ public class Main extends GameApplication {
 			
 					System.out.println(input.nextLine());
 
-				
-			String string=input.nextLine();
-			System.out.println(string);
-
-			for (String str : string.split("_")) {
-				model.getJugadores().add(new NetworkingPlayer(str.split(",")[1], str.split(",")[2],
-						Integer.parseInt(str.split(",")[0])));
+			String test = input.nextLine();
+			System.out.println(test);
+			for (String str : test.split("_")) {
+				if (Integer.parseInt(str.split(",")[0]) != model.getIdentity())
+					model.getJugadores().add(new NetworkingPlayer(str.split(",")[1], str.split(",")[2],
+							Integer.parseInt(str.split(",")[0])));
 			}
+
+			System.out.println("Jugadores recibidos");
 
 			for (NetworkingPlayer netPlayers : model.getJugadores()) {
 				getGameWorld().addEntity(netPlayers.getEntity());
@@ -336,7 +337,7 @@ public class Main extends GameApplication {
 		if (System.currentTimeMillis() >= coolDown + 500) {
 			coolDown = System.currentTimeMillis();
 			canShoot = true;
-//			sendPlayerPosition();
+			sendPlayerPosition();
 			getAudioPlayer().playSound("laser.mp3");
 			Animations.shootTransition(player, getGameWorld());
 		}

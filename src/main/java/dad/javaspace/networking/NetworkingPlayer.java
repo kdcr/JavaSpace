@@ -9,7 +9,6 @@ public class NetworkingPlayer {
 	private int id;
 
 	public NetworkingPlayer(String nombre, String skin, int id) {
-		super();
 		this.nombre = nombre;
 		this.skin = skin;
 		this.id = id;
