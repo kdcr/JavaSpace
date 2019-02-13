@@ -2,6 +2,8 @@ package dad.javaspace;
 
 import java.util.Scanner;
 
+import dad.javaspace.networking.NetworkingPlayer;
+
 public class ClientConnectionThread extends Thread {
 
 	private Scanner scanner;
@@ -28,13 +30,25 @@ public class ClientConnectionThread extends Thread {
 	public void desempaquetarPosiciones(String paquete) {
 		String[] buffer = paquete.split("_").clone();
 		int id = 0;
+		System.out.println(paquete);
 		for (String str : buffer) {
-			id = Integer.parseInt(str.split(",")[0].toString()) - 2;
+			id = Integer.parseInt(str.split(",")[0].toString());
 			if (id != model.getIdentity()) {
-				model.getJugadores().get(id).getEntity().setX(Double.parseDouble(str.split(",")[1].toString()));
-				model.getJugadores().get(id).getEntity().setY(Double.parseDouble(str.split(",")[2].toString()));
-				model.getJugadores().get(id).getEntity().setRotation(Double.parseDouble(str.split(",")[3].toString()));
+				NetworkingPlayer bufferPlayer = find(id);
+				bufferPlayer.getEntity().setX(Double.parseDouble(str.split(",")[1].toString()));
+				bufferPlayer.getEntity().setY(Double.parseDouble(str.split(",")[2].toString()));
+				bufferPlayer.getEntity().setRotation(Double.parseDouble(str.split(",")[3].toString()));
 			}
 		}
+	}
+
+	private NetworkingPlayer find(int id) {
+
+		for (NetworkingPlayer player : model.getJugadores()) {
+			if (player.getId() == id)
+				return player;
+		}
+
+		return null;
 	}
 }

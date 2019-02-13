@@ -16,6 +16,9 @@ public class NetworkingPlayer {
 		entity = new Entity();
 		entity.setViewFromTexture("navePruebaSmall.png");
 	}
+	
+	public NetworkingPlayer() {
+	}
 
 	public Entity getEntity() {
 		return entity;
