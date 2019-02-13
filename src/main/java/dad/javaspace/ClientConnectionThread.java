@@ -26,12 +26,11 @@ public class ClientConnectionThread extends Thread {
 	}
 
 	public void desempaquetarPosiciones(String paquete) {
-		System.out.println(paquete);
 		String[] buffer = paquete.split("_").clone();
 		int id = 0;
 		for (String str : buffer) {
-			if (Integer.parseInt(str.split(",")[0].toString()) != model.getIdentity()) {
-				id = Integer.parseInt(str.split(",")[0].toString()) - 1;
+			id = Integer.parseInt(str.split(",")[0].toString()) - 2;
+			if (id != model.getIdentity()) {
 				model.getJugadores().get(id).getEntity().setX(Double.parseDouble(str.split(",")[1].toString()));
 				model.getJugadores().get(id).getEntity().setY(Double.parseDouble(str.split(",")[2].toString()));
 				model.getJugadores().get(id).getEntity().setRotation(Double.parseDouble(str.split(",")[3].toString()));
