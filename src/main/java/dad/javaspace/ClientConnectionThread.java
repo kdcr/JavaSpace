@@ -26,14 +26,15 @@ public class ClientConnectionThread extends Thread {
 	}
 
 	public void desempaquetarPosiciones(String paquete) {
-		for (String str : paquete.split("_")) {
-			if (Integer.parseInt(str.split(",")[0]) - 1 != model.getIdentity()) {
-				model.getJugadores().get(Integer.parseInt(str.split(",")[0]) - 1).getEntity()
-						.setX(Double.parseDouble(str.split(",")[1]));
-				model.getJugadores().get(Integer.parseInt(str.split(",")[0]) - 1).getEntity()
-						.setY(Double.parseDouble(str.split(",")[2]));
-				model.getJugadores().get(Integer.parseInt(str.split(",")[0]) - 1).getEntity()
-						.setRotation(Double.parseDouble(str.split(",")[3]));
+		System.out.println(paquete);
+		String[] buffer = paquete.split("_").clone();
+		int id = 0;
+		for (String str : buffer) {
+			if (Integer.parseInt(str.split(",")[0].toString()) != model.getIdentity()) {
+				id = Integer.parseInt(str.split(",")[0].toString()) - 1;
+				model.getJugadores().get(id).getEntity().setX(Double.parseDouble(str.split(",")[1].toString()));
+				model.getJugadores().get(id).getEntity().setY(Double.parseDouble(str.split(",")[2].toString()));
+				model.getJugadores().get(id).getEntity().setRotation(Double.parseDouble(str.split(",")[3].toString()));
 			}
 		}
 	}
