@@ -210,8 +210,7 @@ public class Main extends GameApplication {
 		try {
 			model.playerXProperty().bind(player.xProperty());
 			model.playerYProperty().bind(player.yProperty());
-			model.angularProperty().bind(player.angleProperty());
-			// TODO add angular
+			model.playerRotationProperty().bind(player.angleProperty());
 			
 			Socket sk;
 
@@ -258,9 +257,8 @@ public class Main extends GameApplication {
 				getGameWorld().addEntity(netPlayers.getEntity());
 			}
 
-			clientConnectionThread = new ClientConnectionThread(input, model, new OutputStreamWriter(sk.getOutputStream()));
+			clientConnectionThread = new ClientConnectionThread(input, model, flujoSalida);
 
-			
 			clientConnectionThread.start();
 
 		} catch (UnknownHostException e) {

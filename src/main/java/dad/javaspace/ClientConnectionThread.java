@@ -22,8 +22,8 @@ public class ClientConnectionThread extends Thread {
 	public void run() {
 		super.run();
 
+		System.out.println(scanner.nextLine());
 		System.out.println("Thread conexiones up");
-		scanner.nextLine();
 
 		while (true) {
 			try {
@@ -56,12 +56,12 @@ public class ClientConnectionThread extends Thread {
 			if (model.isCanShoot()) {
 				model.setCanShoot(false);
 
-				writer.write(model.getPlayerX() + "," + model.getPlayerY() + "," + model.playerRotationProperty() + ","
+				writer.write(model.getPlayerX() + "," + model.getPlayerY() + "," + model.getPlayerRotation() + ","
 						+ true + "\n");
 			} else
-				writer.write(model.getPlayerX() + "," + model.getPlayerY() + "," + model.playerRotationProperty() + ","
+				writer.write(model.getPlayerX() + "," + model.getPlayerY() + "," + model.getPlayerRotation() + ","
 						+ false + "\n");
-
+			writer.flush();
 		} catch (IOException e) {
 		}
 	}
