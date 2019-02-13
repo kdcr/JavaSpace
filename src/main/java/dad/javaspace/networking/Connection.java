@@ -21,7 +21,7 @@ public class Connection extends Thread {
 	private int identity;
 
 	private String[] nombreSkin;
-	private String nombre, skin, playerState;
+	private String nombre, skin, playersState;
 	static CyclicBarrier barrera = new CyclicBarrier(Server.NPLAYERS + 1);
 
 	private static ArrayList<Connection> connectionsArray;
@@ -73,16 +73,20 @@ public class Connection extends Thread {
 			System.out.println(Server.getPlayers().toString());
 			salida.write(Server.getPlayers().toString()+"\n");
 			salida.flush();
+			
+			salida.write("start\n");
+			salida.flush();
 			while (true) {
-
-				itemStateString = identity + "," + entrada.nextLine().toString() + "_";
-
+				playersState="";
+				itemStateString = identity + "," + entrada.nextLine() + "_";
+				
 				for (Connection con : connectionsArray) {
 					// if(con.getIdentity()!=this.identity)
-					playerState += con.getItemStateString();
+					playersState += con.getItemStateString();
 				}
-				System.out.println(playerState);
-				salida.write(playerState);
+				
+				System.out.println(playersState);
+				salida.write(playersState+"\n");
 				salida.flush();
 
 			}

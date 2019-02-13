@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class Server {
 	Socket skCliente;
 	
-	 static final int NPLAYERS=1;
+	 static final int NPLAYERS=2;
 	private static ArrayList<Connection> connectionsArray=new ArrayList<Connection>();
 	private static String players="";
 	private static boolean gameFinished=false;
@@ -67,7 +67,6 @@ public class Server {
 				
 			}
 			
-			//TODO cambiar el sleep por una barrera que se abra ina vez se hayan inicializado todas la conexiones
 			Connection.barrera.await();
 			
 			
