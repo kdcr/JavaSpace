@@ -203,7 +203,7 @@ public class Main extends GameApplication {
 			if (!getInput().isHeld(KeyCode.W))
 				model.setThrust(model.getThrust() * 0.80);
 			maxVel();
-//			sendPlayerPosition();
+			sendPlayerPosition();
 		}
 	}
 
@@ -230,17 +230,15 @@ public class Main extends GameApplication {
 			System.out.println("nombre enviado");
 
 			model.setIdentity(flujoEntrada.read());
-			
+
 			System.out.println(model.getIdentity());
 			Scanner input = new Scanner(flujoEntrada);
-			
 
 			System.out.println("id recibida");
 			flujoSalida.write("ready\n");
 			flujoSalida.flush();
-			
-			
-					System.out.println(input.nextLine());
+
+			System.out.println(input.nextLine());
 
 			String test = input.nextLine();
 			System.out.println(test);
@@ -260,6 +258,8 @@ public class Main extends GameApplication {
 			clientConnectionThread = new ClientConnectionThread(input, model);
 
 			clientConnectionThread.start();
+			
+			input.nextLine();
 
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
@@ -336,7 +336,6 @@ public class Main extends GameApplication {
 		if (System.currentTimeMillis() >= coolDown + 500) {
 			coolDown = System.currentTimeMillis();
 			canShoot = true;
-			sendPlayerPosition();
 			getAudioPlayer().playSound("laser.mp3");
 			Animations.shootTransition(player, getGameWorld());
 		}
@@ -346,11 +345,10 @@ public class Main extends GameApplication {
 		try {
 			if (canShoot) {
 				canShoot = false;
-				flujoSalida.write(model.getIdentity() + "," + player.getX() + "," + player.getY() + ","
-						+ player.getRotation() + "," + true + "\n");
+				flujoSalida.write(player.getX() + "," + player.getY() + "," + player.getRotation() + "," + true + "\n");
 			} else
-				flujoSalida.write(model.getIdentity() + "," + player.getX() + "," + player.getY() + ","
-						+ player.getRotation() + "," + false + "\n");
+				flujoSalida
+						.write(player.getX() + "," + player.getY() + "," + player.getRotation() + "," + false + "\n");
 
 		} catch (IOException e) {
 		}
