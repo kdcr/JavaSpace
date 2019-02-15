@@ -16,6 +16,8 @@ public class ClientModel {
 
 	private double xForce, yForce;
 
+	private int port;
+
 	private String ip, name = "jugadorTest", skin = "0";
 
 	private DoubleProperty shield = new SimpleDoubleProperty(this, "shield", 1);
@@ -23,8 +25,16 @@ public class ClientModel {
 	private DoubleProperty playerX = new SimpleDoubleProperty(this, "playerX");
 	private DoubleProperty playerY = new SimpleDoubleProperty(this, "playerY");
 	private DoubleProperty playerRotation = new SimpleDoubleProperty(this, "playerRotation");
-	
+
 	private boolean canShoot = false;
+
+	public int getPort() {
+		return port;
+	}
+
+	public void setPort(int port) {
+		this.port = port;
+	}
 
 	public String getSkin() {
 		return skin;
@@ -49,7 +59,6 @@ public class ClientModel {
 	public void setName(String name) {
 		this.name = name;
 	}
-
 
 	public boolean isCanShoot() {
 		return canShoot;

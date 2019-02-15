@@ -200,11 +200,11 @@ public class Main extends GameApplication {
 
 	private void startGame() {
 		try {
-			
+
 			model.setIp(controller.getModel().getIp());
 			model.setName(controller.getModel().getNombreJugador());
-			//model.
-			
+			model.setPort(controller.getModel().getPuerto());
+
 			model.playerXProperty().bind(player.xProperty());
 			model.playerYProperty().bind(player.yProperty());
 			model.playerRotationProperty().bind(player.angleProperty());
