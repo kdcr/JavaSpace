@@ -26,6 +26,7 @@ import dad.javaspace.networking.NetworkingPlayer;
 import dad.javaspace.objects.EntityTypes;
 import dad.javaspace.objects.effects.Animations;
 import dad.javaspace.objects.effects.ComponentePropulsor;
+import dad.javaspace.ui.NameTag;
 import dad.javaspace.ui.ThrustIndicator;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
@@ -44,18 +45,16 @@ public class Main extends GameApplication {
 	double viewHeight;
 
 	// Conectividad
-	private String ip, name = "jugadorTest", skin = "0";
-
 	private InputStreamReader flujoEntrada;
 	private OutputStreamWriter flujoSalida;
 
 	// Mecanica interna
 	Entity player = new Entity();
+	NameTag playerNameTag = new NameTag();
 	private ClientModel model = new ClientModel();
 	private LauncherController controller = new LauncherController();
 	private MediaPlayer mp;
 	long coolDown = 0, coolDownStars = 0;
-	
 
 	private ClientConnectionThread clientConnectionThread;
 
@@ -150,20 +149,15 @@ public class Main extends GameApplication {
 	@Override
 	protected void initUI() {
 		super.initUI();
-		textPixels = new Text();
-		textPixels.setFill(Color.WHITE);
-		textPixels.setTranslateX(0);
-		textPixels.setTranslateY(20);
-		// getGameScene().addUINode(textPixels); // add to the scene graph
-
-		thrustIndicator = new ThrustIndicator();
-
-		thrustIndicator.setTranslateX(0);
-		thrustIndicator.setTranslateY(20/* viewHeight - thrustIndicator.getHeight() */);
-
-		getGameScene().addUINode(thrustIndicator);
-		thrustIndicator.setMaxSize(0, 8);
-		thrustIndicator.progressProperty().bind(model.thrustProperty());
+		
+//		thrustIndicator = new ThrustIndicator();
+//
+//		thrustIndicator.setTranslateX(0);
+//		thrustIndicator.setTranslateY(20/* viewHeight - thrustIndicator.getHeight() */);
+//
+//		getGameScene().addUINode(thrustIndicator);
+//		thrustIndicator.setMaxSize(0, 8);
+//		thrustIndicator.progressProperty().bind(model.thrustProperty());
 	}
 
 	@Override
@@ -194,8 +188,6 @@ public class Main extends GameApplication {
 	protected void onUpdate(double tpf) {
 		super.onUpdate(tpf);
 		if (model.isEnPartida()) {
-			textPixels.setText(
-					"PosX: " + player.getX() + " PosY: " + player.getY() + "\nVel:" + physics.getLinearVelocity());
 
 			physics.setAngularVelocity(model.getAngular());
 			generateStars();
@@ -211,12 +203,12 @@ public class Main extends GameApplication {
 			model.playerXProperty().bind(player.xProperty());
 			model.playerYProperty().bind(player.yProperty());
 			model.playerRotationProperty().bind(player.angleProperty());
-			
+
 			Socket sk;
 
 			System.out.println("Buscando conexion...");
 
-			sk = new Socket("10.2.2.64", 2000);
+			sk = new Socket("localhost", 2000);
 
 			// Espera para que le de tiempo al servidor de mover la conexión a otro puerto
 			Thread.sleep(3000);
@@ -225,7 +217,7 @@ public class Main extends GameApplication {
 
 			flujoSalida = new OutputStreamWriter(sk.getOutputStream(), "UTF-8");
 
-			flujoSalida.write(name + "," + skin + "\n");
+			flujoSalida.write(model.getName() + "," + model.getSkin() + "\n");
 
 			flujoSalida.flush();
 
@@ -253,9 +245,14 @@ public class Main extends GameApplication {
 			System.out.println("Jugadores recibidos");
 
 			for (NetworkingPlayer netPlayers : model.getJugadores()) {
-				System.out.println(netPlayers.getNombre());
 				getGameWorld().addEntity(netPlayers.getEntity());
+				getGameWorld().addEntities(netPlayers.getNameText());
 			}
+
+			playerNameTag.xProperty().bind(player.xProperty());
+			playerNameTag.yProperty().bind(player.yProperty().subtract(10));
+
+			getGameWorld().addEntity(playerNameTag);
 
 			clientConnectionThread = new ClientConnectionThread(input, model, flujoSalida);
 
@@ -299,15 +296,27 @@ public class Main extends GameApplication {
 
 		getPhysicsWorld().setGravity(0, 0);
 
-		player.setRenderLayer(RenderLayer.TOP);
-		getGameScene().setBackgroundColor(Color.BLACK);
+		initGameUI();
+		
+		initGameEffects();
 
+
+	}
+	
+	private void initGameEffects() {
 		Animations.hiperJumpTransition(player, 1, -Math.sin(Math.toRadians(player.getRotation())) * 100,
 				Math.cos(Math.toRadians(player.getRotation())) * 100, getGameWorld());
-
+		
 		ComponentePropulsor componente = new ComponentePropulsor(player);
 		componente.emissionRateProperty().bind(model.thrustProperty());
+	}
 
+	private void initGameUI() {
+		player.setRenderLayer(RenderLayer.TOP);
+		getGameScene().setBackgroundColor(Color.BLACK);
+		
+		playerNameTag.setName(model.getName());
+		playerNameTag.shieldProperty().bind(model.shieldProperty());
 	}
 
 	private void maxVel() {
@@ -340,7 +349,6 @@ public class Main extends GameApplication {
 			Animations.shootTransition(player, getGameWorld());
 		}
 	}
-
 
 	private void addThrust() {
 		if (model.getThrust() + 0.5 < 8)

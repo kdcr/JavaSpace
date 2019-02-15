@@ -2,21 +2,34 @@ package dad.javaspace.networking;
 
 import com.almasb.fxgl.entity.Entity;
 
+import dad.javaspace.ui.NameTag;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+
 public class NetworkingPlayer {
 
 	private Entity entity;
-	private String nombre, skin;
+	private NameTag nameText = new NameTag();
+
+	private String name, skin;
 	private int id;
 
-	public NetworkingPlayer(String nombre, String skin, int id) {
-		this.nombre = nombre;
+	private DoubleProperty shield = new SimpleDoubleProperty();
+
+	public NetworkingPlayer(String name, String skin, int id) {
+		this.name = name;
 		this.skin = skin;
 		this.id = id;
-		
+
+		nameText.setName(name);
+
 		entity = new Entity();
 		entity.setViewFromTexture("navePruebaSmall.png");
+
+		nameText.xProperty().bind(entity.xProperty());
+		nameText.yProperty().bind(entity.yProperty().subtract(10));
 	}
-	
+
 	public NetworkingPlayer() {
 	}
 
@@ -28,12 +41,12 @@ public class NetworkingPlayer {
 		this.entity = entity;
 	}
 
-	public String getNombre() {
-		return nombre;
+	public String getName() {
+		return name;
 	}
 
 	public void setNombre(String nombre) {
-		this.nombre = nombre;
+		this.name = nombre;
 	}
 
 	public String getSkin() {
@@ -50,6 +63,22 @@ public class NetworkingPlayer {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public Entity getNameText() {
+		return this.nameText;
+	}
+
+	public final DoubleProperty shieldProperty() {
+		return this.shield;
+	}
+
+	public final double getShield() {
+		return this.shieldProperty().get();
+	}
+
+	public final void setShield(final double shield) {
+		this.shieldProperty().set(shield);
 	}
 
 }

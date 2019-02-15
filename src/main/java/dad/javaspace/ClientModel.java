@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import dad.javaspace.networking.NetworkingPlayer;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -17,11 +16,40 @@ public class ClientModel {
 
 	private double xForce, yForce;
 
+	private String ip, name = "jugadorTest", skin = "0";
+
+	private DoubleProperty shield = new SimpleDoubleProperty(this, "shield", 1);
+
 	private DoubleProperty playerX = new SimpleDoubleProperty(this, "playerX");
 	private DoubleProperty playerY = new SimpleDoubleProperty(this, "playerY");
 	private DoubleProperty playerRotation = new SimpleDoubleProperty(this, "playerRotation");
-
+	
 	private boolean canShoot = false;
+
+	public String getSkin() {
+		return skin;
+	}
+
+	public void setSkin(String skin) {
+		this.skin = skin;
+	}
+
+	public String getIp() {
+		return ip;
+	}
+
+	public void setIp(String ip) {
+		this.ip = ip;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 
 	public boolean isCanShoot() {
 		return canShoot;
@@ -151,6 +179,18 @@ public class ClientModel {
 
 	public final double getPlayerRotation() {
 		return this.playerRotationProperty().get();
+	}
+
+	public final DoubleProperty shieldProperty() {
+		return this.shield;
+	}
+
+	public final double getShield() {
+		return this.shieldProperty().get();
+	}
+
+	public final void setShield(final double shield) {
+		this.shieldProperty().set(shield);
 	}
 
 }
