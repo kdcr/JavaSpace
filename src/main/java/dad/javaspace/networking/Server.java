@@ -9,7 +9,7 @@ public class Server {
 	
 	 static final int NPLAYERS=2;
 	private static ArrayList<Connection> connectionsArray=new ArrayList<Connection>();
-	private static String players="";
+	private static String players="", playersState="";
 	private static boolean gameFinished=false;
 	
 	
@@ -76,6 +76,25 @@ public class Server {
 				
 			players.concat("\n");
 			Connection.barrera.await();
+			
+			Connection.barrera.await();
+			
+			while(true) {
+				playersState="";
+				for (Connection con : connectionsArray) {
+					// if(con.getIdentity()!=this.identity)
+					con.recive();
+					playersState += con.getItemStateString();
+				}
+				playersState+="\n";
+				for (Connection con : connectionsArray) {
+					System.out.println(playersState);
+					con.send(playersState);
+					
+				}
+				
+				
+			}
 			
 			
 			

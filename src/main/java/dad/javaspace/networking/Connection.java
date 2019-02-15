@@ -22,7 +22,7 @@ public class Connection extends Thread {
 	private int identity;
 
 	private String[] nombreSkin;
-	private String nombre, skin, playersState;
+	private String nombre, skin;
 	static CyclicBarrier barrera = new CyclicBarrier(Server.NPLAYERS + 1);
 
 	private static ArrayList<Connection> connectionsArray;
@@ -37,8 +37,8 @@ public class Connection extends Thread {
 		this.identity = id;
 		Connection.connectionsArray = connectionsArray;
 
-		entrada = new Scanner(sk.getInputStream(), "UTF8");
-		salida = new OutputStreamWriter(sk.getOutputStream(), "UTF8");
+		entrada = new Scanner(this.sk.getInputStream(), "UTF8");
+		salida = new OutputStreamWriter(this.sk.getOutputStream(), "UTF8");
 
 	}
 
@@ -77,20 +77,10 @@ public class Connection extends Thread {
 			
 			salida.write("start\n");
 			salida.flush();
-			while (true) {
-				playersState="";
-				itemStateString = identity + "," + entrada.nextLine() + "_";
+			
 				
-				for (Connection con : connectionsArray) {
-					// if(con.getIdentity()!=this.identity)
-					playersState += con.getItemStateString();
-				}
-				
-				System.out.println(playersState);
-				salida.write(playersState+"\n");
-				salida.flush();
-
-			}
+			barrera.await();	
+			
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -101,7 +91,19 @@ public class Connection extends Thread {
 		}
 
 	}
+	
+	public void send(String str) throws IOException {
+		salida.write(str);
+		salida.flush();
+	}
 
+	
+	public void recive() {
+		itemStateString = identity + "," + entrada.nextLine() + "_";
+	}
+
+	
+	
 	public String getNombre() {
 		return nombre;
 	}
