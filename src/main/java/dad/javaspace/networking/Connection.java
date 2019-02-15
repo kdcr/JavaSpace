@@ -14,7 +14,6 @@ import com.almasb.fxgl.entity.Entity;
 public class Connection extends Thread {
 
 	private Socket sk;
-	private String[] itemState;
 
 	
 	

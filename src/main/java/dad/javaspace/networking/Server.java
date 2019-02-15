@@ -85,7 +85,14 @@ public class Server {
 					// if(con.getIdentity()!=this.identity)
 					con.recive();
 					playersState += con.getItemStateString();
+					//TODO comprobar si disparamos
+					//TODO comprobar si hay alguien cerca
+					//TODO función para comprobar si acierta el disparo
+					
 				}
+				
+				
+				
 				playersState+="\n";
 				for (Connection con : connectionsArray) {
 					System.out.println(playersState);
