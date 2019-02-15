@@ -26,8 +26,8 @@ public class NetworkingPlayer {
 		entity = new Entity();
 		entity.setViewFromTexture("navePruebaSmall.png");
 
-		nameText.xProperty().bind(entity.xProperty());
-		nameText.yProperty().bind(entity.yProperty().subtract(10));
+		nameText.xProperty().bind(entity.xProperty().subtract(50));
+		nameText.yProperty().bind(entity.yProperty().subtract(50));
 	}
 
 	public NetworkingPlayer() {

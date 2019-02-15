@@ -149,7 +149,7 @@ public class Main extends GameApplication {
 	@Override
 	protected void initUI() {
 		super.initUI();
-		
+
 //		thrustIndicator = new ThrustIndicator();
 //
 //		thrustIndicator.setTranslateX(0);
@@ -200,6 +200,11 @@ public class Main extends GameApplication {
 
 	private void startGame() {
 		try {
+			
+			model.setIp(controller.getModel().getIp());
+			model.setName(controller.getModel().getNombreJugador());
+			//model.
+			
 			model.playerXProperty().bind(player.xProperty());
 			model.playerYProperty().bind(player.yProperty());
 			model.playerRotationProperty().bind(player.angleProperty());
@@ -208,7 +213,7 @@ public class Main extends GameApplication {
 
 			System.out.println("Buscando conexion...");
 
-			sk = new Socket("localhost", 2000);
+			sk = new Socket(model.getIp(), 2000);
 
 			// Espera para que le de tiempo al servidor de mover la conexión a otro puerto
 			Thread.sleep(3000);
@@ -249,11 +254,6 @@ public class Main extends GameApplication {
 				getGameWorld().addEntities(netPlayers.getNameText());
 			}
 
-			playerNameTag.xProperty().bind(player.xProperty());
-			playerNameTag.yProperty().bind(player.yProperty().subtract(10));
-
-			getGameWorld().addEntity(playerNameTag);
-
 			clientConnectionThread = new ClientConnectionThread(input, model, flujoSalida);
 
 			clientConnectionThread.start();
@@ -265,6 +265,11 @@ public class Main extends GameApplication {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+
+		playerNameTag.xProperty().bind(player.xProperty().subtract(50));
+		playerNameTag.yProperty().bind(player.yProperty().subtract(50));
+
+		getGameWorld().addEntity(playerNameTag);
 
 		// Estas cuatro lineas se encargan de mover la camara con el jugador, se hace
 		// asi para evitar que la camara rote
@@ -297,16 +302,15 @@ public class Main extends GameApplication {
 		getPhysicsWorld().setGravity(0, 0);
 
 		initGameUI();
-		
+
 		initGameEffects();
 
-
 	}
-	
+
 	private void initGameEffects() {
 		Animations.hiperJumpTransition(player, 1, -Math.sin(Math.toRadians(player.getRotation())) * 100,
 				Math.cos(Math.toRadians(player.getRotation())) * 100, getGameWorld());
-		
+
 		ComponentePropulsor componente = new ComponentePropulsor(player);
 		componente.emissionRateProperty().bind(model.thrustProperty());
 	}
@@ -314,7 +318,7 @@ public class Main extends GameApplication {
 	private void initGameUI() {
 		player.setRenderLayer(RenderLayer.TOP);
 		getGameScene().setBackgroundColor(Color.BLACK);
-		
+
 		playerNameTag.setName(model.getName());
 		playerNameTag.shieldProperty().bind(model.shieldProperty());
 	}
