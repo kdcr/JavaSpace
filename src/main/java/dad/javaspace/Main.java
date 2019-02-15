@@ -180,7 +180,6 @@ public class Main extends GameApplication {
 			startGame();
 		});
 
-//		startGame();
 
 	}
 
