@@ -293,12 +293,12 @@ public class LauncherController implements Initializable {
 			 * 
 			 ***************************************************************************************************/
 
-			BackgroundSize bSize = new BackgroundSize(model.getResolucion().getX(), model.getResolucion().getY(), false,
-					false, true, true);
+			BackgroundSize bSize = new BackgroundSize(480, 270, false,
+					false, false, false);
 
 			Background background = new Background(
-					new BackgroundImage(new Image("/assets/textures/launcherBackground.gif"),
-							BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, bSize));
+					new BackgroundImage(new Image("/assets/textures/giphy.gif"),
+							BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.CENTER, bSize));
 
 			rootView.setBackground(background);
 
