@@ -14,7 +14,7 @@
 
 <ScrollPane fx:id="cfgHoverRoot" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="scrollPaneClass" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <content>
-      <GridPane fx:id="cfgGridHoverRoot" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+      <GridPane fx:id="cfgGridHoverRoot" alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="grid">
          <children>
             <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="cfgLabels" text="Resolución" textAlignment="CENTER" GridPane.rowIndex="2">
                <GridPane.margin>
@@ -38,26 +38,28 @@
             </Label>
             <ComboBox fx:id="resolutionComboBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <CheckBox fx:id="fullScreenCheckBox" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <TextField fx:id="nombreField" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="4" />
-            <Slider fx:id="sonidoMusicaSlider" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <TextField fx:id="nombreField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <Slider fx:id="sonidoMusicaSlider" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="5" />
             <Label alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="cfgLabels" text="Volumen FX Juego" GridPane.rowIndex="6">
                <GridPane.margin>
                   <Insets />
                </GridPane.margin>
             </Label>
-            <Slider fx:id="sonidoFXSlider" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+            <Slider fx:id="sonidoFXSlider" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="6" />
             <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="cfgLabels" text="Direccion IP Servidor" GridPane.rowIndex="9" />
             <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="cfgLabels" text="Puerto Servidor" GridPane.rowIndex="10" />
-            <TextField fx:id="ipTextField" promptText="000.000.000.000" GridPane.columnIndex="1" GridPane.rowIndex="9" />
-            <TextField fx:id="puertoTextField" promptText="00000" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+            <TextField fx:id="ipTextField" promptText="000.000.000.000" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="9" />
+            <TextField fx:id="puertoTextField" promptText="00000" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="10" />
             <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="labelTituloCFG" text="Opciones de Juego" GridPane.columnSpan="2147483647" />
             <Separator prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="1" />
             <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="labelTituloCFG" text="Opciones de RED" GridPane.columnSpan="2147483647" GridPane.rowIndex="7" />
             <Separator prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="8" />
+            <Label fx:id="avisoLabel" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="*No se admiten _" textFill="RED" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
          </children>
          <columnConstraints>
             <ColumnConstraints maxWidth="120.0" minWidth="120.0" prefWidth="120.0" />
             <ColumnConstraints minWidth="365.0" />
+            <ColumnConstraints maxWidth="100.0" minWidth="100.0" prefWidth="100.0" />
          </columnConstraints>
          <rowConstraints>
             <RowConstraints maxHeight="56.0" minHeight="56.0" prefHeight="56.0" />

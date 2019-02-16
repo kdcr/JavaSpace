@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class Server {
 	Socket skCliente;
 	
-	 static final int NPLAYERS=1;
+	 static final int NPLAYERS=2;
 	private static ArrayList<Connection> connectionsArray=new ArrayList<Connection>();
 	private static String players="", playersState="";
 	private static boolean gameFinished=false;

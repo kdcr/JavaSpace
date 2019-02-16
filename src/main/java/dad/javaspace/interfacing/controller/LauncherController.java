@@ -13,7 +13,10 @@ import dad.javaspace.launchermodel.LauncherModel;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ListProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -112,6 +115,9 @@ public class LauncherController implements Initializable {
 	private TextField nombreField;
 
 	@FXML
+	private Label avisoLabel;
+
+	@FXML
 	private Slider sonidoMusicaSlider;
 
 	@FXML
@@ -193,10 +199,15 @@ public class LauncherController implements Initializable {
 
 	private MediaPlayer mpButtons;
 	private MediaPlayer mp;
+	private MediaPlayer launchButtonMP;
 
 	// window Position
 	double ejeX;
 	double ejeY;
+
+	// Contador nombre mal
+
+	int nameCount;
 
 	public LauncherController() {
 		loadView("/fxml/MainMenuView.fxml");
@@ -222,6 +233,7 @@ public class LauncherController implements Initializable {
 			model = cargarConfig();
 
 			listaResoluciones = ScreenResolutions.getScreenResolutions();
+			nameCount = 0;
 
 			/****************************************************************************************************
 			 * 
@@ -236,9 +248,9 @@ public class LauncherController implements Initializable {
 			 * Imagenes
 			 * 
 			 ***************************************************************************************************/
-			imageViewEP.setImage(new Image("/assets/textures/imagenjugar.jpg"));
+			imageViewEP.setImage(new Image("/assets/textures/imagenjugar.png"));
 			rootBorderPaneView.setCenter(empezarPartidaHoverRoot);
-			imageViewSalir.setImage(new Image("/assets/textures/imagensalir.jpg"));
+			imageViewSalir.setImage(new Image("/assets/textures/imagensalir.png"));
 
 			// Skins
 			skinUno.setGraphic(new ImageView(new Image("/assets/textures/navePrueba.png")));
@@ -270,13 +282,19 @@ public class LauncherController implements Initializable {
 			sonidoFXSlider.setMax(1.0);
 			mpButtons = new MediaPlayer(buttonSound);
 
+			// Efecto Sonido Click empezar juego
+			String buttonStartGame = "/assets/sounds/ButtonSound2.mp3";
+			Media buttonSound2 = new Media(getClass().getResource(buttonStartGame).toString());
+			launchButtonMP = new MediaPlayer(buttonSound2);
+
 			/****************************************************************************************************
 			 * 
 			 * BackGround Image
 			 * 
 			 ***************************************************************************************************/
 
-			BackgroundSize bSize = new BackgroundSize(model.getResolucion().getX(), model.getResolucion().getY(), false, false, true, true);
+			BackgroundSize bSize = new BackgroundSize(model.getResolucion().getX(), model.getResolucion().getY(), false,
+					false, true, true);
 
 			Background background = new Background(
 					new BackgroundImage(new Image("/assets/textures/launcherBackground.gif"),
@@ -290,6 +308,8 @@ public class LauncherController implements Initializable {
 			 * 
 			 ***************************************************************************************************/
 
+			launchButton.setOnMousePressed(e -> onLaunchButtonPressed());
+			;
 			cfgButton.hoverProperty().addListener(e -> onCFGButtonHovered());
 			exitButton.hoverProperty().addListener(e -> onExitButtonHovered());
 			empezarPartidaButton.hoverProperty().addListener(e -> onEmpezarPartidaButtonHovered());
@@ -345,11 +365,32 @@ public class LauncherController implements Initializable {
 					new NumberStringConverter());
 			Bindings.bindBidirectional(fullScreenCheckBox.selectedProperty(), model.pantallaCompletaProperty());
 			model.resolucionProperty().bind(resolutionComboBox.getSelectionModel().selectedItemProperty());
+			avisoLabel.setVisible(false);
 
-			// Tamaño Launcher
+			// Tamano Launcher
 			rootView.setPrefSize(model.getResolucion().getX(), model.getResolucion().getY());
 
+			/**
+			 * Listener para no permitir al jugador usar el carÃ¡cter _ en el nombre
+			 */
+			model.nombreJugadorProperty().addListener(e -> {
+				String text = model.getNombreJugador();
+				if (text.contains("_")) {
+					nameCount++;
+					nombreField.setText(text.replace("_", ""));
+					model.setNombreJugador(text.replace("_", ""));
+				}
+
+				if (nameCount == 3) {
+					avisoLabel.setVisible(true);
+				}
+			});
 		}
+	}
+
+	private void onLaunchButtonPressed() {
+		launchButtonMP.stop();
+		launchButtonMP.play();
 	}
 
 	private void onCloseAction() {
@@ -534,7 +575,6 @@ public class LauncherController implements Initializable {
 	private void onSkinOchoAction() {
 		model.setSelectedSkin(7);
 	}
-
 
 	public MediaPlayer getMp() {
 		return mp;

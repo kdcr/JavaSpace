@@ -6,7 +6,7 @@
 
 <HBox fx:id="salirLauncherHoverRoot" alignment="CENTER" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <ImageView fx:id="imageViewSalir" fitHeight="460" fitWidth="1000" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="imageViewSalir" fitHeight="800" fitWidth="1500" pickOnBounds="true" preserveRatio="true" />
    </children>
    <padding>
       <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

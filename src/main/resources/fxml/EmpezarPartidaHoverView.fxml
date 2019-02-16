@@ -7,10 +7,10 @@
 
 <StackPane fx:id="empezarPartidaHoverRoot" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <ImageView fx:id="imageViewEP" fitHeight="460.0" fitWidth="1000.0" pickOnBounds="true" preserveRatio="true" />
-      <Button fx:id="launchButton" alignment="BOTTOM_CENTER" contentDisplay="BOTTOM" mnemonicParsing="false" styleClass="launchButton" text="Jugar" StackPane.alignment="BOTTOM_CENTER">
+      <ImageView fx:id="imageViewEP" fitHeight="800.0" fitWidth="1500.0" pickOnBounds="true" preserveRatio="true" />
+      <Button fx:id="launchButton" alignment="BOTTOM_CENTER" contentDisplay="BOTTOM" mnemonicParsing="false" styleClass="launchButton" text="JUGAR" StackPane.alignment="CENTER">
          <StackPane.margin>
-            <Insets bottom="230.0" />
+            <Insets />
          </StackPane.margin>
       </Button>
    </children>
