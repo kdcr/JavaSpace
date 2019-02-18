@@ -1,6 +1,10 @@
 package dad.javaspace;
 
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import dad.javaspace.networking.NetworkingPlayer;
 import javafx.beans.property.BooleanProperty;
@@ -25,6 +29,53 @@ public class ClientModel {
 	private DoubleProperty playerX = new SimpleDoubleProperty(this, "playerX");
 	private DoubleProperty playerY = new SimpleDoubleProperty(this, "playerY");
 	private DoubleProperty playerRotation = new SimpleDoubleProperty(this, "playerRotation");
+
+	private Socket socket;
+	private OutputStreamWriter writer;
+	private Scanner scanner;
+
+	private InputStreamReader flujoEntrada;
+	private OutputStreamWriter flujoSalida;
+
+	public InputStreamReader getFlujoEntrada() {
+		return flujoEntrada;
+	}
+
+	public void setFlujoEntrada(InputStreamReader flujoEntrada) {
+		this.flujoEntrada = flujoEntrada;
+	}
+
+	public OutputStreamWriter getFlujoSalida() {
+		return flujoSalida;
+	}
+
+	public void setFlujoSalida(OutputStreamWriter flujoSalida) {
+		this.flujoSalida = flujoSalida;
+	}
+
+	public Scanner getScanner() {
+		return scanner;
+	}
+
+	public void setScanner(Scanner scanner) {
+		this.scanner = scanner;
+	}
+
+	public OutputStreamWriter getWriter() {
+		return writer;
+	}
+
+	public void setWriter(OutputStreamWriter writer) {
+		this.writer = writer;
+	}
+
+	public Socket getSocket() {
+		return socket;
+	}
+
+	public void setSocket(Socket socket) {
+		this.socket = socket;
+	}
 
 	private boolean canShoot = false;
 

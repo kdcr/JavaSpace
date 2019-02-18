@@ -1,14 +1,8 @@
 package dad.javaspace;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Scanner;
 
 import com.almasb.fxgl.app.FXGL;
 import com.almasb.fxgl.app.GameApplication;
@@ -22,7 +16,7 @@ import com.almasb.fxgl.physics.PhysicsComponent;
 import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
 import com.almasb.fxgl.settings.GameSettings;
 import dad.javaspace.interfacing.controller.LauncherController;
-import dad.javaspace.networking.NetworkingPlayer;
+import dad.javaspace.networking.ClientGameThread;
 import dad.javaspace.objects.EntityTypes;
 import dad.javaspace.objects.effects.Animations;
 import dad.javaspace.objects.effects.ComponentePropulsor;
@@ -44,10 +38,6 @@ public class Main extends GameApplication {
 	double viewWidth;
 	double viewHeight;
 
-	// Conectividad
-	private InputStreamReader flujoEntrada;
-	private OutputStreamWriter flujoSalida;
-
 	// Mecanica interna
 	Entity player = new Entity();
 	NameTag playerNameTag = new NameTag();
@@ -56,15 +46,20 @@ public class Main extends GameApplication {
 	private MediaPlayer mp;
 	long coolDown = 0, coolDownStars = 0;
 
-	private ClientConnectionThread clientConnectionThread;
+	private ClientConnectionTask clientConnectionTask;
+
+	private Thread clientConnectionThread;
+
+	ClientGameThread clientGameThread;
 
 	private PhysicsComponent physics;
+
+	AnchorPane rootView;
 
 	// Estetica
 	private ArrayList<Entity> starArray = new ArrayList<>();
 	ArrayList<Entity> starList = new ArrayList<>();
 
-	private GameSettings settings;
 	private Stage gameStage = new Stage();
 
 	public static void main(String[] args) {
@@ -84,8 +79,9 @@ public class Main extends GameApplication {
 		settings.setFullScreenAllowed(controller.getModel().isPantallaCompleta());
 		gameStage.setFullScreen(controller.getModel().isPantallaCompleta());
 		settings.setVersion(model.getVersion());
-		this.settings = settings;
 		FXGL.configure(this, settings.toReadOnly(), gameStage);
+
+		// Configuracion de los hilos
 
 		/**
 		 * Las del juego
@@ -169,17 +165,15 @@ public class Main extends GameApplication {
 	protected void initGame() {
 		super.initGame();
 
-		AnchorPane rootView = controller.getRootView();
+		rootView = controller.getRootView();
 		getGameScene().addUINode(rootView);
 
-		controller.getLaunchButton().setOnAction(e -> {
-			getGameScene().removeUINode(rootView);
-			controller.guardarConfig();
-			model.setEnPartida(true);
-			controller.getMp().stop();
-			startGame();
-		});
+		clientConnectionTask = new ClientConnectionTask(model, getGameWorld());
+		clientConnectionTask.setOnSucceeded(e -> startGame());
 
+		controller.getLaunchButton().setOnAction(e -> {
+			startConnection();
+		});
 
 	}
 
@@ -197,73 +191,30 @@ public class Main extends GameApplication {
 		}
 	}
 
+	private void startConnection() {
+
+		clientConnectionThread = new Thread(clientConnectionTask);
+
+		clientConnectionThread.start();
+
+	}
+
 	private void startGame() {
-		try {
-			
-			model.setIp(controller.getModel().getIp());
-			model.setName(controller.getModel().getNombreJugador());
-			model.setPort(controller.getModel().getPuerto());
+		clientGameThread = new ClientGameThread(model);
+		clientGameThread.start();
 
-			model.playerXProperty().bind(player.xProperty());
-			model.playerYProperty().bind(player.yProperty());
-			model.playerRotationProperty().bind(player.angleProperty());
+		getGameScene().removeUINode(rootView);
+		controller.guardarConfig();
+		model.setEnPartida(true);
+		controller.getMp().stop();
 
-			Socket sk;
+		model.setIp(controller.getModel().getIp());
+		model.setName(controller.getModel().getNombreJugador());
+		model.setPort(controller.getModel().getPuerto());
 
-			System.out.println("Buscando conexion...");
-
-			sk = new Socket(model.getIp(), 2000);
-
-			// Espera para que le de tiempo al servidor de mover la conexión a otro puerto
-			Thread.sleep(3000);
-
-			flujoEntrada = new InputStreamReader(sk.getInputStream(), "UTF-8");
-
-			flujoSalida = new OutputStreamWriter(sk.getOutputStream(), "UTF-8");
-
-			flujoSalida.write(model.getName() + "," + model.getSkin() + "\n");
-
-			flujoSalida.flush();
-
-			System.out.println("nombre enviado");
-
-			model.setIdentity(flujoEntrada.read());
-
-			System.out.println(model.getIdentity());
-			Scanner input = new Scanner(flujoEntrada);
-
-			System.out.println("id recibida");
-			flujoSalida.write("ready\n");
-			flujoSalida.flush();
-
-			System.out.println(input.nextLine());
-
-			String test = input.nextLine();
-			System.out.println(test);
-			for (String str : test.split("_")) {
-				if (Integer.parseInt(str.split(",")[0]) != model.getIdentity())
-					model.getJugadores().add(new NetworkingPlayer(str.split(",")[1], str.split(",")[2],
-							Integer.parseInt(str.split(",")[0])));
-			}
-
-			System.out.println("Jugadores recibidos");
-
-			for (NetworkingPlayer netPlayers : model.getJugadores()) {
-				getGameWorld().addEntity(netPlayers.getEntity());
-				getGameWorld().addEntities(netPlayers.getNameText());
-			}
-
-			clientConnectionThread = new ClientConnectionThread(input, model, flujoSalida);
-
-			clientConnectionThread.start();
-
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		model.playerXProperty().bind(player.xProperty());
+		model.playerYProperty().bind(player.yProperty());
+		model.playerRotationProperty().bind(player.angleProperty());
 
 		playerNameTag.xProperty().bind(player.xProperty().subtract(50));
 		playerNameTag.yProperty().bind(player.yProperty().subtract(50));

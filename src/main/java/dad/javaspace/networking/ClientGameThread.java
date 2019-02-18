@@ -1,39 +1,41 @@
-package dad.javaspace;
+package dad.javaspace.networking;
 
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.util.Scanner;
 
-import dad.javaspace.networking.NetworkingPlayer;
+import dad.javaspace.ClientModel;
 
-public class ClientConnectionThread extends Thread {
+public class ClientGameThread extends Thread {
 
-	private Scanner scanner;
-	private OutputStreamWriter writer;
 	ClientModel model;
 
-	public ClientConnectionThread(Scanner sc, ClientModel model, OutputStreamWriter out) {
-		scanner = sc;
+	public ClientGameThread(ClientModel model) {
 		this.model = model;
-		this.writer = out;
 	}
 
 	@Override
 	public void run() {
 		super.run();
-
-		System.out.println(scanner.nextLine());
+		System.out.println(model.getScanner().nextLine());
 		System.out.println("Thread conexiones up");
 
-		while (true) {
+		while (model.isEnPartida()) {
 			try {
 				sendPlayerPosition();
-				desempaquetarPosiciones(scanner.nextLine());
+				desempaquetarPosiciones(model.getScanner().nextLine());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
+	}
 
+	private NetworkingPlayer find(int id) {
+
+		for (NetworkingPlayer player : model.getJugadores()) {
+			if (player.getId() == id)
+				return player;
+		}
+
+		return null;
 	}
 
 	public void desempaquetarPosiciones(String paquete) {
@@ -52,27 +54,18 @@ public class ClientConnectionThread extends Thread {
 
 	private void sendPlayerPosition() {
 		try {
-			String paquete =Math.round(model.getPlayerX()) +","+ Math.round(model.getPlayerY()) +"," + Math.round(model.getAngular());
-			System.out.println(paquete);
+			String paquete = Math.round(model.getPlayerX()) + "," + Math.round(model.getPlayerY()) + ","
+					+ model.getAngular();
+
 			if (model.isCanShoot()) {
 				model.setCanShoot(false);
 
-				writer.write(paquete +","+ true + "\n");
+				model.getWriter().write(paquete + "," + true + "\n");
 			} else
-				writer.write(paquete +","+ false + "\n");
-			writer.flush();
+				model.getWriter().write(paquete + "," + false + "\n");
+			model.getWriter().flush();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	private NetworkingPlayer find(int id) {
-
-		for (NetworkingPlayer player : model.getJugadores()) {
-			if (player.getId() == id)
-				return player;
-		}
-
-		return null;
 	}
 }
