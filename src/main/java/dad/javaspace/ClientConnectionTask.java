@@ -20,8 +20,6 @@ public class ClientConnectionTask extends Task<Integer> {
 
 	private GameWorld gameWorld;
 
-	Socket sk;
-
 	public ClientConnectionTask(ClientModel model, GameWorld world) {
 		this.model = model;
 		this.gameWorld = world;
@@ -34,14 +32,14 @@ public class ClientConnectionTask extends Task<Integer> {
 
 			System.out.println("Buscando conexion...");
 
-			sk = new Socket(model.getIp(), 2000);
+			model.setSocket(new Socket(model.getIp(), 2000));
 
 			// Espera para que le de tiempo al servidor de mover la conexión a otro puerto
 			Thread.sleep(3000);
 
-			model.setFlujoEntrada(new InputStreamReader(sk.getInputStream(), "UTF-8"));
+			model.setFlujoEntrada(new InputStreamReader(model.getSocket().getInputStream(), "UTF-8"));
 
-			model.setFlujoSalida(new OutputStreamWriter(sk.getOutputStream(), "UTF-8"));
+			model.setFlujoSalida(new OutputStreamWriter(model.getSocket().getOutputStream(), "UTF-8"));
 
 			model.getFlujoSalida().write(model.getName() + "," + model.getSkin() + "\n");
 
