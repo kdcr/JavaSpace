@@ -15,6 +15,8 @@ import com.almasb.fxgl.physics.HitBox;
 import com.almasb.fxgl.physics.PhysicsComponent;
 import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
 import com.almasb.fxgl.settings.GameSettings;
+
+import dad.javaspace.HUD.JavaSpaceHUD;
 import dad.javaspace.interfacing.controller.LauncherController;
 import dad.javaspace.networking.ClientGameThread;
 import dad.javaspace.objects.EntityTypes;
@@ -27,16 +29,16 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class Main extends GameApplication {
 
 	// Interfaz
-	Text textPixels;
 	ThrustIndicator thrustIndicator;
 	double viewWidth;
 	double viewHeight;
+	
+	JavaSpaceHUD hud = new JavaSpaceHUD();
 
 	// Mecanica interna
 	Entity player = new Entity();
@@ -148,14 +150,6 @@ public class Main extends GameApplication {
 	protected void initUI() {
 		super.initUI();
 
-//		thrustIndicator = new ThrustIndicator();
-//
-//		thrustIndicator.setTranslateX(0);
-//		thrustIndicator.setTranslateY(20/* viewHeight - thrustIndicator.getHeight() */);
-//
-//		getGameScene().addUINode(thrustIndicator);
-//		thrustIndicator.setMaxSize(0, 8);
-//		thrustIndicator.progressProperty().bind(model.thrustProperty());
 	}
 
 	@Override
@@ -190,6 +184,8 @@ public class Main extends GameApplication {
 			if (!getInput().isHeld(KeyCode.W))
 				model.setThrust(model.getThrust() * 0.80);
 			maxVel();
+			
+			hud.getModel().setSpeedProperty(physics.getLinearVelocity().magnitude());
 		}
 	}
 
@@ -221,16 +217,18 @@ public class Main extends GameApplication {
 		controller.guardarConfig();
 		model.setEnPartida(true);
 		controller.getMp().stop();
+		
+		// Interfaz
 
 
+		
+		// Bindeos modelo de datos
 		model.playerXProperty().bind(player.xProperty());
 		model.playerYProperty().bind(player.yProperty());
 		model.playerRotationProperty().bind(player.angleProperty());
 
-		playerNameTag.xProperty().bind(player.xProperty().subtract(50));
-		playerNameTag.yProperty().bind(player.yProperty().subtract(50));
-
-		getGameWorld().addEntity(playerNameTag);
+		hud.getModel().shieldPropertyProperty().bind(model.shieldProperty());
+		
 
 		// Estas cuatro lineas se encargan de mover la camara con el jugador, se hace
 		// asi para evitar que la camara rote
@@ -280,8 +278,18 @@ public class Main extends GameApplication {
 		player.setRenderLayer(RenderLayer.TOP);
 		getGameScene().setBackgroundColor(Color.BLACK);
 
+		// Playernametag es innecesario
 		playerNameTag.setName(model.getName());
 		playerNameTag.shieldProperty().bind(model.shieldProperty());
+		
+		playerNameTag.xProperty().bind(player.xProperty().subtract(50));
+		playerNameTag.yProperty().bind(player.yProperty().subtract(50));
+		
+		getGameWorld().addEntity(playerNameTag);
+	
+		getGameScene().addUINode(hud);
+		hud.setTranslateX(hud.getWidth());
+		
 	}
 
 	private void maxVel() {

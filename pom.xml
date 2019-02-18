@@ -28,13 +28,11 @@
 			<artifactId>ini4j</artifactId>
 			<version>0.5.4</version>
 		</dependency>
-
 		<dependency>
 			<groupId>JavaSpace</groupId>
 			<artifactId>JavaSpaceHUD</artifactId>
 			<version>0.0.1</version>
 		</dependency>
-		
 		<dependency>
 			<groupId>javaspace</groupId>
 			<artifactId>ComponenteNombre</artifactId>
