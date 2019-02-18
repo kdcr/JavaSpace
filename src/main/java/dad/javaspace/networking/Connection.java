@@ -15,18 +15,14 @@ public class Connection extends Thread {
 
 	private Socket sk;
 
-	
-	
-	
 	private int identity;
 
 	private String[] nombreSkin;
 	private String nombre, skin;
+	private double shield = 1f;
 	static CyclicBarrier barrera = new CyclicBarrier(Server.NPLAYERS + 1);
 
 	private static ArrayList<Connection> connectionsArray;
-
-
 
 	Scanner entrada;
 	OutputStreamWriter salida;
@@ -57,29 +53,27 @@ public class Connection extends Thread {
 			salida.write(identity);
 			salida.flush();
 
-			 barrera.await();
-				do {
-					try {
-						aux = false;
-						System.out.println(entrada.nextLine());
+			barrera.await();
+			do {
+				try {
+					aux = false;
+					System.out.println(entrada.nextLine());
 
-					} catch (NoSuchElementException e) {
-						aux = true;
-					}
-				} while (aux);
-				salida.write("ready\n");
-				salida.flush();
+				} catch (NoSuchElementException e) {
+					aux = true;
+				}
+			} while (aux);
+			salida.write("ready\n");
+			salida.flush();
 
 			System.out.println(Server.getPlayers().toString());
-			salida.write(Server.getPlayers().toString()+"\n");
+			salida.write(Server.getPlayers().toString() + "\n");
 			salida.flush();
-			
+
 			salida.write("start\n");
 			salida.flush();
-			
-				
-			barrera.await();	
-			
+
+			barrera.await();
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -90,19 +84,42 @@ public class Connection extends Thread {
 		}
 
 	}
-	
+
 	public void send(String str) throws IOException {
 		salida.write(str);
 		salida.flush();
 	}
 
-	
-	public void recive() {
-		itemStateString = identity + "," + entrada.nextLine() + "_";
+	public Boolean recive() {
+		if (sk.isConnected()) {
+
+			if (shield == 0)
+				shield = 1f;
+
+			itemStateString = identity +  "," + entrada.nextLine()  +"," + shield + "_";
+			return Boolean.valueOf(itemStateString.split(",")[5]);
+		}
+		else {
+			connectionsArray.remove(identity-1);
+			return false;
+		}
+			
 	}
 
-	
-	
+	public void shoot() {
+		for (Connection con : connectionsArray) {
+			if (con.identity != this.identity) {
+
+			}
+
+		}
+	}
+
+	public void dealDamage() {
+		shield -= 0.25;
+
+	}
+
 	public String getNombre() {
 		return nombre;
 	}

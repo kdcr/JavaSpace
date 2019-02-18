@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class Server {
 	Socket skCliente;
 	
-	 static final int NPLAYERS=2;
+	 static final int NPLAYERS=1;
 	private static ArrayList<Connection> connectionsArray=new ArrayList<Connection>();
 	private static String players="", playersState="";
 	private static boolean gameFinished=false;
@@ -83,8 +83,11 @@ public class Server {
 				playersState="";
 				for (Connection con : connectionsArray) {
 					// if(con.getIdentity()!=this.identity)
-					con.recive();
+					if(con.recive())
+						con.shoot();
 					playersState += con.getItemStateString();
+					System.out.println(playersState);
+					
 					//TODO comprobar si disparamos
 					//TODO comprobar si hay alguien cerca
 					//TODO funci�n para comprobar si acierta el disparo
@@ -95,7 +98,7 @@ public class Server {
 				
 				playersState+="\n";
 				for (Connection con : connectionsArray) {
-					System.out.println(playersState);
+				//	System.out.println(playersState);
 					con.send(playersState);
 					
 				}

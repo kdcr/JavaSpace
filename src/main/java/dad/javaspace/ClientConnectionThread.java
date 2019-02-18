@@ -57,9 +57,9 @@ public class ClientConnectionThread extends Thread {
 			if (model.isCanShoot()) {
 				model.setCanShoot(false);
 
-				writer.write(paquete + true + "\n");
+				writer.write(paquete +","+ true + "\n");
 			} else
-				writer.write(paquete + false + "\n");
+				writer.write(paquete +","+ false + "\n");
 			writer.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
