@@ -15,9 +15,9 @@ public class ClientGameThread extends Thread {
 	@Override
 	public void run() {
 		super.run();
-		
-		System.out.println(model.getScanner().nextLine());
 		System.out.println("Thread conexiones up");
+		System.out.println("Esperando start para sincronizar");
+		System.out.println(model.getScanner().nextLine());
 
 		while (model.isEnPartida()) {
 			try {

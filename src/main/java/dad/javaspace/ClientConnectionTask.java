@@ -26,10 +26,10 @@ public class ClientConnectionTask extends Task<Integer> {
 
 		System.out.println("Buscando conexion...");
 		model.setSocket(new Socket(model.getIp(), 2000));
-		
+
 		System.out.println("Servidor encontrado");
 		// Espera para que le de tiempo al servidor de mover la conexión a otro puerto
-		//Thread.sleep(3000);
+		// Thread.sleep(3000);
 
 		model.setFlujoEntrada(new InputStreamReader(model.getSocket().getInputStream(), "UTF-8"));
 
@@ -61,11 +61,6 @@ public class ClientConnectionTask extends Task<Integer> {
 		}
 
 		System.out.println("Jugadores recibidos");
-
-		for (NetworkingPlayer netPlayers : model.getJugadores()) {
-			gameWorld.addEntity(netPlayers.getEntity());
-			gameWorld.addEntities(netPlayers.getNameText());
-		}
 
 		return 0;
 	}

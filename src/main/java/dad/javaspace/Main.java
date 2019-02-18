@@ -19,6 +19,7 @@ import com.almasb.fxgl.settings.GameSettings;
 import dad.javaspace.HUD.JavaSpaceHUD;
 import dad.javaspace.interfacing.controller.LauncherController;
 import dad.javaspace.networking.ClientGameThread;
+import dad.javaspace.networking.NetworkingPlayer;
 import dad.javaspace.objects.EntityTypes;
 import dad.javaspace.objects.effects.Animations;
 import dad.javaspace.objects.effects.ComponentePropulsor;
@@ -198,6 +199,7 @@ public class Main extends GameApplication {
 		clientConnectionTask = new ClientConnectionTask(model, getGameWorld());
 		
 		clientConnectionTask.setOnSucceeded(e -> startGame());
+		
 		clientConnectionTask.setOnFailed(e->{
 			controller.getLaunchButton().setDisable(false);
 			// TODO mostrar cuadro de error
@@ -210,6 +212,11 @@ public class Main extends GameApplication {
 
 	private void startGame() {
 		
+		for (NetworkingPlayer netPlayers : model.getJugadores()) {
+			getGameWorld().addEntity(netPlayers.getEntity());
+			getGameWorld().addEntities(netPlayers.getNameText());
+		}
+		
 		clientGameThread = new ClientGameThread(model);
 		clientGameThread.start();
 
@@ -217,10 +224,6 @@ public class Main extends GameApplication {
 		controller.guardarConfig();
 		model.setEnPartida(true);
 		controller.getMp().stop();
-		
-		// Interfaz
-
-
 		
 		// Bindeos modelo de datos
 		model.playerXProperty().bind(player.xProperty());
