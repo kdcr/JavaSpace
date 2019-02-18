@@ -297,7 +297,7 @@ public class LauncherController implements Initializable {
 					false, false, false);
 
 			Background background = new Background(
-					new BackgroundImage(new Image("/assets/textures/giphy.gif"),
+					new BackgroundImage(new Image("/assets/textures/launcherBackground.gif"),
 							BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.CENTER, bSize));
 
 			rootView.setBackground(background);
