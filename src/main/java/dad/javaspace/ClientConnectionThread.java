@@ -39,7 +39,6 @@ public class ClientConnectionThread extends Thread {
 	public void desempaquetarPosiciones(String paquete) {
 		String[] buffer = paquete.split("_").clone();
 		int id = 0;
-		System.out.println(paquete);
 		for (String str : buffer) {
 			id = Integer.parseInt(str.split(",")[0].toString());
 			if (id != model.getIdentity()) {
@@ -53,16 +52,17 @@ public class ClientConnectionThread extends Thread {
 
 	private void sendPlayerPosition() {
 		try {
+			String paquete =Math.round(model.getPlayerX()) +","+ Math.round(model.getPlayerY()) +"," + Math.round(model.getAngular());
+			System.out.println(paquete);
 			if (model.isCanShoot()) {
 				model.setCanShoot(false);
 
-				writer.write(model.getPlayerX() + "," + model.getPlayerY() + "," + model.getPlayerRotation() + ","
-						+ true + "\n");
+				writer.write(paquete + true + "\n");
 			} else
-				writer.write(model.getPlayerX() + "," + model.getPlayerY() + "," + model.getPlayerRotation() + ","
-						+ false + "\n");
+				writer.write(paquete + false + "\n");
 			writer.flush();
 		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 

@@ -87,7 +87,7 @@ public class Server {
 					playersState += con.getItemStateString();
 					//TODO comprobar si disparamos
 					//TODO comprobar si hay alguien cerca
-					//TODO función para comprobar si acierta el disparo
+					//TODO funciï¿½n para comprobar si acierta el disparo
 					
 				}
 				

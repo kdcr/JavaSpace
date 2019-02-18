@@ -199,7 +199,7 @@ public class Main extends GameApplication {
 
 	private void startGame() {
 		try {
-
+			
 			model.setIp(controller.getModel().getIp());
 			model.setName(controller.getModel().getNombreJugador());
 			model.setPort(controller.getModel().getPuerto());
