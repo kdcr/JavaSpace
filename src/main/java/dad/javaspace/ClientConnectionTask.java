@@ -15,8 +15,6 @@ import javafx.concurrent.Task;
 public class ClientConnectionTask extends Task<Integer> {
 
 	ClientModel model;
-	// Conectividad
-
 
 	private GameWorld gameWorld;
 
@@ -33,7 +31,6 @@ public class ClientConnectionTask extends Task<Integer> {
 			System.out.println("Buscando conexion...");
 
 			model.setSocket(new Socket(model.getIp(), 2000));
-
 			// Espera para que le de tiempo al servidor de mover la conexión a otro puerto
 			Thread.sleep(3000);
 

@@ -41,7 +41,9 @@ public class Main extends GameApplication {
 	// Mecanica interna
 	Entity player = new Entity();
 	NameTag playerNameTag = new NameTag();
+	
 	private ClientModel model = new ClientModel();
+	
 	private LauncherController controller = new LauncherController();
 	private MediaPlayer mp;
 	long coolDown = 0, coolDownStars = 0;
@@ -164,7 +166,7 @@ public class Main extends GameApplication {
 	@Override
 	protected void initGame() {
 		super.initGame();
-
+		
 		rootView = controller.getRootView();
 		getGameScene().addUINode(rootView);
 
@@ -192,7 +194,9 @@ public class Main extends GameApplication {
 	}
 
 	private void startConnection() {
-
+		model.setIp(controller.getModel().getIp());
+		model.setName(controller.getModel().getNombreJugador());
+		model.setPort(controller.getModel().getPuerto());
 		clientConnectionThread = new Thread(clientConnectionTask);
 
 		clientConnectionThread.start();
@@ -200,6 +204,7 @@ public class Main extends GameApplication {
 	}
 
 	private void startGame() {
+		
 		clientGameThread = new ClientGameThread(model);
 		clientGameThread.start();
 
@@ -208,9 +213,6 @@ public class Main extends GameApplication {
 		model.setEnPartida(true);
 		controller.getMp().stop();
 
-		model.setIp(controller.getModel().getIp());
-		model.setName(controller.getModel().getNombreJugador());
-		model.setPort(controller.getModel().getPuerto());
 
 		model.playerXProperty().bind(player.xProperty());
 		model.playerYProperty().bind(player.yProperty());
