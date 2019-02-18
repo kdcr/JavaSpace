@@ -171,7 +171,7 @@ public class Main extends GameApplication {
 		getGameScene().addUINode(rootView);
 
 		clientConnectionTask = new ClientConnectionTask(model, getGameWorld());
-		clientConnectionTask.setOnSucceeded(e -> startGame());
+
 
 		controller.getLaunchButton().setOnAction(e -> {
 			startConnection();
@@ -194,9 +194,18 @@ public class Main extends GameApplication {
 	}
 
 	private void startConnection() {
+		
+		controller.getLaunchButton().setDisable(true);
 		model.setIp(controller.getModel().getIp());
 		model.setName(controller.getModel().getNombreJugador());
 		model.setPort(controller.getModel().getPuerto());
+		clientConnectionTask = new ClientConnectionTask(model, getGameWorld());
+		
+		clientConnectionTask.setOnSucceeded(e -> startGame());
+		clientConnectionTask.setOnFailed(e->{
+			controller.getLaunchButton().setDisable(false);
+			// TODO mostrar cuadro de error
+		});
 		clientConnectionThread = new Thread(clientConnectionTask);
 
 		clientConnectionThread.start();

@@ -15,6 +15,7 @@ public class ClientGameThread extends Thread {
 	@Override
 	public void run() {
 		super.run();
+		
 		System.out.println(model.getScanner().nextLine());
 		System.out.println("Thread conexiones up");
 
