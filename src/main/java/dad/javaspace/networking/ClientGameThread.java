@@ -61,10 +61,10 @@ public class ClientGameThread extends Thread {
 			if (model.isCanShoot()) {
 				model.setCanShoot(false);
 
-				model.getWriter().write(paquete + "," + true + "\n");
+				model.getFlujoSalida().write(paquete + "," + true + "\n");
 			} else
-				model.getWriter().write(paquete + "," + false + "\n");
-			model.getWriter().flush();
+				model.getFlujoSalida().write(paquete + "," + false + "\n");
+			model.getFlujoSalida().flush();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -31,7 +31,6 @@ public class ClientModel {
 	private DoubleProperty playerRotation = new SimpleDoubleProperty(this, "playerRotation");
 
 	private Socket socket;
-	private OutputStreamWriter writer;
 	private Scanner scanner;
 
 	private InputStreamReader flujoEntrada;
@@ -59,14 +58,6 @@ public class ClientModel {
 
 	public void setScanner(Scanner scanner) {
 		this.scanner = scanner;
-	}
-
-	public OutputStreamWriter getWriter() {
-		return writer;
-	}
-
-	public void setWriter(OutputStreamWriter writer) {
-		this.writer = writer;
 	}
 
 	public Socket getSocket() {

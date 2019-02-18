@@ -38,7 +38,7 @@ public class ClientConnectionTask extends Task<Integer> {
 		model.getFlujoSalida().write(model.getName() + "," + model.getSkin() + "\n");
 
 		model.getFlujoSalida().flush();
-
+		
 		System.out.println("nombre enviado");
 
 		model.setIdentity(model.getFlujoEntrada().read());
