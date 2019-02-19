@@ -186,7 +186,6 @@ public class Main extends GameApplication {
 			maxVel();
 
 			hud.getModel().setSpeed(physics.getLinearVelocity().magnitude());
-			
 			checkBounds();
 		}
 	}
