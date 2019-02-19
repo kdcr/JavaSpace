@@ -371,9 +371,11 @@ public class Main extends GameApplication {
 				|| model.getPlayerY() > model.getMARGIN_VERTICAL()
 				|| model.getPlayerY() < -model.getMARGIN_VERTICAL()) {
 			if (System.currentTimeMillis() >= model.getCooldownBounds() + 1000) {
+				model.setCooldownBounds(System.currentTimeMillis());
 				// TODO avisar de limites
-				System.err.println("limites");
 			}
+		} else {
+
 		}
 	}
 
