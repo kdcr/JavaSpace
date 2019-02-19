@@ -45,6 +45,7 @@ import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.paint.CycleMethod;
 import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 import javafx.util.converter.NumberStringConverter;
@@ -142,7 +143,7 @@ public class LauncherController implements Initializable {
 
 	@FXML
 	private ImageView imageViewEP;
-	
+
 	@FXML
 	private ImageView loadingImage;
 
@@ -304,12 +305,11 @@ public class LauncherController implements Initializable {
 			 * 
 			 ***************************************************************************************************/
 
-			BackgroundSize bSize = new BackgroundSize(480, 270, false,
-					false, false, false);
+			BackgroundSize bSize = new BackgroundSize(480, 270, false, false, false, false);
 
 			Background background = new Background(
-					new BackgroundImage(new Image("/assets/textures/launcherBackground.gif"),
-							BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT, BackgroundPosition.CENTER, bSize));
+					new BackgroundImage(new Image("/assets/textures/launcherBackground.gif"), BackgroundRepeat.REPEAT,
+							BackgroundRepeat.REPEAT, BackgroundPosition.CENTER, bSize));
 
 			rootView.setBackground(background);
 
@@ -399,6 +399,10 @@ public class LauncherController implements Initializable {
 		}
 	}
 
+	public ImageView getLoadingImage() {
+		return loadingImage;
+	}
+
 	private void onLaunchButtonPressed() {
 		launchButtonMP.stop();
 		launchButtonMP.play();
@@ -475,11 +479,11 @@ public class LauncherController implements Initializable {
 		fade.setDuration(new Duration(700));
 		fade.play();
 	}
-	
-	private void loadingAnimation (Node nodo) {
-		nodo.setVisible(true);
+
+	public void loadingAnimation() {
+		loadingImage.setVisible(true);
 		RotateTransition rotate = new RotateTransition();
-		rotate.setNode(nodo);
+		rotate.setNode(loadingImage);
 		rotate.setByAngle(360);
 		rotate.setDelay(new Duration(0));
 		rotate.setAxis(Rotate.Z_AXIS);

@@ -165,6 +165,7 @@ public class Main extends GameApplication {
 
 		clientConnectionTask = new ClientConnectionTask(model);
 
+		controller.getLoadingImage().setVisible(false);
 
 		controller.getLaunchButton().setOnAction(e -> {
 			startConnection();
@@ -190,6 +191,8 @@ public class Main extends GameApplication {
 
 	private void startConnection() {
 		
+		controller.loadingAnimation();
+		
 		controller.getLaunchButton().setDisable(true);
 		model.setIp(controller.getModel().getIp());
 		model.setName(controller.getModel().getNombreJugador());
@@ -200,6 +203,7 @@ public class Main extends GameApplication {
 		
 		clientConnectionTask.setOnFailed(e->{
 			controller.getLaunchButton().setDisable(false);
+			controller.getLoadingImage().setVisible(false);
 			// TODO mostrar cuadro de error
 		});
 		clientConnectionThread = new Thread(clientConnectionTask);
