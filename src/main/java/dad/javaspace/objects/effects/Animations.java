@@ -1,5 +1,6 @@
 package dad.javaspace.objects.effects;
 
+import com.almasb.fxgl.animation.Animation;
 import com.almasb.fxgl.entity.Entities;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.GameWorld;
@@ -17,21 +18,71 @@ import javafx.util.Duration;
 
 public class Animations {
 
-	public static void shootTransition(Entity player, GameWorld gameWorld) {
+	public static Entity shootTransition(Entity player, GameWorld gameWorld) {
 		Entity shoot = new Entity();
 		shoot.setViewFromTexture("laser.png");
 		shoot.setRotation(player.getRotation());
+		shoot.setOnNotActive(() -> {
+			explotionTransition(shoot, gameWorld);
+		});
 		gameWorld.addEntities(shoot);
-		double xInicio = player.getCenter().getX() + 33;
-		double yInicio = player.getCenter().getY() + 25;
+		double xInicio = player.getCenter().getX() + 9;
+		double yInicio = player.getCenter().getY() + 9;
 		Point2D puntoInicio = new Point2D(xInicio, yInicio);
-		double xFin = (Math.sin(Math.toRadians(player.getRotation())) * 1500) + xInicio;
-		double yFin = (-Math.cos(Math.toRadians(player.getRotation())) * 1500) + yInicio;
+		double xFin = (Math.sin(Math.toRadians(player.getRotation())) * 800) + xInicio;
+		double yFin = (-Math.cos(Math.toRadians(player.getRotation())) * 800) + yInicio;
 		Point2D puntoFin = new Point2D(xFin, yFin);
 		Entities.animationBuilder().duration(Duration.seconds(0.3)).translate(shoot).from(puntoInicio).to(puntoFin)
 				.buildAndPlay().setOnFinished(() -> {
-					gameWorld.removeEntity(shoot);
+					if (shoot.isActive()) {
+						gameWorld.removeEntity(shoot);
+					}
 				});
+		return shoot;
+	}
+
+	public static void hitTransition(Entity player, GameWorld gameWorld) {
+		
+//		Terminar animacion. posicion, rotacion, radio, particulas
+		double playerPosX = player.getCenter().getX() + 25;
+		double playerPosY = player.getCenter().getY() + 25;
+
+		ParticleEmitter hitEmitter = ParticleEmitters.newExplosionEmitter(50);
+		hitEmitter.setExpireFunction(e -> Duration.seconds(10));
+		hitEmitter.setNumParticles(3);
+
+		
+		hitEmitter.setSpawnPointFunction(new Function<Integer, Point2D>() {
+			@Override
+			public Point2D apply(Integer arg) {
+				Point2D punto = new Point2D(35, 35);
+				return punto;
+			}
+		});
+		hitEmitter.setExpireFunction(e -> Duration.seconds(1));
+		hitEmitter.setNumParticles((int) ((Math.random() * 5) + 2));
+		
+		ParticleComponent hitComponent = new ParticleComponent(hitEmitter);
+		hitComponent.setOnFinished(player::removeFromWorld);
+
+		Entity hit = new Entity();
+		hit.addComponent(hitComponent);
+		hit.setRotation(player.getRotation());
+		gameWorld.addEntities(hit);
+		
+		hitEmitter.setExpireFunction(new Function<Integer, Duration>() {
+			
+			@Override
+			public Duration apply(Integer arg) {
+				return Duration.seconds(2);
+			}
+		});
+		
+		hitComponent.setOnFinished(() -> {
+			player.getComponents().removeValueByIdentity(hitComponent);
+			gameWorld.removeEntity(hit);
+		});
+
 	}
 
 	public static void hiperJumpTransition(Entity player, double duration, double translateX, double translateY,
