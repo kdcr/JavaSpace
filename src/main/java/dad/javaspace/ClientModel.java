@@ -20,6 +20,8 @@ public class ClientModel {
 
 	private String name = "jugadorTest", skin = "0";
 
+	private final int MARGIN_VERTICAL = 5000, MARGIN_HORIZONTAL = 5000;
+
 	// Gameplay
 	private DoubleProperty shield = new SimpleDoubleProperty(this, "shield", 1);
 
@@ -37,6 +39,8 @@ public class ClientModel {
 
 	private StringProperty version = new SimpleStringProperty(this, "version", "0.0.1");
 
+	private long cooldownBounds = 0;
+
 	// Conectividad
 	private int port;
 	private String ip;
@@ -47,6 +51,22 @@ public class ClientModel {
 	private OutputStreamWriter flujoSalida;
 
 	private ArrayList<NetworkingPlayer> jugadores = new ArrayList<>();
+
+	public long getCooldownBounds() {
+		return cooldownBounds;
+	}
+
+	public void setCooldownBounds(long cooldownBounds) {
+		this.cooldownBounds = cooldownBounds;
+	}
+
+	public int getMARGIN_VERTICAL() {
+		return MARGIN_VERTICAL;
+	}
+
+	public int getMARGIN_HORIZONTAL() {
+		return MARGIN_HORIZONTAL;
+	}
 
 	public InputStreamReader getFlujoEntrada() {
 		return flujoEntrada;

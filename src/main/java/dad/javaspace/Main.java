@@ -37,14 +37,14 @@ public class Main extends GameApplication {
 	ThrustIndicator thrustIndicator;
 	double viewWidth;
 	double viewHeight;
-	
+
 	JavaSpaceHUD hud = new JavaSpaceHUD();
 
 	// Mecanica interna
 	Entity player = new Entity();
-	
+
 	private ClientModel model = new ClientModel();
-	
+
 	private LauncherController controller = new LauncherController();
 	private MediaPlayer mp;
 	long coolDown = 0, coolDownStars = 0;
@@ -159,7 +159,7 @@ public class Main extends GameApplication {
 	@Override
 	protected void initGame() {
 		super.initGame();
-		
+
 		rootView = controller.getRootView();
 		getGameScene().addUINode(rootView);
 
@@ -184,24 +184,25 @@ public class Main extends GameApplication {
 			if (!getInput().isHeld(KeyCode.W))
 				model.setThrust(model.getThrust() * 0.80);
 			maxVel();
-			
+
 			hud.getModel().setSpeed(physics.getLinearVelocity().magnitude());
+			checkBounds();
 		}
 	}
 
 	private void startConnection() {
-		
+
 		controller.loadingAnimation();
-		
+
 		controller.getLaunchButton().setDisable(true);
 		model.setIp(controller.getModel().getIp());
 		model.setName(controller.getModel().getNombreJugador());
 		model.setPort(controller.getModel().getPuerto());
 		clientConnectionTask = new ClientConnectionTask(model);
-		
+
 		clientConnectionTask.setOnSucceeded(e -> startGame());
-		
-		clientConnectionTask.setOnFailed(e->{
+
+		clientConnectionTask.setOnFailed(e -> {
 			controller.getLaunchButton().setDisable(false);
 			controller.getLoadingImage().setVisible(false);
 			// TODO mostrar cuadro de error
@@ -213,12 +214,12 @@ public class Main extends GameApplication {
 	}
 
 	private void startGame() {
-		
+
 		for (NetworkingPlayer netPlayers : model.getJugadores()) {
 			getGameWorld().addEntity(netPlayers.getEntity());
 			getGameWorld().addEntities(netPlayers.getNameText());
 		}
-		
+
 		clientGameThread = new ClientGameThread(model);
 		clientGameThread.start();
 
@@ -226,14 +227,13 @@ public class Main extends GameApplication {
 		controller.guardarConfig();
 		model.setEnPartida(true);
 		controller.getMp().stop();
-		
+
 		// Bindeos modelo de datos
 		model.playerXProperty().bind(player.xProperty());
 		model.playerYProperty().bind(player.yProperty());
 		model.playerRotationProperty().bind(player.angleProperty());
 
 		hud.getModel().shieldProperty().bind(model.shieldProperty());
-		
 
 		// Estas cuatro lineas se encargan de mover la camara con el jugador, se hace
 		// asi para evitar que la camara rote
@@ -285,11 +285,11 @@ public class Main extends GameApplication {
 
 		getGameScene().addUINode(hud);
 		hud.setTranslateX(hud.getWidth());
-		
+
 	}
 
 	private void maxVel() {
-		double maxVelocity = 1000;
+		double maxVelocity = 400;
 		double x, y;
 		if (physics.getLinearVelocity().getX() > maxVelocity || physics.getLinearVelocity().getX() < -maxVelocity) {
 			if (physics.getLinearVelocity().getX() > 0)
@@ -363,6 +363,17 @@ public class Main extends GameApplication {
 
 			getGameWorld().removeEntities(starList);
 
+		}
+	}
+
+	private void checkBounds() {
+		if (model.getPlayerX() > model.getMARGIN_HORIZONTAL() || model.getPlayerX() < -model.getMARGIN_HORIZONTAL()
+				|| model.getPlayerY() > model.getMARGIN_VERTICAL()
+				|| model.getPlayerY() < -model.getMARGIN_VERTICAL()) {
+			if (System.currentTimeMillis() >= model.getCooldownBounds() + 1000) {
+				// TODO avisar de limites
+				System.err.println("limites");
+			}
 		}
 	}
 
