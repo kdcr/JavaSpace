@@ -23,7 +23,6 @@ import dad.javaspace.networking.NetworkingPlayer;
 import dad.javaspace.objects.EntityTypes;
 import dad.javaspace.objects.effects.Animations;
 import dad.javaspace.objects.effects.ComponentePropulsor;
-import dad.javaspace.ui.NameTag;
 import dad.javaspace.ui.ThrustIndicator;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
@@ -43,7 +42,6 @@ public class Main extends GameApplication {
 
 	// Mecanica interna
 	Entity player = new Entity();
-	NameTag playerNameTag = new NameTag();
 	
 	private ClientModel model = new ClientModel();
 	
@@ -165,7 +163,7 @@ public class Main extends GameApplication {
 		rootView = controller.getRootView();
 		getGameScene().addUINode(rootView);
 
-		clientConnectionTask = new ClientConnectionTask(model, getGameWorld());
+		clientConnectionTask = new ClientConnectionTask(model);
 
 
 		controller.getLaunchButton().setOnAction(e -> {
@@ -196,7 +194,7 @@ public class Main extends GameApplication {
 		model.setIp(controller.getModel().getIp());
 		model.setName(controller.getModel().getNombreJugador());
 		model.setPort(controller.getModel().getPuerto());
-		clientConnectionTask = new ClientConnectionTask(model, getGameWorld());
+		clientConnectionTask = new ClientConnectionTask(model);
 		
 		clientConnectionTask.setOnSucceeded(e -> startGame());
 		
@@ -281,15 +279,6 @@ public class Main extends GameApplication {
 		player.setRenderLayer(RenderLayer.TOP);
 		getGameScene().setBackgroundColor(Color.BLACK);
 
-		// Playernametag es innecesario
-		playerNameTag.setName(model.getName());
-		playerNameTag.shieldProperty().bind(model.shieldProperty());
-		
-		playerNameTag.xProperty().bind(player.xProperty().subtract(50));
-		playerNameTag.yProperty().bind(player.yProperty().subtract(50));
-		
-		getGameWorld().addEntity(playerNameTag);
-	
 		getGameScene().addUINode(hud);
 		hud.setTranslateX(hud.getWidth());
 		

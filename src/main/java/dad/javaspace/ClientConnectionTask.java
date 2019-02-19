@@ -5,8 +5,6 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.Scanner;
 
-import com.almasb.fxgl.entity.GameWorld;
-
 import dad.javaspace.networking.NetworkingPlayer;
 import javafx.concurrent.Task;
 
@@ -14,11 +12,8 @@ public class ClientConnectionTask extends Task<Integer> {
 
 	ClientModel model;
 
-	private GameWorld gameWorld;
-
-	public ClientConnectionTask(ClientModel model, GameWorld world) {
+	public ClientConnectionTask(ClientModel model) {
 		this.model = model;
-		this.gameWorld = world;
 	}
 
 	@Override

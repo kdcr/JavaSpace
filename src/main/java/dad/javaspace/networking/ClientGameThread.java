@@ -18,6 +18,7 @@ public class ClientGameThread extends Thread {
 		System.out.println("Thread conexiones up");
 		System.out.println("Esperando start para sincronizar");
 		System.out.println(model.getScanner().nextLine());
+		model.setEnPartida(true);
 
 		while (model.isEnPartida()) {
 			try {
@@ -56,7 +57,7 @@ public class ClientGameThread extends Thread {
 	private void sendPlayerPosition() {
 		try {
 			String paquete = Math.round(model.getPlayerX()) + "," + Math.round(model.getPlayerY()) + ","
-					+ model.getAngular();
+					+ model.getPlayerRotation();
 
 			if (model.isCanShoot()) {
 				model.setCanShoot(false);

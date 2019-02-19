@@ -18,23 +18,35 @@ public class ClientModel {
 
 	private int identity, numPlayers;
 
-	private double xForce, yForce;
+	private String name = "jugadorTest", skin = "0";
 
-	private int port;
-
-	private String ip, name = "jugadorTest", skin = "0";
-
+	// Gameplay
 	private DoubleProperty shield = new SimpleDoubleProperty(this, "shield", 1);
 
 	private DoubleProperty playerX = new SimpleDoubleProperty(this, "playerX");
 	private DoubleProperty playerY = new SimpleDoubleProperty(this, "playerY");
 	private DoubleProperty playerRotation = new SimpleDoubleProperty(this, "playerRotation");
 
+	private double xForce, yForce;
+
+	private BooleanProperty enPartida = new SimpleBooleanProperty(this, "enPartida", false);
+
+	private DoubleProperty thrust = new SimpleDoubleProperty();
+
+	private DoubleProperty angular = new SimpleDoubleProperty();
+
+	private StringProperty version = new SimpleStringProperty(this, "version", "0.0.1");
+
+	// Conectividad
+	private int port;
+	private String ip;
 	private Socket socket;
 	private Scanner scanner;
 
 	private InputStreamReader flujoEntrada;
 	private OutputStreamWriter flujoSalida;
+
+	private ArrayList<NetworkingPlayer> jugadores = new ArrayList<>();
 
 	public InputStreamReader getFlujoEntrada() {
 		return flujoEntrada;
@@ -109,16 +121,6 @@ public class ClientModel {
 	public void setCanShoot(boolean canShoot) {
 		this.canShoot = canShoot;
 	}
-
-	private ArrayList<NetworkingPlayer> jugadores = new ArrayList<>();
-
-	private BooleanProperty enPartida = new SimpleBooleanProperty(this, "enPartida", false);
-
-	private DoubleProperty thrust = new SimpleDoubleProperty();
-
-	private DoubleProperty angular = new SimpleDoubleProperty();
-
-	private StringProperty version = new SimpleStringProperty(this, "version", "0.0.1");
 
 	public final DoubleProperty thrustProperty() {
 		return this.thrust;
