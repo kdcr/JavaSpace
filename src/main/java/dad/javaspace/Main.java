@@ -24,6 +24,7 @@ import dad.javaspace.objects.EntityTypes;
 import dad.javaspace.objects.effects.Animations;
 import dad.javaspace.objects.effects.ComponentePropulsor;
 import dad.javaspace.ui.ThrustIndicator;
+import javafx.geometry.Point2D;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.media.Media;
@@ -161,26 +162,6 @@ public class Main extends GameApplication {
 
 	}
 
-	@Override
-	protected void onUpdate(double tpf) {
-		super.onUpdate(tpf);
-		if (model.isEnPartida()) {
-
-			if (!clientGameThread.isAlive())
-				System.exit(0);
-
-			physics.setAngularVelocity(model.getAngular());
-			generateStars();
-
-			if (!getInput().isHeld(KeyCode.W))
-				model.setThrust(model.getThrust() * 0.80);
-			maxVel();
-
-			hud.getModel().setSpeed(physics.getLinearVelocity().magnitude());
-			checkBounds();
-		}
-	}
-
 	private void startConnection() {
 
 		// Mostrar el icono de carga y bloquear el boton de jugar
@@ -209,8 +190,6 @@ public class Main extends GameApplication {
 	}
 
 	private void startGame() {
-
-		this.initInput();
 
 		for (NetworkingPlayer netPlayers : model.getJugadores()) {
 			getGameWorld().addEntity(netPlayers.getEntity());
@@ -269,6 +248,27 @@ public class Main extends GameApplication {
 
 	}
 
+	@Override
+	protected void onUpdate(double tpf) {
+		super.onUpdate(tpf);
+		if (model.isEnPartida()) {
+
+			if (!clientGameThread.isAlive())
+				System.exit(0);
+
+			physics.setAngularVelocity(model.getAngular());
+
+			generateStars();
+
+			if (!getInput().isHeld(KeyCode.W))
+				model.setThrust(model.getThrust() * 0.80);
+			maxVelExperimental();
+
+			hud.getModel().setSpeed(physics.getLinearVelocity().magnitude());
+			checkBounds();
+		}
+	}
+
 	private void initGameEffects() {
 		Animations.hiperJumpTransition(player, 1, -Math.sin(Math.toRadians(player.getRotation())) * 100,
 				Math.cos(Math.toRadians(player.getRotation())) * 100, getGameWorld());
@@ -306,6 +306,21 @@ public class Main extends GameApplication {
 			y = physics.getLinearVelocity().getY();
 
 		physics.setLinearVelocity(x, y);
+	}
+
+	private void maxVelExperimental() {
+		double maxVelocity = 400;
+
+		double x = 0, y = 0;
+
+		if (physics.getLinearVelocity().magnitude() >= maxVelocity) {
+
+			// TODO procesar x e y para que sea la diferencia de la velocidad maxima y la
+			// velocidad actual
+
+			physics.setLinearVelocity(physics.getLinearVelocity().subtract(new Point2D(x, y)));
+		}
+
 	}
 
 	private void makeShoot() {
@@ -364,30 +379,28 @@ public class Main extends GameApplication {
 		}
 	}
 
-	private void getDamage(int percentage) {
-		double damage = percentage / 100;
+	private void getDamage(double damage) {
 
 		if (model.getShield() <= 0)
 			model.setShield(-1);
 
-		if (model.getShield() <= 0) {
+		if (model.getShield() < 0) {
 			model.setHull(model.getHull() - damage);
 			System.out.println("hull damaged");
 		} else {
 			model.setShield(model.getShield() - damage);
+			System.out.println("shield damaged");
 		}
 
 	}
 
 	private void checkBounds() {
 		if (model.getPlayerX() > model.getMARGIN_HORIZONTAL() || model.getPlayerX() < -model.getMARGIN_HORIZONTAL()
-				|| model.getPlayerY() > model.getMARGIN_VERTICAL()
-				|| model.getPlayerY() < -model.getMARGIN_VERTICAL()) {
+				|| model.getPlayerY() > model.getMARGIN_VERTICAL() || model.getPlayerY() < -model.getMARGIN_VERTICAL())
 			if (System.currentTimeMillis() >= model.getCooldownBounds() + 1000) {
 				model.setCooldownBounds(System.currentTimeMillis());
-				getDamage(10);
+				getDamage(0.2);
 			}
-		}
 	}
 
 }

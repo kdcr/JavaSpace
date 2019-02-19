@@ -23,25 +23,23 @@ public class ClientConnectionTask extends Task<Integer> {
 		System.out.println("Buscando conexion...");
 		int intentos = 0;
 		model.setSocket(new Socket());
-		while (intentos != MAX_INTENTOS) {
+		while (intentos != MAX_INTENTOS && !model.getSocket().isConnected()) {
 			try {
 				intentos++;
 				System.out.println("Intento " + intentos);
 				model.setSocket(new Socket(model.getIp(), 2000));
-				if (model.getSocket().isConnected())
-					break;
 			} catch (Exception e) {
+				// Si se han llegado a 3 intentos se cancela la conexión y da excepción para
+				// salir del task
+				if (intentos == MAX_INTENTOS) {
+					System.err.println("No se ha encontrado un servidor");
+					throw new SocketTimeoutException();
+				}
 				// Ignorar la excepcion y esperar un poco
 				Thread.sleep(1000);
 			}
 		}
 
-		// Si se han llegado a 3 intentos se cancela la conexión y da excepción para
-		// salir del task
-		if (intentos == MAX_INTENTOS) {
-			System.err.println("No se ha encontrado un servidor");
-			throw new SocketTimeoutException();
-		}
 
 		System.out.println("Servidor encontrado");
 
