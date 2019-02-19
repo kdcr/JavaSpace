@@ -12,6 +12,7 @@ import dad.javaspace.interfacing.ScreenResolutions;
 import dad.javaspace.launchermodel.LauncherModel;
 import javafx.animation.FadeTransition;
 import javafx.animation.RotateTransition;
+import javafx.animation.Transition;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
@@ -488,7 +489,7 @@ public class LauncherController implements Initializable {
 		rotate.setDelay(new Duration(0));
 		rotate.setAxis(Rotate.Z_AXIS);
 		rotate.setDuration(new Duration(1000));
-		rotate.setCycleCount(500);
+		rotate.setCycleCount(Transition.INDEFINITE);
 		rotate.play();
 	}
 
