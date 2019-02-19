@@ -11,6 +11,7 @@ import org.ini4j.Wini;
 import dad.javaspace.interfacing.ScreenResolutions;
 import dad.javaspace.launchermodel.LauncherModel;
 import javafx.animation.FadeTransition;
+import javafx.animation.RotateTransition;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
@@ -44,6 +45,7 @@ import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 import javafx.util.converter.NumberStringConverter;
 
@@ -140,6 +142,9 @@ public class LauncherController implements Initializable {
 
 	@FXML
 	private ImageView imageViewEP;
+	
+	@FXML
+	private ImageView loadingImage;
 
 	@FXML
 	private Button launchButton;
@@ -255,6 +260,8 @@ public class LauncherController implements Initializable {
 			imageViewSalir.setImage(new Image("/assets/textures/imagensalir.png"));
 			imageViewSalir.setFitWidth(0);
 			imageViewSalir.setFitHeight(0);
+			loadingImage.setImage(new Image("/assets/textures/loadercircle.png"));
+			loadingImage.setVisible(false);
 
 			// Skins
 			skinUno.setGraphic(new ImageView(new Image("/assets/textures/navePrueba.png")));
@@ -467,6 +474,18 @@ public class LauncherController implements Initializable {
 		fade.setToValue(1);
 		fade.setDuration(new Duration(700));
 		fade.play();
+	}
+	
+	private void loadingAnimation (Node nodo) {
+		nodo.setVisible(true);
+		RotateTransition rotate = new RotateTransition();
+		rotate.setNode(nodo);
+		rotate.setByAngle(360);
+		rotate.setDelay(new Duration(0));
+		rotate.setAxis(Rotate.Z_AXIS);
+		rotate.setDuration(new Duration(1000));
+		rotate.setCycleCount(500);
+		rotate.play();
 	}
 
 	public void guardarConfig() {

@@ -13,6 +13,11 @@
             <Insets />
          </StackPane.margin>
       </Button>
+      <ImageView fx:id="loadingImage" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+         <StackPane.margin>
+            <Insets top="200.0" />
+         </StackPane.margin>
+      </ImageView>
    </children>
    <padding>
       <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
