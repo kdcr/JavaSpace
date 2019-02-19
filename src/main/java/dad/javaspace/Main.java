@@ -185,7 +185,7 @@ public class Main extends GameApplication {
 				model.setThrust(model.getThrust() * 0.80);
 			maxVel();
 			
-			hud.getModel().setSpeedProperty(physics.getLinearVelocity().magnitude());
+			hud.getModel().setSpeed(physics.getLinearVelocity().magnitude());
 		}
 	}
 
@@ -232,7 +232,7 @@ public class Main extends GameApplication {
 		model.playerYProperty().bind(player.yProperty());
 		model.playerRotationProperty().bind(player.angleProperty());
 
-		hud.getModel().shieldPropertyProperty().bind(model.shieldProperty());
+		hud.getModel().shieldProperty().bind(model.shieldProperty());
 		
 
 		// Estas cuatro lineas se encargan de mover la camara con el jugador, se hace
