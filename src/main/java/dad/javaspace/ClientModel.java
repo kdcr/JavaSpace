@@ -9,10 +9,8 @@ import java.util.Scanner;
 import dad.javaspace.networking.NetworkingPlayer;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -26,6 +24,7 @@ public class ClientModel {
 
 	// Gameplay
 	private DoubleProperty shield = new SimpleDoubleProperty(this, "shield", 1);
+	private DoubleProperty hull = new SimpleDoubleProperty(this, "hull", 1);
 
 	private DoubleProperty playerX = new SimpleDoubleProperty(this, "playerX");
 	private DoubleProperty playerY = new SimpleDoubleProperty(this, "playerY");
@@ -40,8 +39,6 @@ public class ClientModel {
 	private DoubleProperty angular = new SimpleDoubleProperty();
 
 	private StringProperty version = new SimpleStringProperty(this, "version", "0.0.1");
-
-	private IntegerProperty boundsIndex = new SimpleIntegerProperty(this, "boundsIndex", 0);
 
 	private long cooldownBounds = 0;
 
@@ -270,16 +267,16 @@ public class ClientModel {
 		this.shieldProperty().set(shield);
 	}
 
-	public final IntegerProperty boundsIndexProperty() {
-		return this.boundsIndex;
+	public final DoubleProperty hullProperty() {
+		return this.hull;
 	}
 
-	public final int getBoundsIndex() {
-		return this.boundsIndexProperty().get();
+	public final double getHull() {
+		return this.hullProperty().get();
 	}
 
-	public final void setBoundsIndex(final int boundsIndex) {
-		this.boundsIndexProperty().set(boundsIndex);
+	public final void setHull(final double hull) {
+		this.hullProperty().set(hull);
 	}
 
 }

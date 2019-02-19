@@ -1,11 +1,12 @@
-package dad.javaspace;
+package dad.javaspace.networking;
 
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.util.Scanner;
 
-import dad.javaspace.networking.NetworkingPlayer;
+import dad.javaspace.ClientModel;
 import javafx.concurrent.Task;
 
 public class ClientConnectionTask extends Task<Integer> {
@@ -18,13 +19,33 @@ public class ClientConnectionTask extends Task<Integer> {
 
 	@Override
 	protected Integer call() throws Exception {
-
+		final int MAX_INTENTOS = 5;
 		System.out.println("Buscando conexion...");
-		model.setSocket(new Socket(model.getIp(), 2000));
+		int intentos = 0;
+		model.setSocket(new Socket());
+		while (intentos != MAX_INTENTOS) {
+			try {
+				intentos++;
+				System.out.println("Intento " + intentos);
+				model.setSocket(new Socket(model.getIp(), 2000));
+				if (model.getSocket().isConnected())
+					break;
+			} catch (Exception e) {
+				// Ignorar la excepcion y esperar un poco
+				Thread.sleep(1000);
+			}
+		}
+
+		// Si se han llegado a 3 intentos se cancela la conexión y da excepción para
+		// salir del task
+		if (intentos == MAX_INTENTOS) {
+			System.err.println("No se ha encontrado un servidor");
+			throw new SocketTimeoutException();
+		}
 
 		System.out.println("Servidor encontrado");
-		// Espera para que le de tiempo al servidor de mover la conexión a otro puerto
-		// Thread.sleep(3000);
+
+		// Establecer los flujos
 
 		model.setFlujoEntrada(new InputStreamReader(model.getSocket().getInputStream(), "UTF-8"));
 
@@ -33,17 +54,19 @@ public class ClientConnectionTask extends Task<Integer> {
 		model.getFlujoSalida().write(model.getName() + "," + model.getSkin() + "\n");
 
 		model.getFlujoSalida().flush();
-		
-		System.out.println("nombre enviado");
+
+		System.out.println("Nombre enviado");
 
 		model.setIdentity(model.getFlujoEntrada().read());
 
 		System.out.println(model.getIdentity());
 		model.setScanner(new Scanner(model.getFlujoEntrada()));
 
-		System.out.println("id recibida");
+		System.out.println("Id recibida");
 		model.getFlujoSalida().write("ready\n");
 		model.getFlujoSalida().flush();
+
+		System.out.println("Esperando señal de inicio desde el servidor...");
 
 		System.out.println(model.getScanner().nextLine());
 

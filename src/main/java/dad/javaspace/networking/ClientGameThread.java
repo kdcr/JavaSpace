@@ -15,6 +15,7 @@ public class ClientGameThread extends Thread {
 	@Override
 	public void run() {
 		super.run();
+		int indexError = 0;
 		System.out.println("Thread conexiones up");
 		System.out.println("Esperando start para sincronizar");
 		System.out.println(model.getScanner().nextLine());
@@ -24,8 +25,14 @@ public class ClientGameThread extends Thread {
 			try {
 				sendPlayerPosition();
 				desempaquetarPosiciones(model.getScanner().nextLine());
+				indexError = 0;
 			} catch (Exception e) {
-				e.printStackTrace();
+				indexError++;
+				if (indexError == 5) {
+					System.err.println("Se ha perdido la conexión con el servidor, partida cancelada");
+					e.printStackTrace();
+					model.setEnPartida(false);
+				}
 			}
 		}
 	}

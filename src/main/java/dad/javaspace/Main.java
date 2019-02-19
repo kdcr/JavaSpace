@@ -2,7 +2,6 @@ package dad.javaspace;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Map;
 
 import com.almasb.fxgl.app.FXGL;
 import com.almasb.fxgl.app.GameApplication;
@@ -18,6 +17,7 @@ import com.almasb.fxgl.settings.GameSettings;
 
 import dad.javaspace.HUD.JavaSpaceHUD;
 import dad.javaspace.interfacing.controller.LauncherController;
+import dad.javaspace.networking.ClientConnectionTask;
 import dad.javaspace.networking.ClientGameThread;
 import dad.javaspace.networking.NetworkingPlayer;
 import dad.javaspace.objects.EntityTypes;
@@ -142,18 +142,6 @@ public class Main extends GameApplication {
 				makeShoot();
 			}
 		}, KeyCode.SPACE);
-
-	}
-
-	@Override
-	protected void initUI() {
-		super.initUI();
-
-	}
-
-	@Override
-	protected void initGameVars(Map<String, Object> vars) {
-		vars.put("lives", 3);
 	}
 
 	@Override
@@ -178,6 +166,9 @@ public class Main extends GameApplication {
 		super.onUpdate(tpf);
 		if (model.isEnPartida()) {
 
+			if (!clientGameThread.isAlive())
+				System.exit(0);
+
 			physics.setAngularVelocity(model.getAngular());
 			generateStars();
 
@@ -192,12 +183,16 @@ public class Main extends GameApplication {
 
 	private void startConnection() {
 
+		// Mostrar el icono de carga y bloquear el boton de jugar
 		controller.loadingAnimation();
-
 		controller.getLaunchButton().setDisable(true);
+
+		// Establecer los datos al modelo a partir de los datos del launcher
 		model.setIp(controller.getModel().getIp());
 		model.setName(controller.getModel().getNombreJugador());
 		model.setPort(controller.getModel().getPuerto());
+
+		// Configurar y arrancar la task para unirse a una partida
 		clientConnectionTask = new ClientConnectionTask(model);
 
 		clientConnectionTask.setOnSucceeded(e -> startGame());
@@ -214,6 +209,8 @@ public class Main extends GameApplication {
 	}
 
 	private void startGame() {
+
+		this.initInput();
 
 		for (NetworkingPlayer netPlayers : model.getJugadores()) {
 			getGameWorld().addEntity(netPlayers.getEntity());
@@ -234,6 +231,7 @@ public class Main extends GameApplication {
 		model.playerRotationProperty().bind(player.angleProperty());
 
 		hud.getModel().shieldProperty().bind(model.shieldProperty());
+		hud.getModel().hpProperty().bind(model.hullProperty());
 
 		// Estas cuatro lineas se encargan de mover la camara con el jugador, se hace
 		// asi para evitar que la camara rote
@@ -366,16 +364,29 @@ public class Main extends GameApplication {
 		}
 	}
 
+	private void getDamage(int percentage) {
+		double damage = percentage / 100;
+
+		if (model.getShield() <= 0)
+			model.setShield(-1);
+
+		if (model.getShield() <= 0) {
+			model.setHull(model.getHull() - damage);
+			System.out.println("hull damaged");
+		} else {
+			model.setShield(model.getShield() - damage);
+		}
+
+	}
+
 	private void checkBounds() {
 		if (model.getPlayerX() > model.getMARGIN_HORIZONTAL() || model.getPlayerX() < -model.getMARGIN_HORIZONTAL()
 				|| model.getPlayerY() > model.getMARGIN_VERTICAL()
 				|| model.getPlayerY() < -model.getMARGIN_VERTICAL()) {
 			if (System.currentTimeMillis() >= model.getCooldownBounds() + 1000) {
 				model.setCooldownBounds(System.currentTimeMillis());
-				// TODO avisar de limites
+				getDamage(10);
 			}
-		} else {
-
 		}
 	}
 
