@@ -56,8 +56,10 @@ public class ClientGameThread extends Thread {
 
 	private void sendPlayerPosition() {
 		try {
-			String paquete = Math.round(model.getPlayerX()) + "," + Math.round(model.getPlayerY()) + ","
-					+ model.getPlayerRotation();
+//			String paquete = Math.round(model.getPlayerX()) + "," + Math.round(model.getPlayerY()) + ","
+//					+ model.getPlayerRotation();
+
+			String paquete = model.getPlayerX() + "," + model.getPlayerY() + "," + model.getPlayerRotation();
 
 			if (model.isCanShoot()) {
 				model.setCanShoot(false);
