@@ -141,8 +141,8 @@ public class LauncherController implements Initializable {
 	@FXML
 	private StackPane empezarPartidaHoverRoot;
 
-	@FXML
-	private ImageView imageViewEP;
+//	@FXML
+//	private ImageView imageViewEP;
 
 	@FXML
 	private ImageView loadingImage;
@@ -257,9 +257,9 @@ public class LauncherController implements Initializable {
 			 * Imagenes
 			 * 
 			 ***************************************************************************************************/
-			imageViewEP.setImage(new Image("/assets/textures/imagenjugar.png"));
-			imageViewEP.setFitWidth(0);
-			imageViewEP.setFitHeight(0);
+//			imageViewEP.setImage(new Image("/assets/textures/imagenjugar.png"));
+//			imageViewEP.setFitWidth(0);
+//			imageViewEP.setFitHeight(0);
 			rootBorderPaneView.setCenter(empezarPartidaHoverRoot);
 			imageViewSalir.setImage(new Image("/assets/textures/imagensalir.png"));
 			imageViewSalir.setFitWidth(0);

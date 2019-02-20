@@ -73,6 +73,7 @@ public class Main extends GameApplication {
 	@Override
 	protected void initSettings(GameSettings settings) {
 
+		settings.setManualResizeEnabled(true);
 		settings.setWidth(controller.getModel().getResolucion().getX());
 		settings.setHeight(controller.getModel().getResolucion().getY());
 //		settings.setWidth((int) Screen.getPrimary().getBounds().getWidth());
@@ -189,8 +190,10 @@ public class Main extends GameApplication {
 
 	}
 
-	private void startGame() {
 
+	
+	private void startGame() {
+		
 		for (NetworkingPlayer netPlayers : model.getJugadores()) {
 			getGameWorld().addEntity(netPlayers.getEntity());
 			getGameWorld().addEntities(netPlayers.getNameText());

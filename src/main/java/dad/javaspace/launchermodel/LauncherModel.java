@@ -33,6 +33,13 @@ public class LauncherModel {
 		nombreJugador = new SimpleStringProperty(this, "nombreJugador", "DefaultPlayerName");
 		pantallaCompleta = new SimpleBooleanProperty(this, "pantallaCompleta", true);
 		resolucion = new SimpleObjectProperty<>(this, "resolucion");
+
+		numPlayersProperty().addListener((o, ov, nv) -> {
+			System.out.println("hola!");
+			String texto = String.valueOf(getNumPlayers());
+			
+			Integer.parseInt(texto);
+		});
 	}
 
 	public final DoubleProperty volumenMusicaProperty() {

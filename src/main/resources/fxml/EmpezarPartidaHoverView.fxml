@@ -8,7 +8,6 @@
 
 <StackPane fx:id="empezarPartidaHoverRoot" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <ImageView fx:id="imageViewEP" fitHeight="800.0" fitWidth="1500.0" pickOnBounds="true" preserveRatio="true" />
       <VBox alignment="CENTER" spacing="10.0" StackPane.alignment="CENTER">
          <children>
             <Button fx:id="launchButton" alignment="BOTTOM_CENTER" contentDisplay="BOTTOM" mnemonicParsing="false" styleClass="launchButton" text="Unirse a sala" />
