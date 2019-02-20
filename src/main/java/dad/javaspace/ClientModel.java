@@ -6,6 +6,8 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import com.almasb.fxgl.saving.UserProfile;
+
 import dad.javaspace.networking.NetworkingPlayer;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
@@ -30,6 +32,8 @@ public class ClientModel {
 	private DoubleProperty playerY = new SimpleDoubleProperty(this, "playerY");
 	private DoubleProperty playerRotation = new SimpleDoubleProperty(this, "playerRotation");
 
+	private BooleanProperty playerAlive = new SimpleBooleanProperty(this, "playeralive", true);
+
 	private double xForce, yForce;
 
 	private BooleanProperty enPartida = new SimpleBooleanProperty(this, "enPartida", false);
@@ -52,6 +56,16 @@ public class ClientModel {
 	private OutputStreamWriter flujoSalida;
 
 	private ArrayList<NetworkingPlayer> jugadores = new ArrayList<>();
+
+	private UserProfile profile = new UserProfile("JavaSpace", getVersion());
+
+	public UserProfile getProfile() {
+		return profile;
+	}
+
+	public void setProfile(UserProfile profile) {
+		this.profile = profile;
+	}
 
 	public long getCooldownBounds() {
 		return cooldownBounds;
@@ -277,6 +291,18 @@ public class ClientModel {
 
 	public final void setHull(final double hull) {
 		this.hullProperty().set(hull);
+	}
+
+	public final BooleanProperty playerAliveProperty() {
+		return this.playerAlive;
+	}
+
+	public final boolean isPlayerAlive() {
+		return this.playerAliveProperty().get();
+	}
+
+	public final void setPlayerAlive(final boolean playerAlive) {
+		this.playerAliveProperty().set(playerAlive);
 	}
 
 }

@@ -14,16 +14,19 @@ import com.almasb.fxgl.physics.HitBox;
 import com.almasb.fxgl.physics.PhysicsComponent;
 import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
 import com.almasb.fxgl.settings.GameSettings;
+import com.almasb.fxgl.texture.Texture;
 
 import dad.javaspace.HUD.JavaSpaceHUD;
 import dad.javaspace.interfacing.controller.LauncherController;
 import dad.javaspace.networking.ClientConnectionTask;
 import dad.javaspace.networking.ClientGameThread;
 import dad.javaspace.networking.NetworkingPlayer;
+import dad.javaspace.networking.Server;
 import dad.javaspace.objects.EntityTypes;
 import dad.javaspace.objects.effects.Animations;
 import dad.javaspace.objects.effects.ComponentePropulsor;
 import dad.javaspace.ui.ThrustIndicator;
+import javafx.concurrent.Task;
 import javafx.geometry.Point2D;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
@@ -60,6 +63,11 @@ public class Main extends GameApplication {
 
 	AnchorPane rootView;
 
+	// Servidor
+	private Server serverTask;
+
+	private Thread serverThread;
+
 	// Estetica
 	private ArrayList<Entity> starArray = new ArrayList<>();
 	ArrayList<Entity> starList = new ArrayList<>();
@@ -85,8 +93,6 @@ public class Main extends GameApplication {
 		gameStage.setFullScreen(controller.getModel().isPantallaCompleta());
 		settings.setVersion(model.getVersion());
 		FXGL.configure(this, settings.toReadOnly(), gameStage);
-
-		// Configuracion de los hilos
 
 		/**
 		 * Las del juego
@@ -161,6 +167,29 @@ public class Main extends GameApplication {
 			startConnection();
 		});
 
+		controller.getCreateRoomButton().setOnAction(e -> {
+			startServer();
+		});
+
+	}
+
+	private void startServer() {
+		setConnectionConfig();
+		
+		serverTask = new Server(model.getNumPlayers(), model.getPort());
+
+		serverThread = new Thread(serverTask);
+
+		serverThread.start();
+	}
+	
+	private void setConnectionConfig() {
+		
+		// Establecer los datos al modelo a partir de los datos del launcher
+		model.setIp(controller.getModel().getIp());
+		model.setName(controller.getModel().getNombreJugador());
+		model.setPort(controller.getModel().getPuerto());
+		
 	}
 
 	private void startConnection() {
@@ -169,11 +198,8 @@ public class Main extends GameApplication {
 		controller.loadingAnimation();
 		controller.getLaunchButton().setDisable(true);
 
-		// Establecer los datos al modelo a partir de los datos del launcher
-		model.setIp(controller.getModel().getIp());
-		model.setName(controller.getModel().getNombreJugador());
-		model.setPort(controller.getModel().getPuerto());
-
+		setConnectionConfig();
+		
 		// Configurar y arrancar la task para unirse a una partida
 		clientConnectionTask = new ClientConnectionTask(model);
 
@@ -194,6 +220,7 @@ public class Main extends GameApplication {
 	
 	private void startGame() {
 		
+		getInput().save(model.getProfile());
 		for (NetworkingPlayer netPlayers : model.getJugadores()) {
 			getGameWorld().addEntity(netPlayers.getEntity());
 			getGameWorld().addEntities(netPlayers.getNameText());
@@ -249,6 +276,10 @@ public class Main extends GameApplication {
 
 		initGameEffects();
 
+		for (Entity entity : ClientUtils.buildWalls(model.getMARGIN_HORIZONTAL(), model.getMARGIN_VERTICAL())) {
+			getGameWorld().addEntity(entity);
+		}
+
 	}
 
 	@Override
@@ -265,10 +296,19 @@ public class Main extends GameApplication {
 
 			if (!getInput().isHeld(KeyCode.W))
 				model.setThrust(model.getThrust() * 0.80);
-			maxVelExperimental();
+			maxVel();
 
 			hud.getModel().setSpeed(physics.getLinearVelocity().magnitude());
 			checkBounds();
+
+			die();
+		}
+	}
+
+	private void die() {
+		if (model.getHull() <= 0) {
+			model.setPlayerAlive(false);
+			getInput().clearAll();
 		}
 	}
 
@@ -389,10 +429,8 @@ public class Main extends GameApplication {
 
 		if (model.getShield() < 0) {
 			model.setHull(model.getHull() - damage);
-			System.out.println("hull damaged");
 		} else {
 			model.setShield(model.getShield() - damage);
-			System.out.println("shield damaged");
 		}
 
 	}

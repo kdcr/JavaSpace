@@ -3,115 +3,116 @@ package dad.javaspace.networking;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 
-public class Server {
-	Socket skCliente;
-	
-	 static final int NPLAYERS=1;
-	private static ArrayList<Connection> connectionsArray=new ArrayList<Connection>();
-	private static String players="", playersState="";
-	private static boolean gameFinished=false;
-	
-	
+import javafx.concurrent.Task;
+//
+public class Server extends Task<Integer> {
+
+	private static  int nPlayers;
+	private static ArrayList<Connection> connectionsArray = new ArrayList<Connection>();
+	private static String players = "", playersState = "";
+
 	public static String getPlayers() {
 		return players;
 	}
-
-
-	
 
 	public static ArrayList<Connection> getConnectionsArray() {
 		return connectionsArray;
 	}
 
+	private static  int Puerto ;
+	static int numCliente = 0;
+	private ArrayList<Integer> disconectedList = new ArrayList<Integer>();
 
-	static final int Puerto = 2000;
-	 static int numCliente = 0;
-
-
-	public Server(Socket sCliente) {
-		skCliente = sCliente;
+	public Server(int nPlayers, int port) {
+		setnPlayers(nPlayers);
+		Puerto=port;
 	}
 
 	
-	public static void main(String[] arg) {
-		
-
+	
+	@Override
+	protected Integer call() throws Exception {
 		try {
 
 			// Inicio el servidor en el puerto
 
 			ServerSocket skServidor = new ServerSocket(Puerto);
 
-			
-			
 			System.out.println("Escucho el puerto " + Puerto);
 
-			while (numCliente<NPLAYERS) {
+			while (numCliente < getnPlayers()) {
 
-				
-				
 				Socket skCliente = skServidor.accept();
-				
 
 				System.out.println("Cliente conectado");
 
 //				Atiendo al cliente mediante un thread
 				connectionsArray.add(new Connection(skCliente, ++numCliente, connectionsArray));
 			}
-			
-			
 
 			for (Connection con : connectionsArray) {
 				con.start();
-				
+
 			}
-			
+
 			Connection.barrera.await();
-			
-			
+
 			for (Connection con : connectionsArray) {
-				players+=con.getIdentity()+","+con.getNombre()+","+con.getSkin()+"_";
+				players += con.getIdentity() + "," + con.getNombre() + "," + con.getSkin() + "_";
 			}
-				
+
 			players.concat("\n");
 			Connection.barrera.await();
-			
+
 			Connection.barrera.await();
-			
-			while(true) {
-				playersState="";
+
+			while (connectionsArray.size()==1) {
+
+				playersState = "";
 				for (Connection con : connectionsArray) {
 					// if(con.getIdentity()!=this.identity)
-					if(con.recive())
-						con.shoot();
-					playersState += con.getItemStateString();
-					System.out.println(playersState);
-					
-					//TODO comprobar si disparamos
-					//TODO comprobar si hay alguien cerca
-					//TODO funci�n para comprobar si acierta el disparo
-					
+
+					try {
+						con.recive();
+
+						playersState += con.getItemStateString();
+					} catch (NoSuchElementException e) {
+						disconectedList.add(con.getIdentity() - 1);
+					}
+
 				}
-				
-				
-				
-				playersState+="\n";
+				for (Integer disconected : disconectedList) {
+					connectionsArray.remove(disconected);
+				}
+				disconectedList.clear();
+
+				playersState += "\n";
 				for (Connection con : connectionsArray) {
-				//	System.out.println(playersState);
-					con.send(playersState);
-					
+					try {
+						System.out.println(playersState);
+						con.send(playersState);
+					} catch (Exception e) {
+					}
+
 				}
-				
-				
+
 			}
-			
-			
-			
+			skServidor.close();
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return null;
+	}
+
+	public static int getnPlayers() {
+		return nPlayers;
+	}
+
+	public static void setnPlayers(int nPlayers) {
+		Server.nPlayers = nPlayers;
 	}
 
 }
