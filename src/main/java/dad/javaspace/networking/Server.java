@@ -8,7 +8,6 @@ import java.util.NoSuchElementException;
 import javafx.concurrent.Task;
 
 public class Server extends Task<Integer> {
-	Socket skCliente;
 
 	static final int NPLAYERS = 2;
 	private static ArrayList<Connection> connectionsArray = new ArrayList<Connection>();
@@ -27,8 +26,7 @@ public class Server extends Task<Integer> {
 	static int numCliente = 0;
 	private ArrayList<Connection> disconectedList=new ArrayList<Connection>();
 
-	public Server(Socket sCliente) {
-		skCliente = sCliente;
+	public Server() {
 	}
 
 	

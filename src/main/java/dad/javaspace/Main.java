@@ -21,10 +21,12 @@ import dad.javaspace.interfacing.controller.LauncherController;
 import dad.javaspace.networking.ClientConnectionTask;
 import dad.javaspace.networking.ClientGameThread;
 import dad.javaspace.networking.NetworkingPlayer;
+import dad.javaspace.networking.Server;
 import dad.javaspace.objects.EntityTypes;
 import dad.javaspace.objects.effects.Animations;
 import dad.javaspace.objects.effects.ComponentePropulsor;
 import dad.javaspace.ui.ThrustIndicator;
+import javafx.concurrent.Task;
 import javafx.geometry.Point2D;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
@@ -60,6 +62,11 @@ public class Main extends GameApplication {
 	private PhysicsComponent physics;
 
 	AnchorPane rootView;
+	
+	// Servidor
+	private Server serverTask = new Server();
+	
+	private Thread serverThread = new Thread(serverTask);
 
 	// Estetica
 	private ArrayList<Entity> starArray = new ArrayList<>();
@@ -85,8 +92,6 @@ public class Main extends GameApplication {
 		gameStage.setFullScreen(controller.getModel().isPantallaCompleta());
 		settings.setVersion(model.getVersion());
 		FXGL.configure(this, settings.toReadOnly(), gameStage);
-
-		// Configuracion de los hilos
 
 		/**
 		 * Las del juego
@@ -160,6 +165,12 @@ public class Main extends GameApplication {
 		controller.getLaunchButton().setOnAction(e -> {
 			startConnection();
 		});
+
+		controller.getCreateRoomButton().setOnAction(e -> {
+			serverThread.start();
+		});
+		
+		getInput().save(model.getProfile());
 
 	}
 
@@ -271,7 +282,15 @@ public class Main extends GameApplication {
 
 			hud.getModel().setSpeed(physics.getLinearVelocity().magnitude());
 			checkBounds();
+
+			die();
 		}
+	}
+
+	private void die() {
+		if (model.getHull() <= 0)
+			model.setPlayerAlive(false);
+		getInput().clearAll();
 	}
 
 	private void initGameEffects() {
