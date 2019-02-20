@@ -173,11 +173,22 @@ public class Main extends GameApplication {
 	}
 
 	private void startServer() {
+		setConnectionConfig();
+		
 		serverTask = new Server(model.getNumPlayers(), model.getPort());
 
 		serverThread = new Thread(serverTask);
 
 		serverThread.start();
+	}
+	
+	private void setConnectionConfig() {
+		
+		// Establecer los datos al modelo a partir de los datos del launcher
+		model.setIp(controller.getModel().getIp());
+		model.setName(controller.getModel().getNombreJugador());
+		model.setPort(controller.getModel().getPuerto());
+		
 	}
 
 	private void startConnection() {
@@ -186,11 +197,8 @@ public class Main extends GameApplication {
 		controller.loadingAnimation();
 		controller.getLaunchButton().setDisable(true);
 
-		// Establecer los datos al modelo a partir de los datos del launcher
-		model.setIp(controller.getModel().getIp());
-		model.setName(controller.getModel().getNombreJugador());
-		model.setPort(controller.getModel().getPuerto());
-
+		setConnectionConfig();
+		
 		// Configurar y arrancar la task para unirse a una partida
 		clientConnectionTask = new ClientConnectionTask(model);
 
