@@ -42,7 +42,7 @@ public class Animations {
 	}
 
 	public static void hitTransition(Entity player, GameWorld gameWorld) {
-		
+
 //		Terminar animacion. posicion, rotacion, radio, particulas
 		double playerPosX = player.getCenter().getX() + 25;
 		double playerPosY = player.getCenter().getY() + 25;
@@ -51,7 +51,6 @@ public class Animations {
 		hitEmitter.setExpireFunction(e -> Duration.seconds(10));
 		hitEmitter.setNumParticles(3);
 
-		
 		hitEmitter.setSpawnPointFunction(new Function<Integer, Point2D>() {
 			@Override
 			public Point2D apply(Integer arg) {
@@ -61,7 +60,7 @@ public class Animations {
 		});
 		hitEmitter.setExpireFunction(e -> Duration.seconds(1));
 		hitEmitter.setNumParticles((int) ((Math.random() * 5) + 2));
-		
+
 		ParticleComponent hitComponent = new ParticleComponent(hitEmitter);
 		hitComponent.setOnFinished(player::removeFromWorld);
 
@@ -69,19 +68,25 @@ public class Animations {
 		hit.addComponent(hitComponent);
 		hit.setRotation(player.getRotation());
 		gameWorld.addEntities(hit);
-		
+
 		hitEmitter.setExpireFunction(new Function<Integer, Duration>() {
-			
+
 			@Override
 			public Duration apply(Integer arg) {
 				return Duration.seconds(2);
 			}
 		});
-		
+
 		hitComponent.setOnFinished(() -> {
 			player.getComponents().removeValueByIdentity(hitComponent);
 			gameWorld.removeEntity(hit);
 		});
+
+		Entities.animationBuilder().duration(Duration.seconds(2)).scale(new Entity()).buildAndPlay()
+				.setOnFinished(() -> {
+					if (hit.isActive())
+						gameWorld.removeEntity(hit);
+				});
 
 	}
 
@@ -113,21 +118,26 @@ public class Animations {
 		hiperJumpComponent.setOnFinished(player::removeFromWorld);
 		Entity hiperJump = Entities.builder().at(playerPosX + translateX, playerPosY + translateY)
 				.renderLayer(RenderLayer.BOTTOM).buildAndAttach(gameWorld);
-		hiperJumpComponent.setOnFinished(() -> {
-			gameWorld.removeEntity(hiperJump);
-		});
+
 		hiperJump.addComponent(hiperJumpComponent);
 
 		// Animacion aumento de tama�o
 		Point2D min = new Point2D(0, 0);
 		Point2D max = new Point2D(1, 1);
-		Entities.animationBuilder().duration(Duration.seconds(duration)).scale(player).from(min).to(max).buildAndPlay();
+		Entities.animationBuilder().duration(Duration.seconds(duration)).scale(player).from(min).to(max).buildAndPlay()
+				.setOnFinished(() -> {
+					if (hiperJump.isActive())
+						gameWorld.removeEntity(hiperJump);
+				});
 
 		// Animacion desplazamiento desde X, Y a 0, 0
 		Point2D from = new Point2D(playerPosX + translateX, playerPosY + translateY);
 		Point2D to = new Point2D(playerPosX, playerPosY);
 		Entities.animationBuilder().duration(Duration.seconds(duration)).translate(player).from(from).to(to)
-				.buildAndPlay();
+				.buildAndPlay().setOnFinished(() -> {
+					if (hiperJump.isActive())
+						gameWorld.removeEntity(hiperJump);
+				});
 	}
 
 	public static void explotionTransition(Entity player, GameWorld gameWorld) {
