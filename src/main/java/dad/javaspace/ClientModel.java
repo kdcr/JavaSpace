@@ -9,6 +9,7 @@ import java.util.Scanner;
 import com.almasb.fxgl.saving.UserProfile;
 
 import dad.javaspace.networking.NetworkingPlayer;
+import dad.javaspace.networking.NetworkingProyectile;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -23,6 +24,8 @@ public class ClientModel {
 	private String name = "jugadorTest", skin = "0";
 
 	private final int MARGIN_VERTICAL = 5000, MARGIN_HORIZONTAL = 5000;
+
+	private ArrayList<NetworkingProyectile> projectiles = new ArrayList<>();
 
 	// Gameplay
 	private DoubleProperty shield = new SimpleDoubleProperty(this, "shield", 1);
@@ -58,6 +61,14 @@ public class ClientModel {
 	private ArrayList<NetworkingPlayer> jugadores = new ArrayList<>();
 
 	private UserProfile profile = new UserProfile("JavaSpace", getVersion());
+
+	public ArrayList<NetworkingProyectile> getProjectiles() {
+		return projectiles;
+	}
+
+	public void setProjectiles(ArrayList<NetworkingProyectile> projectiles) {
+		this.projectiles = projectiles;
+	}
 
 	public UserProfile getProfile() {
 		return profile;

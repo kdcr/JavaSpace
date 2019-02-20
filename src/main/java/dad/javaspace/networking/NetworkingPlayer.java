@@ -8,13 +8,18 @@ import javafx.beans.property.SimpleDoubleProperty;
 
 public class NetworkingPlayer {
 
+	private boolean alive;
+
 	private Entity entity;
 	private NameTag nameText = new NameTag();
 
 	private String name, skin;
 	private int id;
 
-	private DoubleProperty shield = new SimpleDoubleProperty();
+	private DoubleProperty shield = new SimpleDoubleProperty(this, "shield", 1);
+	private DoubleProperty hull = new SimpleDoubleProperty(this, "hull", 1);
+
+	private boolean shooting = false;
 
 	public NetworkingPlayer(String name, String skin, int id) {
 		this.name = name;
@@ -28,6 +33,22 @@ public class NetworkingPlayer {
 
 		nameText.xProperty().bind(entity.xProperty().subtract(50));
 		nameText.yProperty().bind(entity.yProperty().subtract(50));
+	}
+
+	public boolean isShooting() {
+		return shooting;
+	}
+
+	public void setShooting(boolean shooting) {
+		this.shooting = shooting;
+	}
+
+	public boolean isAlive() {
+		return alive;
+	}
+
+	public void setAlive(boolean alive) {
+		this.alive = alive;
 	}
 
 	public NetworkingPlayer() {
@@ -79,6 +100,18 @@ public class NetworkingPlayer {
 
 	public final void setShield(final double shield) {
 		this.shieldProperty().set(shield);
+	}
+
+	public final DoubleProperty hullProperty() {
+		return this.hull;
+	}
+
+	public final double getHull() {
+		return this.hullProperty().get();
+	}
+
+	public final void setHull(final double hull) {
+		this.hullProperty().set(hull);
 	}
 
 }

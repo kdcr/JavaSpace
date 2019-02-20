@@ -68,7 +68,7 @@ public class Server extends Task<Integer> {
 
 			Connection.barrera.await();
 
-			while (connectionsArray.size()==1) {
+			while (connectionsArray.size()!=1) {
 
 				playersState = "";
 				for (Connection con : connectionsArray) {

@@ -14,20 +14,19 @@ import com.almasb.fxgl.physics.HitBox;
 import com.almasb.fxgl.physics.PhysicsComponent;
 import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
 import com.almasb.fxgl.settings.GameSettings;
-import com.almasb.fxgl.texture.Texture;
 
 import dad.javaspace.HUD.JavaSpaceHUD;
 import dad.javaspace.interfacing.controller.LauncherController;
 import dad.javaspace.networking.ClientConnectionTask;
 import dad.javaspace.networking.ClientGameThread;
 import dad.javaspace.networking.NetworkingPlayer;
+import dad.javaspace.networking.NetworkingProyectile;
 import dad.javaspace.networking.Server;
 import dad.javaspace.objects.EntityTypes;
 import dad.javaspace.objects.effects.Animations;
 import dad.javaspace.objects.effects.ComponentePropulsor;
-import dad.javaspace.ui.ThrustIndicator;
-import javafx.concurrent.Task;
 import javafx.geometry.Point2D;
+import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.media.Media;
@@ -38,11 +37,12 @@ import javafx.stage.Stage;
 public class Main extends GameApplication {
 
 	// Interfaz
-	ThrustIndicator thrustIndicator;
 	double viewWidth;
 	double viewHeight;
 
 	JavaSpaceHUD hud = new JavaSpaceHUD();
+
+	private int spectatorIndex = 0;
 
 	// Mecanica interna
 	Entity player = new Entity();
@@ -50,18 +50,18 @@ public class Main extends GameApplication {
 	private ClientModel model = new ClientModel();
 
 	private LauncherController controller = new LauncherController();
-	private MediaPlayer mp;
+
 	long coolDown = 0, coolDownStars = 0;
 
+	// Hilos para las conexiones
 	private ClientConnectionTask clientConnectionTask;
 
 	private Thread clientConnectionThread;
 
 	ClientGameThread clientGameThread;
 
+	// componente fisico
 	private PhysicsComponent physics;
-
-	AnchorPane rootView;
 
 	// Servidor
 	private Server serverTask;
@@ -69,10 +69,15 @@ public class Main extends GameApplication {
 	private Thread serverThread;
 
 	// Estetica
+	AnchorPane rootView;
 	private ArrayList<Entity> starArray = new ArrayList<>();
 	ArrayList<Entity> starList = new ArrayList<>();
 
 	private Stage gameStage = new Stage();
+	private MediaPlayer mp;
+
+	private Button nextButton = new Button(">");
+	private Button previousButton = new Button("<");
 
 	public static void main(String[] args) {
 		launch(args);
@@ -106,6 +111,31 @@ public class Main extends GameApplication {
 //		gameStage.setFullScreen(true);
 //		FXGL.configure(this, settings.toReadOnly(), gameStage);
 
+	}
+
+	@Override
+	protected void initGame() {
+		super.initGame();
+		// Cargar el launcher a la ventana
+		rootView = controller.getRootView();
+		getGameScene().addUINode(rootView);
+
+		clientConnectionTask = new ClientConnectionTask(model);
+
+		controller.getLoadingImage().setVisible(false);
+
+		controller.getLaunchButton().setOnAction(e -> {
+			startConnection();
+		});
+
+		controller.getCreateRoomButton().setOnAction(e -> {
+			startServer();
+			controller.getCreateRoomButton().setDisable(true);
+		});
+
+		// Botones de modo espectador
+		nextButton.setOnAction(e -> spectateNext());
+		previousButton.setOnAction(e -> spectatePrevious());
 	}
 
 	@Override
@@ -152,44 +182,29 @@ public class Main extends GameApplication {
 		}, KeyCode.SPACE);
 	}
 
-	@Override
-	protected void initGame() {
-		super.initGame();
-
-		rootView = controller.getRootView();
-		getGameScene().addUINode(rootView);
-
-		clientConnectionTask = new ClientConnectionTask(model);
-
-		controller.getLoadingImage().setVisible(false);
-
-		controller.getLaunchButton().setOnAction(e -> {
-			startConnection();
-		});
-
-		controller.getCreateRoomButton().setOnAction(e -> {
-			startServer();
-		});
-
-	}
-
 	private void startServer() {
 		setConnectionConfig();
-		
+
 		serverTask = new Server(model.getNumPlayers(), model.getPort());
+
+		// Boton de crear sala
+		serverTask.setOnFailed(e -> controller.getCreateRoomButton().setDisable(false));
+		serverTask.setOnSucceeded(e -> controller.getCreateRoomButton().setDisable(false));
+		serverTask.setOnCancelled(e -> controller.getCreateRoomButton().setDisable(false));
 
 		serverThread = new Thread(serverTask);
 
 		serverThread.start();
 	}
-	
+
 	private void setConnectionConfig() {
-		
+
 		// Establecer los datos al modelo a partir de los datos del launcher
 		model.setIp(controller.getModel().getIp());
 		model.setName(controller.getModel().getNombreJugador());
 		model.setPort(controller.getModel().getPuerto());
-		
+		model.setNumPlayers(controller.getModel().getNumPlayers());
+
 	}
 
 	private void startConnection() {
@@ -199,7 +214,7 @@ public class Main extends GameApplication {
 		controller.getLaunchButton().setDisable(true);
 
 		setConnectionConfig();
-		
+
 		// Configurar y arrancar la task para unirse a una partida
 		clientConnectionTask = new ClientConnectionTask(model);
 
@@ -216,10 +231,8 @@ public class Main extends GameApplication {
 
 	}
 
-
-	
 	private void startGame() {
-		
+
 		getInput().save(model.getProfile());
 		for (NetworkingPlayer netPlayers : model.getJugadores()) {
 			getGameWorld().addEntity(netPlayers.getEntity());
@@ -301,15 +314,19 @@ public class Main extends GameApplication {
 			hud.getModel().setSpeed(physics.getLinearVelocity().magnitude());
 			checkBounds();
 
-			die();
+			if (model.getHull() <= 0 && model.isPlayerAlive()) {
+				die();
+			}
 		}
 	}
 
 	private void die() {
-		if (model.getHull() <= 0) {
-			model.setPlayerAlive(false);
-			getInput().clearAll();
-		}
+		model.setPlayerAlive(false);
+		getInput().clearAll();
+		nextButton.setTranslateY(viewHeight / 2);
+		nextButton.setTranslateX(viewWidth - nextButton.getWidth());
+		previousButton.setTranslateY(viewHeight / 2);
+		getGameScene().addUINodes(nextButton, previousButton);
 	}
 
 	private void initGameEffects() {
@@ -422,7 +439,7 @@ public class Main extends GameApplication {
 		}
 	}
 
-	private void getDamage(double damage) {
+	private void doDamage(double damage) {
 
 		if (model.getShield() <= 0)
 			model.setShield(-1);
@@ -440,8 +457,69 @@ public class Main extends GameApplication {
 				|| model.getPlayerY() > model.getMARGIN_VERTICAL() || model.getPlayerY() < -model.getMARGIN_VERTICAL())
 			if (System.currentTimeMillis() >= model.getCooldownBounds() + 1000) {
 				model.setCooldownBounds(System.currentTimeMillis());
-				getDamage(0.2);
+				doDamage(0.2);
 			}
+	}
+
+	private void spectateNext() {
+		if (!model.getJugadores().isEmpty())
+			if (spectatorIndex + 1 < model.getJugadores().size()) {
+				spectatorIndex++;
+				if (!model.getJugadores().get(spectatorIndex).isAlive()) {
+					spectateNext();
+				} else {
+					rebindViewPort();
+				}
+			} else {
+				spectatorIndex = 0;
+				rebindViewPort();
+			}
+	}
+
+	private void spectatePrevious() {
+		if (!model.getJugadores().isEmpty())
+			if (spectatorIndex - 1 >= 0) {
+				spectatorIndex--;
+				if (!model.getJugadores().get(spectatorIndex).isAlive()) {
+					spectateNext();
+				} else {
+					rebindViewPort();
+				}
+			} else {
+				spectatorIndex = model.getJugadores().size() - 1;
+				rebindViewPort();
+			}
+	}
+
+	private void rebindViewPort() {
+		getGameScene().getViewport().xProperty().bind(model.getJugadores().get(spectatorIndex).getEntity().xProperty()
+				.subtract(viewWidth / 2).add(player.widthProperty()));
+		getGameScene().getViewport().yProperty().bind(model.getJugadores().get(spectatorIndex).getEntity().yProperty()
+				.subtract(viewHeight / 2).add((player.heightProperty())));
+	}
+
+	private void checkShots() {
+		// Crear disparos
+		for (NetworkingPlayer ntp : model.getJugadores()) {
+			if (ntp.isShooting()) {
+				ntp.setShooting(false);
+				model.getProjectiles().add(new NetworkingProyectile(ntp.getName(),
+						Animations.shootTransition(ntp.getEntity(), getGameWorld())));
+			}
+		}
+
+		// Procesar colisiones
+		for (NetworkingProyectile projectile : model.getProjectiles()) {
+			if (player.isColliding(projectile.getEntity())) {
+				doDamage(0.15);
+			}
+			
+		}
+
+		// Eliminar del mundo si ya no existe
+		
+		
+
 	}
 
 }

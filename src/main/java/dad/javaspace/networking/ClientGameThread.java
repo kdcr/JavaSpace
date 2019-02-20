@@ -54,9 +54,13 @@ public class ClientGameThread extends Thread {
 			id = Integer.parseInt(str.split(",")[0].toString());
 			if (id != model.getIdentity()) {
 				NetworkingPlayer bufferPlayer = find(id);
-				bufferPlayer.getEntity().setX(Double.parseDouble(str.split(",")[1].toString()));
-				bufferPlayer.getEntity().setY(Double.parseDouble(str.split(",")[2].toString()));
-				bufferPlayer.getEntity().setRotation(Double.parseDouble(str.split(",")[3].toString()));
+				bufferPlayer.getEntity().setX(Double.parseDouble(str.split(",")[1]));
+				bufferPlayer.getEntity().setY(Double.parseDouble(str.split(",")[2]));
+				bufferPlayer.getEntity().setRotation(Double.parseDouble(str.split(",")[3]));
+				if (Boolean.parseBoolean(str.split(",")[4]))
+					bufferPlayer.setShooting(true);
+				bufferPlayer.setShield(Double.parseDouble(str.split(",")[5]));
+				bufferPlayer.setHull(Double.parseDouble(str.split(",")[6]));
 			}
 		}
 	}
