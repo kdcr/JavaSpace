@@ -86,24 +86,17 @@ public class Connection extends Thread {
 	}
 
 	public void send(String str) throws IOException {
-		salida.write(str);
-		salida.flush();
+			salida.write(str);
+			salida.flush();
+		
 	}
 
-	public Boolean recive() {
-		if (sk.isConnected()) {
+	public void recive() {
 
-			if (shield == 0)
-				shield = 1f;
-
-			itemStateString = identity +  "," + entrada.nextLine()  +"," + shield + "_";
-			return Boolean.valueOf(itemStateString.split(",")[5]);
-		}
-		else {
-			connectionsArray.remove(identity-1);
-			return false;
-		}
-			
+		
+	
+			itemStateString = identity + "," + entrada.nextLine() + "," + shield + "_";
+		
 	}
 
 	public void shoot() {
@@ -118,6 +111,10 @@ public class Connection extends Thread {
 	public void dealDamage() {
 		shield -= 0.25;
 
+	}
+	
+	public Socket getSocket() {
+		return sk;
 	}
 
 	public String getNombre() {
