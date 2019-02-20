@@ -63,9 +63,6 @@ public class ClientGameThread extends Thread {
 
 	private void sendPlayerPosition() {
 		try {
-//			String paquete = Math.round(model.getPlayerX()) + "," + Math.round(model.getPlayerY()) + ","
-//					+ model.getPlayerRotation();
-
 			String paquete = model.getPlayerX() + "," + model.getPlayerY() + "," + model.getPlayerRotation();
 
 			if (model.isCanShoot()) {
@@ -73,7 +70,8 @@ public class ClientGameThread extends Thread {
 
 				model.getFlujoSalida().write(paquete + "," + true + "\n");
 			} else
-				model.getFlujoSalida().write(paquete + "," + false + "\n");
+				model.getFlujoSalida()
+						.write(paquete + "," + false + "," + model.getShield() + "," + model.getHull() + "\n");
 			model.getFlujoSalida().flush();
 		} catch (IOException e) {
 			e.printStackTrace();

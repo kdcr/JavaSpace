@@ -62,11 +62,11 @@ public class Main extends GameApplication {
 	private PhysicsComponent physics;
 
 	AnchorPane rootView;
-	
+
 	// Servidor
-	private Server serverTask = new Server();
-	
-	private Thread serverThread = new Thread(serverTask);
+	private Server serverTask;
+
+	private Thread serverThread;
 
 	// Estetica
 	private ArrayList<Entity> starArray = new ArrayList<>();
@@ -169,8 +169,12 @@ public class Main extends GameApplication {
 		controller.getCreateRoomButton().setOnAction(e -> {
 			serverThread.start();
 		});
-		
+
 		getInput().save(model.getProfile());
+		
+		serverTask = Server(model.getNumPlayers(), model.getPort());
+		
+		serverThread = new Thread(serverTask);
 
 	}
 
@@ -288,9 +292,10 @@ public class Main extends GameApplication {
 	}
 
 	private void die() {
-		if (model.getHull() <= 0)
+		if (model.getHull() <= 0) {
 			model.setPlayerAlive(false);
-		getInput().clearAll();
+			getInput().clearAll();
+		}
 	}
 
 	private void initGameEffects() {
@@ -410,10 +415,8 @@ public class Main extends GameApplication {
 
 		if (model.getShield() < 0) {
 			model.setHull(model.getHull() - damage);
-			System.out.println("hull damaged");
 		} else {
 			model.setShield(model.getShield() - damage);
-			System.out.println("shield damaged");
 		}
 
 	}
