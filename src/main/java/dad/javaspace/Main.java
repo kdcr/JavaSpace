@@ -505,6 +505,7 @@ public class Main extends GameApplication {
 				ntp.setShooting(false);
 				model.getProjectiles().add(new NetworkingProyectile(ntp.getName(),
 						Animations.shootTransition(ntp.getEntity(), getGameWorld())));
+				getAudioPlayer().playSound("laser.mp3");
 			}
 		}
 
