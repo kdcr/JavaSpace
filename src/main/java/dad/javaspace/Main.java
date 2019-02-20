@@ -14,6 +14,7 @@ import com.almasb.fxgl.physics.HitBox;
 import com.almasb.fxgl.physics.PhysicsComponent;
 import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
 import com.almasb.fxgl.settings.GameSettings;
+import com.almasb.fxgl.texture.Texture;
 
 import dad.javaspace.HUD.JavaSpaceHUD;
 import dad.javaspace.interfacing.controller.LauncherController;
@@ -246,6 +247,10 @@ public class Main extends GameApplication {
 
 		initGameEffects();
 
+		for (Entity entity : ClientUtils.buildWalls(model.getMARGIN_HORIZONTAL(), model.getMARGIN_VERTICAL())) {
+			getGameWorld().addEntity(entity);
+		}
+
 	}
 
 	@Override
@@ -262,7 +267,7 @@ public class Main extends GameApplication {
 
 			if (!getInput().isHeld(KeyCode.W))
 				model.setThrust(model.getThrust() * 0.80);
-			maxVelExperimental();
+			maxVel();
 
 			hud.getModel().setSpeed(physics.getLinearVelocity().magnitude());
 			checkBounds();
