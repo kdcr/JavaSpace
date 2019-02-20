@@ -15,6 +15,7 @@ import javafx.beans.property.StringProperty;
 public class LauncherModel {
 	private DoubleProperty volumenMusica;
 	private DoubleProperty volumenJuego;
+	private IntegerProperty numPlayers;
 	private StringProperty ip;
 	private IntegerProperty puerto;
 	private IntegerProperty selectedSkin;
@@ -25,6 +26,7 @@ public class LauncherModel {
 	public LauncherModel() {
 		volumenMusica = new SimpleDoubleProperty(this, "volumenMusica", 1.0);
 		volumenJuego = new SimpleDoubleProperty(this, "volumenMusica", 1.0);
+		numPlayers = new SimpleIntegerProperty(this, "numPlayers", 1);
 		ip = new SimpleStringProperty(this, "ip");
 		puerto = new SimpleIntegerProperty(this, "puerto", 2000);
 		selectedSkin = new SimpleIntegerProperty(this, "selectedSkin", 0);
@@ -127,6 +129,18 @@ public class LauncherModel {
 
 	public final void setSelectedSkin(final int selectedSkin) {
 		this.selectedSkinProperty().set(selectedSkin);
+	}
+
+	public final IntegerProperty numPlayersProperty() {
+		return this.numPlayers;
+	}
+
+	public final int getNumPlayers() {
+		return this.numPlayersProperty().get();
+	}
+
+	public final void setNumPlayers(final int numPlayers) {
+		this.numPlayersProperty().set(numPlayers);
 	}
 
 }

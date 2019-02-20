@@ -125,6 +125,9 @@ public class LauncherController implements Initializable {
 
 	@FXML
 	private TextField ipTextField;
+	
+	@FXML
+	private TextField playersNumText;
 
 	@FXML
 	private TextField puertoTextField;
@@ -146,6 +149,9 @@ public class LauncherController implements Initializable {
 
 	@FXML
 	private Button launchButton;
+	
+	@FXML
+	private Button createRoomButton;
 
 	/****************************************************************************************************
 	 * 
@@ -316,8 +322,8 @@ public class LauncherController implements Initializable {
 			 * 
 			 ***************************************************************************************************/
 
+			createRoomButton.setOnMousePressed(e -> onCreateRoomPressed());
 			launchButton.setOnMousePressed(e -> onLaunchButtonPressed());
-			;
 			cfgButton.hoverProperty().addListener(e -> onCFGButtonHovered());
 			exitButton.hoverProperty().addListener(e -> onExitButtonHovered());
 			empezarPartidaButton.hoverProperty().addListener(e -> onEmpezarPartidaButtonHovered());
@@ -374,6 +380,7 @@ public class LauncherController implements Initializable {
 			Bindings.bindBidirectional(fullScreenCheckBox.selectedProperty(), model.pantallaCompletaProperty());
 			model.resolucionProperty().bind(resolutionComboBox.getSelectionModel().selectedItemProperty());
 			avisoLabel.setVisible(false);
+			Bindings.bindBidirectional(playersNumText.textProperty(), model.numPlayersProperty(), new NumberStringConverter());
 
 			// Tamano Launcher
 			rootView.setPrefSize(model.getResolucion().getX(), model.getResolucion().getY());
@@ -405,6 +412,11 @@ public class LauncherController implements Initializable {
 		launchButtonMP.play();
 	}
 
+	private void onCreateRoomPressed() {
+		launchButtonMP.stop();
+		launchButtonMP.play();
+	}
+	
 	private void onCloseAction() {
 		guardarConfig();
 		Platform.exit();
@@ -507,6 +519,7 @@ public class LauncherController implements Initializable {
 			ini.put("Opciones de Juego", "nombre", model.getNombreJugador());
 			ini.put("Opciones de Juego", "volumenMusica", model.getVolumenMusica());
 			ini.put("Opciones de Juego", "volumenJuego", model.getVolumenJuego());
+			ini.put("Opciones de RED", "numPlayers", model.getNumPlayers());
 			ini.put("Opciones de RED", "ip", model.getIp());
 			ini.put("Opciones de RED", "puerto", model.getPuerto());
 			ini.put("Skins", "Skin Seleccionada", model.getSelectedSkin());
@@ -544,6 +557,7 @@ public class LauncherController implements Initializable {
 				modelCarga.setNombreJugador(ini.get("Opciones de Juego", "nombre", String.class));
 				modelCarga.setVolumenMusica(ini.get("Opciones de Juego", "volumenMusica", double.class));
 				modelCarga.setVolumenJuego(ini.get("Opciones de Juego", "volumenJuego", double.class));
+				modelCarga.setNumPlayers(ini.get("Opciones de RED", "numPlayers", int.class));
 				modelCarga.setIp(ini.get("Opciones de RED", "ip", String.class));
 				modelCarga.setPuerto(ini.get("Opciones de RED", "puerto", int.class));
 				modelCarga.setSelectedSkin(ini.get("Skin", "Skin Seleccionada", int.class));
@@ -610,6 +624,10 @@ public class LauncherController implements Initializable {
 
 	public Button getLaunchButton() {
 		return launchButton;
+	}
+	
+	public Button getCreateRoomButton() {
+		return createRoomButton;
 	}
 
 	public LauncherModel getModel() {
