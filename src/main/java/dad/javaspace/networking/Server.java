@@ -9,10 +9,9 @@ import javafx.concurrent.Task;
 
 public class Server extends Task<Integer> {
 
-	static final int NPLAYERS = 2;
+	private static  int nPlayers;
 	private static ArrayList<Connection> connectionsArray = new ArrayList<Connection>();
 	private static String players = "", playersState = "";
-	private static boolean gameFinished = false;
 
 	public static String getPlayers() {
 		return players;
@@ -22,15 +21,17 @@ public class Server extends Task<Integer> {
 		return connectionsArray;
 	}
 
-	static final int Puerto = 2000;
+	private static  int Puerto ;
 	static int numCliente = 0;
-	private ArrayList<Connection> disconectedList=new ArrayList<Connection>();
+	private ArrayList<Integer> disconectedList = new ArrayList<Integer>();
 
-	public Server() {
+	public Server(int nPlayers, int port) {
+		setnPlayers(nPlayers);
+		Puerto=port;
 	}
 
 	
-
+	
 	@Override
 	protected Integer call() throws Exception {
 		try {
@@ -41,7 +42,7 @@ public class Server extends Task<Integer> {
 
 			System.out.println("Escucho el puerto " + Puerto);
 
-			while (numCliente < NPLAYERS) {
+			while (numCliente < getnPlayers()) {
 
 				Socket skCliente = skServidor.accept();
 
@@ -67,44 +68,51 @@ public class Server extends Task<Integer> {
 
 			Connection.barrera.await();
 
-			while (true) {
+			while (connectionsArray.size()==1) {
 
 				playersState = "";
 				for (Connection con : connectionsArray) {
 					// if(con.getIdentity()!=this.identity)
-					
-				
-						System.out.println(connectionsArray.size());
-						try {
-						con.recive();
-								
-							playersState += con.getItemStateString();
-						} catch (NoSuchElementException e) {
-							
-						}
 
-						// TODO comprobar si disparamos
-						// TODO comprobar si hay alguien cerca
-						// TODO funci�n para comprobar si acierta el disparo
+					try {
+						con.recive();
+
+						playersState += con.getItemStateString();
+					} catch (NoSuchElementException e) {
+						disconectedList.add(con.getIdentity() - 1);
+					}
+
 				}
+				for (Integer disconected : disconectedList) {
+					connectionsArray.remove(disconected);
+				}
+				disconectedList.clear();
 
 				playersState += "\n";
 				for (Connection con : connectionsArray) {
 					try {
 						System.out.println(playersState);
-							con.send(playersState);
+						con.send(playersState);
 					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
 					}
 
 				}
 
 			}
+			skServidor.close();
 
 		} catch (Exception e) {
 			e.printStackTrace();
-		}		return null;
+		}
+		return null;
+	}
+
+	public static int getnPlayers() {
+		return nPlayers;
+	}
+
+	public static void setnPlayers(int nPlayers) {
+		Server.nPlayers = nPlayers;
 	}
 
 }

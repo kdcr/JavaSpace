@@ -9,7 +9,6 @@ import java.util.Scanner;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 
-import com.almasb.fxgl.entity.Entity;
 
 public class Connection extends Thread {
 
@@ -19,10 +18,8 @@ public class Connection extends Thread {
 
 	private String[] nombreSkin;
 	private String nombre, skin;
-	private double shield = 1f;
-	static CyclicBarrier barrera = new CyclicBarrier(Server.NPLAYERS + 1);
+	static CyclicBarrier barrera = new CyclicBarrier(Server.getnPlayers() + 1);
 
-	private static ArrayList<Connection> connectionsArray;
 
 	Scanner entrada;
 	OutputStreamWriter salida;
@@ -30,7 +27,6 @@ public class Connection extends Thread {
 	public Connection(Socket sk, int id, ArrayList<Connection> connectionsArray) throws IOException {
 		this.sk = sk;
 		this.identity = id;
-		Connection.connectionsArray = connectionsArray;
 
 		entrada = new Scanner(this.sk.getInputStream(), "UTF8");
 		salida = new OutputStreamWriter(this.sk.getOutputStream(), "UTF8");
@@ -95,23 +91,12 @@ public class Connection extends Thread {
 
 		
 	
-			itemStateString = identity + "," + entrada.nextLine() + "," + shield + "_";
+			itemStateString = identity + "," + entrada.nextLine() + ","  + "_";
 		
 	}
 
-	public void shoot() {
-		for (Connection con : connectionsArray) {
-			if (con.identity != this.identity) {
 
-			}
-
-		}
-	}
-
-	public void dealDamage() {
-		shield -= 0.25;
-
-	}
+	
 	
 	public Socket getSocket() {
 		return sk;
