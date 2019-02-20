@@ -172,11 +172,12 @@ public class Main extends GameApplication {
 
 		getInput().save(model.getProfile());
 		
-		serverTask = Server(model.getNumPlayers(), model.getPort());
+		serverTask =new Server(model.getNumPlayers(), model.getPort());
 		
 		serverThread = new Thread(serverTask);
 
 	}
+
 
 	private void startConnection() {
 
