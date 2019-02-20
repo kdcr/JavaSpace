@@ -167,17 +167,18 @@ public class Main extends GameApplication {
 		});
 
 		controller.getCreateRoomButton().setOnAction(e -> {
-			serverThread.start();
+			startServer();
 		});
-
-		getInput().save(model.getProfile());
-		
-		serverTask =new Server(model.getNumPlayers(), model.getPort());
-		
-		serverThread = new Thread(serverTask);
 
 	}
 
+	private void startServer() {
+		serverTask = new Server(model.getNumPlayers(), model.getPort());
+
+		serverThread = new Thread(serverTask);
+
+		serverThread.start();
+	}
 
 	private void startConnection() {
 
@@ -207,7 +208,7 @@ public class Main extends GameApplication {
 	}
 
 	private void startGame() {
-
+		getInput().save(model.getProfile());
 		for (NetworkingPlayer netPlayers : model.getJugadores()) {
 			getGameWorld().addEntity(netPlayers.getEntity());
 			getGameWorld().addEntities(netPlayers.getNameText());
