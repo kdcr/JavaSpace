@@ -26,6 +26,7 @@ import dad.javaspace.objects.EntityTypes;
 import dad.javaspace.objects.effects.Animations;
 import dad.javaspace.objects.effects.ComponentePropulsor;
 import javafx.geometry.Point2D;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
@@ -317,6 +318,8 @@ public class Main extends GameApplication {
 			if (model.getHull() <= 0 && model.isPlayerAlive()) {
 				die();
 			}
+			
+			checkShots();
 		}
 	}
 
@@ -505,6 +508,7 @@ public class Main extends GameApplication {
 				ntp.setShooting(false);
 				model.getProjectiles().add(new NetworkingProyectile(ntp.getName(),
 						Animations.shootTransition(ntp.getEntity(), getGameWorld())));
+				// if (ntp.getEntity().isWithin(new Rectangle2D(arg0, arg1, arg2, arg3)))
 				getAudioPlayer().playSound("laser.mp3");
 			}
 		}
@@ -514,12 +518,10 @@ public class Main extends GameApplication {
 			if (player.isColliding(projectile.getEntity())) {
 				doDamage(0.15);
 			}
-			
+
 		}
 
 		// Eliminar del mundo si ya no existe
-		
-		
 
 	}
 
