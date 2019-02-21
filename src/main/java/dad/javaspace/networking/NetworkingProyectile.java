@@ -1,6 +1,7 @@
 package dad.javaspace.networking;
 
 import com.almasb.fxgl.entity.Entity;
+import com.almasb.fxgl.entity.components.CollidableComponent;
 import com.almasb.fxgl.physics.BoundingShape;
 import com.almasb.fxgl.physics.HitBox;
 
@@ -20,6 +21,8 @@ public class NetworkingProyectile {
 		this.entity.setType(EntityTypes.LASER);
 		
 		entity.getBoundingBoxComponent().addHitBox(new HitBox(BoundingShape.polygon(0, 0, 16, 32, 32, 0)));
+		
+		entity.addComponent(new CollidableComponent(true));
 		
 		entity.setViewFromTexture("laser.png");
 	}

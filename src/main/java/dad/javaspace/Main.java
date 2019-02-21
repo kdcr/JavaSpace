@@ -8,6 +8,7 @@ import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.core.math.Vec2;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.RenderLayer;
+import com.almasb.fxgl.entity.components.CollidableComponent;
 import com.almasb.fxgl.input.*;
 import com.almasb.fxgl.physics.BoundingShape;
 import com.almasb.fxgl.physics.CollisionHandler;
@@ -277,6 +278,8 @@ public class Main extends GameApplication {
 
 		player.getBoundingBoxComponent().addHitBox(new HitBox(BoundingShape.polygon(0, 0, 25, 50, 50, 0)));
 		player.addComponent(physics);
+		
+		player.addComponent(new CollidableComponent(true));
 
 		physics.setBodyType(BodyType.DYNAMIC);
 		// Al jugador se le asigna una textura y se agrega al mundo
