@@ -28,7 +28,6 @@ import dad.javaspace.objects.EntityTypes;
 import dad.javaspace.objects.effects.Animations;
 import dad.javaspace.objects.effects.ComponentePropulsor;
 import javafx.geometry.Point2D;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
@@ -92,28 +91,12 @@ public class Main extends GameApplication {
 		settings.setManualResizeEnabled(true);
 		settings.setWidth(controller.getModel().getResolucion().getX());
 		settings.setHeight(controller.getModel().getResolucion().getY());
-//		settings.setWidth((int) Screen.getPrimary().getBounds().getWidth());
-//		settings.setHeight((int) Screen.getPrimary().getBounds().getHeight());
-		// settings.setWidth(720);
-		// settings.setHeight(300);
+
 		settings.setTitle("JavaSpace");
 		settings.setFullScreenAllowed(controller.getModel().isPantallaCompleta());
 		gameStage.setFullScreen(controller.getModel().isPantallaCompleta());
 		settings.setVersion(model.getVersion());
 		FXGL.configure(this, settings.toReadOnly(), gameStage);
-
-		/**
-		 * Las del juego
-		 */
-//		settings.setWidth((int) Screen.getPrimary().getBounds().getWidth());
-//		settings.setHeight((int) Screen.getPrimary().getBounds().getHeight());
-//		settings.setTitle("JavaSpace");
-//		settings.setFullScreenAllowed(true);
-//		settings.setVersion(model.getVersion());
-//		this.settings = settings;
-//		gameStage.setFullScreen(true);
-//		FXGL.configure(this, settings.toReadOnly(), gameStage);
-
 	}
 
 	@Override
@@ -183,6 +166,9 @@ public class Main extends GameApplication {
 				makeShoot();
 			}
 		}, KeyCode.SPACE);
+		
+		input.save(model.getProfile());
+		input.clearAll();
 	}
 
 	private void startServer() {
@@ -236,7 +222,8 @@ public class Main extends GameApplication {
 
 	private void startGame() {
 
-		getInput().save(model.getProfile());
+		getInput().load(model.getProfile());
+		
 		for (NetworkingPlayer netPlayers : model.getJugadores()) {
 			getGameWorld().addEntity(netPlayers.getEntity());
 			getGameWorld().addEntities(netPlayers.getNameText());
@@ -332,7 +319,7 @@ public class Main extends GameApplication {
 			maxVel();
 
 			hud.getModel().setSpeed((int) physics.getLinearVelocity().magnitude());
-			
+
 			checkBounds();
 
 			if (model.getHull() <= 0 && model.isPlayerAlive()) {

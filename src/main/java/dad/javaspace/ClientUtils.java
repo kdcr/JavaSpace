@@ -12,16 +12,16 @@ public class ClientUtils {
 			walls[i].setViewFromTexture("dangerZone.png");
 		}
 
-		walls[0].setScaleX(maxWidth / 50);
+		walls[0].setScaleX(maxWidth / 100);
 		walls[0].setY(maxHeight);
 
-		walls[1].setScaleY(maxHeight / 50);
+		walls[1].setScaleY(maxHeight / 100);
 		walls[1].setX(maxWidth);
 
-		walls[2].setScaleX(maxWidth / 50);
+		walls[2].setScaleX(maxWidth / 100);
 		walls[2].setY(-maxWidth);
 
-		walls[3].setScaleY(maxHeight / 50);
+		walls[3].setScaleY(maxHeight / 100);
 		walls[3].setX(-maxWidth);
 
 		return walls;
