@@ -2,6 +2,8 @@ package dad.javaspace.networking;
 
 import com.almasb.fxgl.entity.Entity;
 
+import dad.javaspace.objects.EntityTypes;
+
 public class NetworkingProyectile {
 
 	private String owner;
@@ -12,6 +14,8 @@ public class NetworkingProyectile {
 		super();
 		this.owner = owner;
 		this.entity = projectile;
+		
+		this.entity.setType(EntityTypes.LASER);
 		
 		entity.setViewFromTexture("laser.png");
 	}

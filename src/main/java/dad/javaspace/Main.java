@@ -10,6 +10,7 @@ import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.RenderLayer;
 import com.almasb.fxgl.input.*;
 import com.almasb.fxgl.physics.BoundingShape;
+import com.almasb.fxgl.physics.CollisionHandler;
 import com.almasb.fxgl.physics.HitBox;
 import com.almasb.fxgl.physics.PhysicsComponent;
 import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
@@ -294,6 +295,21 @@ public class Main extends GameApplication {
 			getGameWorld().addEntity(entity);
 		}
 
+		player.setType(EntityTypes.PLAYER);
+
+	}
+
+	@Override
+	protected void initPhysics() {
+		super.initPhysics();
+
+		getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityTypes.PLAYER, EntityTypes.LASER) {
+
+			@Override
+			protected void onCollisionBegin(Entity player, Entity laser) {
+				doDamage(0.15);
+			}
+		});
 	}
 
 	@Override
@@ -318,7 +334,7 @@ public class Main extends GameApplication {
 			if (model.getHull() <= 0 && model.isPlayerAlive()) {
 				die();
 			}
-			
+
 			checkShots();
 		}
 	}
@@ -512,16 +528,8 @@ public class Main extends GameApplication {
 				getAudioPlayer().playSound("laser.mp3");
 			}
 		}
-
-		// Procesar colisiones
-		for (NetworkingProyectile projectile : model.getProjectiles()) {
-			if (player.isColliding(projectile.getEntity())) {
-				doDamage(0.15);
-			}
-
-		}
-
 		// Eliminar del mundo si ya no existe
+		// TODO comprobar esto
 
 	}
 
