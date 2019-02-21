@@ -278,7 +278,7 @@ public class Main extends GameApplication {
 
 		player.getBoundingBoxComponent().addHitBox(new HitBox(BoundingShape.polygon(0, 0, 25, 50, 50, 0)));
 		player.addComponent(physics);
-		
+
 		player.addComponent(new CollidableComponent(true));
 
 		physics.setBodyType(BodyType.DYNAMIC);
@@ -331,7 +331,8 @@ public class Main extends GameApplication {
 				model.setThrust(model.getThrust() * 0.80);
 			maxVel();
 
-			hud.getModel().setSpeed(physics.getLinearVelocity().magnitude());
+			hud.getModel().setSpeed((int) physics.getLinearVelocity().magnitude());
+			
 			checkBounds();
 
 			if (model.getHull() <= 0 && model.isPlayerAlive()) {
@@ -349,6 +350,7 @@ public class Main extends GameApplication {
 		nextButton.setTranslateX(viewWidth - nextButton.getWidth());
 		previousButton.setTranslateY(viewHeight / 2);
 		getGameScene().addUINodes(nextButton, previousButton);
+		spectateNext();
 	}
 
 	private void initGameEffects() {
