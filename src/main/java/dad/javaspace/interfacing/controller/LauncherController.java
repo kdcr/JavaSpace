@@ -257,15 +257,13 @@ public class LauncherController implements Initializable {
 			 * Imagenes
 			 * 
 			 ***************************************************************************************************/
-//			imageViewEP.setImage(new Image("/assets/textures/imagenjugar.png"));
-//			imageViewEP.setFitWidth(0);
-//			imageViewEP.setFitHeight(0);
 			rootBorderPaneView.setCenter(empezarPartidaHoverRoot);
 			imageViewSalir.setImage(new Image("/assets/textures/imagensalir.png"));
 			imageViewSalir.setFitWidth(0);
 			imageViewSalir.setFitHeight(0);
 			loadingImage.setImage(new Image("/assets/textures/loadercircle.png"));
 			loadingImage.setVisible(false);
+			labelInfo.setVisible(false);
 
 			// Skins
 			skinUno.setGraphic(new ImageView(new Image("/assets/textures/navePrueba.png")));
