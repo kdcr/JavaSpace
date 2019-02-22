@@ -15,18 +15,15 @@
             <Button fx:id="createRoomButton" mnemonicParsing="false" styleClass="launchButton" text="Crear sala" />
          </children>
       </VBox>
-      <ImageView fx:id="loadingImage" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="BOTTOM_CENTER">
+      <ImageView fx:id="loadingImage" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="CENTER">
          <StackPane.margin>
-            <Insets bottom="150.0" />
+            <Insets top="265.0" />
          </StackPane.margin>
       </ImageView>
-      <Label fx:id="labelInfo" text="TEXTO MAS Lardgofwein wefun" StackPane.alignment="BOTTOM_CENTER">
+      <Label fx:id="labelInfo" text="TEXTO MAS Lardgofwein wefun" StackPane.alignment="CENTER">
          <StackPane.margin>
-            <Insets bottom="100.0" />
+            <Insets top="400.0" />
          </StackPane.margin>
-         <padding>
-            <Insets bottom="5.0" left="20.0" right="20.0" top="5.0" />
-         </padding>
       </Label>
    </children>
    <padding>
