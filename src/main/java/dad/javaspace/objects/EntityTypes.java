@@ -2,9 +2,9 @@ package dad.javaspace.objects;
 
 public enum EntityTypes {
 	PLAYER,
-	ASTEROID,
+	ENEMY_PLAYER,
 	LASER,
-	PLANET,
-	STAR,
-	WARPFX
+	ENEMY_LASER,
+	WARPFX,
+	STAR
 }

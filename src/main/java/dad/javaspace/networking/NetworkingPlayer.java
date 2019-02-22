@@ -2,6 +2,7 @@ package dad.javaspace.networking;
 
 import com.almasb.fxgl.entity.Entity;
 
+import dad.javaspace.objects.EntityTypes;
 import dad.javaspace.ui.NameTag;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -30,6 +31,8 @@ public class NetworkingPlayer {
 
 		entity = new Entity();
 		entity.setViewFromTexture("navePruebaSmall.png");
+		
+		entity.setType(EntityTypes.ENEMY_PLAYER);
 
 		nameText.xProperty().bind(entity.xProperty().subtract(50));
 		nameText.yProperty().bind(entity.yProperty().subtract(50));

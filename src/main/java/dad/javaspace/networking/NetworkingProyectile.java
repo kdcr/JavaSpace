@@ -18,7 +18,7 @@ public class NetworkingProyectile {
 		this.owner = owner;
 		this.entity = projectile;
 		
-		this.entity.setType(EntityTypes.LASER);
+		this.entity.setType(EntityTypes.ENEMY_LASER);
 		
 		entity.getBoundingBoxComponent().addHitBox(new HitBox(BoundingShape.polygon(0, 0, 16, 32, 32, 0)));
 		

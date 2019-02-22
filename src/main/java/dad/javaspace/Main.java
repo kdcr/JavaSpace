@@ -298,19 +298,28 @@ public class Main extends GameApplication {
 					getGameWorld().removeEntity(entity);
 			}
 		}, Duration.seconds(5));
-
 	}
 
 	@Override
 	protected void initPhysics() {
 		super.initPhysics();
 
-		getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityTypes.PLAYER, EntityTypes.LASER) {
+		// Colision de un proyectil enemigo con la nave propia
+		getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityTypes.PLAYER, EntityTypes.ENEMY_LASER) {
 
 			@Override
 			protected void onCollisionBegin(Entity player, Entity laser) {
 				doDamage(0.15);
 				
+				getGameWorld().removeEntity(laser);
+			}
+		});
+
+		// Colision del proyectil propio
+		getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityTypes.ENEMY_PLAYER, EntityTypes.LASER) {
+
+			@Override
+			protected void onCollisionBegin(Entity player, Entity laser) {
 				getGameWorld().removeEntity(laser);
 			}
 		});
