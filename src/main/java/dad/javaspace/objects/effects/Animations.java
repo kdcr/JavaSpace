@@ -19,6 +19,7 @@ import javafx.util.Duration;
 public class Animations {
 
 	public static Entity shootTransition(Entity player, GameWorld gameWorld) {
+		
 		Entity shoot = new Entity();
 		shoot.setViewFromTexture("laser.png");
 		shoot.setRotation(player.getRotation());
@@ -58,6 +59,7 @@ public class Animations {
 				return punto;
 			}
 		});
+		
 		hitEmitter.setExpireFunction(e -> Duration.seconds(1));
 		hitEmitter.setNumParticles((int) ((Math.random() * 5) + 2));
 

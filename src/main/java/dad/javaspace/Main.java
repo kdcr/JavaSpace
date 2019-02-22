@@ -47,6 +47,7 @@ public class Main extends GameApplication {
 	private int spectatorIndex = 0;
 
 	// Mecanica interna
+	Input input;
 	Entity player = new Entity();
 
 	private ClientModel model = new ClientModel();
@@ -74,6 +75,8 @@ public class Main extends GameApplication {
 	AnchorPane rootView;
 	private ArrayList<Entity> starArray = new ArrayList<>();
 	ArrayList<Entity> starList = new ArrayList<>();
+	
+	ComponentePropulsor componentePropulsor;
 
 	private Stage gameStage = new Stage();
 	private MediaPlayer mp;
@@ -126,7 +129,7 @@ public class Main extends GameApplication {
 
 	@Override
 	protected void initInput() {
-		Input input = getInput();
+		input = getInput();
 
 		input.addAction(new UserAction("Rotate Right") {
 			@Override
@@ -332,20 +335,23 @@ public class Main extends GameApplication {
 
 	private void die() {
 		model.setPlayerAlive(false);
-		getInput().clearAll();
+		input.clearAll();
+				
 		nextButton.setTranslateY(viewHeight / 2);
 		nextButton.setTranslateX(viewWidth - nextButton.getWidth());
 		previousButton.setTranslateY(viewHeight / 2);
 		getGameScene().addUINodes(nextButton, previousButton);
-		spectateNext();
+		componentePropulsor.onShipDestroyed();
+		// TODO animacion para morir
 	}
 
 	private void initGameEffects() {
 		Animations.hiperJumpTransition(player, 1, -Math.sin(Math.toRadians(player.getRotation())) * 100,
 				Math.cos(Math.toRadians(player.getRotation())) * 100, getGameWorld());
 
-		ComponentePropulsor componente = new ComponentePropulsor(player);
-		componente.emissionRateProperty().bind(model.thrustProperty());
+		componentePropulsor = new ComponentePropulsor(player);
+		componentePropulsor.emissionRateProperty().bind(model.thrustProperty());
+		
 	}
 
 	private void initGameUI() {
@@ -520,9 +526,7 @@ public class Main extends GameApplication {
 				getAudioPlayer().playSound("laser.mp3");
 			}
 		}
-		// Eliminar del mundo si ya no existe
-		// TODO comprobar esto
-
+		// La animacion borra la entidad del mundo
 	}
 
 }

@@ -5,5 +5,6 @@ public enum EntityTypes {
 	ASTEROID,
 	LASER,
 	PLANET,
-	STAR
+	STAR,
+	WARPFX
 }
