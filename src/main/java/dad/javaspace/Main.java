@@ -16,8 +16,6 @@ import com.almasb.fxgl.physics.HitBox;
 import com.almasb.fxgl.physics.PhysicsComponent;
 import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
 import com.almasb.fxgl.settings.GameSettings;
-import com.almasb.fxgl.time.Timer;
-
 import dad.javaspace.HUD.JavaSpaceHUD;
 import dad.javaspace.interfacing.controller.LauncherController;
 import dad.javaspace.networking.ClientConnectionTask;
@@ -84,8 +82,8 @@ public class Main extends GameApplication {
 	private Stage gameStage = new Stage();
 	private MediaPlayer mp;
 
-	private Button nextButton = new Button(">");
-	private Button previousButton = new Button("<");
+	private Button nextButton = new Button();
+	private Button previousButton = new Button();
 
 	public static void main(String[] args) {
 		launch(args);
@@ -359,9 +357,18 @@ public class Main extends GameApplication {
 	private void die() {
 		model.setPlayerAlive(false);
 		input.clearAll();
-
+		
+		// Anadiendo CSS a los botones
+		nextButton.getStylesheets().setAll("/css/forwardbutton.css");
+		previousButton.getStylesheets().setAll("/css/previousbutton.css");
+		previousButton.setMinWidth(120);
+		previousButton.setMinHeight(120);
+		nextButton.setMinWidth(120);
+		nextButton.setMinHeight(120);
+		
+		
 		nextButton.setTranslateY(viewHeight / 2);
-		nextButton.setTranslateX(viewWidth - nextButton.getWidth());
+		nextButton.setTranslateX(viewWidth - nextButton.getMinWidth());
 		previousButton.setTranslateY(viewHeight / 2);
 		getGameScene().addUINodes(nextButton, previousButton);
 		componentePropulsor.onShipDestroyed();
