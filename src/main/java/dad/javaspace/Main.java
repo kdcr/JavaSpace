@@ -310,6 +310,8 @@ public class Main extends GameApplication {
 			@Override
 			protected void onCollisionBegin(Entity player, Entity laser) {
 				doDamage(0.15);
+				
+				getGameWorld().removeEntity(laser);
 			}
 		});
 	}
