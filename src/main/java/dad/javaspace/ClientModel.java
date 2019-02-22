@@ -55,6 +55,8 @@ public class ClientModel {
 	private Socket socket;
 	private Scanner scanner;
 
+	private StringProperty connectionState = new SimpleStringProperty(this, "connection State", "");
+
 	private InputStreamReader flujoEntrada;
 	private OutputStreamWriter flujoSalida;
 
@@ -314,6 +316,18 @@ public class ClientModel {
 
 	public final void setPlayerAlive(final boolean playerAlive) {
 		this.playerAliveProperty().set(playerAlive);
+	}
+
+	public final StringProperty connectionStateProperty() {
+		return this.connectionState;
+	}
+
+	public final String getConnectionState() {
+		return this.connectionStateProperty().get();
+	}
+
+	public final void setConnectionState(final String connectionState) {
+		this.connectionStateProperty().set(connectionState);
 	}
 
 }

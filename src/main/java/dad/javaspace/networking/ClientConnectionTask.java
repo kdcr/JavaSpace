@@ -20,13 +20,13 @@ public class ClientConnectionTask extends Task<Integer> {
 	@Override
 	protected Integer call() throws Exception {
 		final int MAX_INTENTOS = 5;
-		System.out.println("Buscando conexion...");
 		int intentos = 0;
 		model.setSocket(new Socket());
+		model.setConnectionState("Buscando servidor");
 		while (intentos != MAX_INTENTOS && !model.getSocket().isConnected()) {
 			try {
+				model.setConnectionState(model.getConnectionState() + ".");
 				intentos++;
-				System.out.println("Intento " + intentos);
 				model.setSocket(new Socket(model.getIp(), 2000));
 			} catch (Exception e) {
 				// Si se han llegado a 3 intentos se cancela la conexión y da excepción para
@@ -40,8 +40,7 @@ public class ClientConnectionTask extends Task<Integer> {
 			}
 		}
 
-
-		System.out.println("Servidor encontrado");
+		model.setConnectionState("Servidor encontrado, esperando jugadores");
 
 		// Establecer los flujos
 
@@ -53,30 +52,27 @@ public class ClientConnectionTask extends Task<Integer> {
 
 		model.getFlujoSalida().flush();
 
-		System.out.println("Nombre enviado");
 
 		model.setIdentity(model.getFlujoEntrada().read());
 
-		System.out.println(model.getIdentity());
 		model.setScanner(new Scanner(model.getFlujoEntrada()));
 
-		System.out.println("Id recibida");
 		model.getFlujoSalida().write("ready\n");
 		model.getFlujoSalida().flush();
 
-		System.out.println("Esperando señal de inicio desde el servidor...");
-
+		model.setConnectionState("Esperando señal de inicio desde el servidor...");
+		
 		System.out.println(model.getScanner().nextLine());
 
-		String test = model.getScanner().nextLine();
-		System.out.println(test);
-		for (String str : test.split("_")) {
+		String tablaJugadores = model.getScanner().nextLine();
+		
+		for (String str : tablaJugadores.split("_")) {
 			if (Integer.parseInt(str.split(",")[0]) != model.getIdentity())
 				model.getJugadores().add(new NetworkingPlayer(str.split(",")[1], str.split(",")[2],
 						Integer.parseInt(str.split(",")[0])));
 		}
-
-		System.out.println("Jugadores recibidos");
+		
+		model.setConnectionState("Empezando la partida...");
 
 		return 0;
 	}
