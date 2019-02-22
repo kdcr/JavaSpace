@@ -366,8 +366,7 @@ public class Main extends GameApplication {
 	}
 
 	private void initGameEffects() {
-		Animations.hiperJumpTransition(player, 1, -Math.sin(Math.toRadians(player.getRotation())) * 100,
-				Math.cos(Math.toRadians(player.getRotation())) * 100, getGameWorld());
+		Animations.hiperJumpTransition(player, getGameWorld());
 
 		componentePropulsor = new ComponentePropulsor(player);
 		componentePropulsor.emissionRateProperty().bind(model.thrustProperty());
@@ -449,8 +448,7 @@ public class Main extends GameApplication {
 			newStar.setRenderLayer(RenderLayer.BACKGROUND);
 			newStar.setViewFromTexture("star_placeholder.png");
 
-			Animations.tinkleTransition(newStar, 50, Math.random(), (Math.random() * 1) + 1,
-					(Math.random() * 1.5) + 0.5);
+			Animations.tinkleTransition(newStar);
 
 			newStar.setType(EntityTypes.STAR);
 			starArray.add(newStar);
@@ -477,6 +475,8 @@ public class Main extends GameApplication {
 	}
 
 	private void doDamage(double damage) {
+
+		Animations.hitTransition(player, getGameWorld());
 
 		if (model.getShield() <= 0)
 			model.setShield(-1);
