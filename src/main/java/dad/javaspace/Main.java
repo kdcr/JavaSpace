@@ -29,6 +29,7 @@ import dad.javaspace.objects.EntityTypes;
 import dad.javaspace.objects.effects.Animations;
 import dad.javaspace.objects.effects.ComponentePropulsor;
 import javafx.geometry.Point2D;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
@@ -310,7 +311,7 @@ public class Main extends GameApplication {
 			@Override
 			protected void onCollisionBegin(Entity player, Entity laser) {
 				doDamage(0.15);
-				
+
 				getGameWorld().removeEntity(laser);
 			}
 		});
@@ -528,6 +529,7 @@ public class Main extends GameApplication {
 			}
 	}
 
+	// Para cuando se cambie de jugador al que se está observando
 	private void rebindViewPort() {
 		getGameScene().getViewport().xProperty().bind(model.getJugadores().get(spectatorIndex).getEntity().xProperty()
 				.subtract(viewWidth / 2).add(player.widthProperty()));
@@ -542,8 +544,11 @@ public class Main extends GameApplication {
 				ntp.setShooting(false);
 				model.getProjectiles().add(new NetworkingProyectile(ntp.getName(),
 						Animations.shootTransition(ntp.getEntity(), getGameWorld())));
-				// if (ntp.getEntity().isWithin(new Rectangle2D(arg0, arg1, arg2, arg3)))
-				getAudioPlayer().playSound("laser.mp3");
+				if (ntp.getEntity()
+						.isWithin(new Rectangle2D(getGameScene().getViewport().getX(),
+								getGameScene().getViewport().getY(), getGameScene().getViewport().getWidth(),
+								getGameScene().getViewport().getHeight())))
+					getAudioPlayer().playSound("laser.mp3");
 			}
 		}
 		// La animacion borra la entidad del mundo
