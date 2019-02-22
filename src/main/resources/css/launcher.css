@@ -20,6 +20,12 @@
 	-fx-background-padding-right: 20.0;
 }
 
+/**************************************************************************
+ * 
+ * Launcher
+ * 
+ * ************************************************************************/
+
 .launchButton {
 	-fx-background-color: rgba(255.0, 255.0, 255.0, 0.1), 
 	radial-gradient(center 50% -40%, radius 300%, #e6e6e6 5%, rgba(230, 230, 230, 0) 45%);
@@ -37,6 +43,12 @@
 	-fx-text-fill: white;
 	-fx-background-insets: 0.0;
 	-fx-background-radius: 15.0;
+}
+
+#labelInfo {
+	-fx-background-color: rgba(255.0, 255.0, 255.0, 0.1);
+	-fx-text-fill: white;
+	-fx-font-size:18px; 
 }
 
 

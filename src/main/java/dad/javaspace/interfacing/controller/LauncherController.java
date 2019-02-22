@@ -141,9 +141,6 @@ public class LauncherController implements Initializable {
 	@FXML
 	private StackPane empezarPartidaHoverRoot;
 
-//	@FXML
-//	private ImageView imageViewEP;
-
 	@FXML
 	private ImageView loadingImage;
 
@@ -152,6 +149,9 @@ public class LauncherController implements Initializable {
 	
 	@FXML
 	private Button createRoomButton;
+	
+	@FXML
+	private Label labelInfo;
 
 	/****************************************************************************************************
 	 * 
@@ -632,5 +632,9 @@ public class LauncherController implements Initializable {
 
 	public LauncherModel getModel() {
 		return this.model;
+	}
+	
+	public Label getLabelInfo() {
+		return labelInfo;
 	}
 }
