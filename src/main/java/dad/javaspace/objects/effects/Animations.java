@@ -46,13 +46,11 @@ public class Animations {
 	}
 
 	public static void hitTransition(Entity player, GameWorld gameWorld) {
+		double playerPosX = player.getPosition().getX();
+		double playerPosY = player.getPosition().getY();
 
-//		Terminar animacion. posicion, rotacion, radio, particulas
-		double playerPosX = player.getPosition().getX() + 25;
-		double playerPosY = player.getPosition().getY() + 25;
-
-		ParticleEmitter hitEmitter = ParticleEmitters.newExplosionEmitter(50);
-		hitEmitter.setExpireFunction(e -> Duration.seconds(10));
+		ParticleEmitter hitEmitter = ParticleEmitters.newExplosionEmitter(40);
+		hitEmitter.setExpireFunction(e -> Duration.seconds(1));
 		hitEmitter.setSpawnPointFunction(new Function<Integer, Point2D>() {
 			@Override
 			public Point2D apply(Integer arg) {
@@ -61,23 +59,23 @@ public class Animations {
 			}
 		});
 		hitEmitter.setExpireFunction(e -> Duration.seconds(2));
-		hitEmitter.setNumParticles((int) ((Math.random() * 5) + 3));
+		hitEmitter.setNumParticles((int) ((Math.random() * 10) + 5));
 		hitEmitter.setAllowParticleRotation(true);
-		hitEmitter.setSize(10, 25);
+		hitEmitter.setSize(5, 20);
+		hitEmitter.setEmissionRate(1);
 
 		ParticleComponent hitComponent = new ParticleComponent(hitEmitter);
 
 		Entity hit = new Entity();
+		hit.setPosition(playerPosX, playerPosY);
 		hit.addComponent(hitComponent);
-		hit.setRotation(player.getRotation());
 		gameWorld.addEntities(hit);
 
 		hitComponent.setOnFinished(hit::removeFromWorld);
 
-		Entities.animationBuilder().duration(Duration.seconds(2)).scale(new Entity()).buildAndPlay()
+		Entities.animationBuilder().duration(Duration.seconds(1)).scale(new Entity()).buildAndPlay()
 				.setOnFinished(() -> {
-					if (hit.isActive())
-						gameWorld.removeEntity(hit);
+					gameWorld.removeEntity(hit);
 				});
 
 	}
