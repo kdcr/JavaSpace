@@ -1,8 +1,10 @@
 package dad.javaspace.networking;
 
 import com.almasb.fxgl.entity.Entity;
+import com.almasb.fxgl.entity.RenderLayer;
 
 import dad.javaspace.objects.EntityTypes;
+import dad.javaspace.objects.effects.ComponentePropulsor;
 import dad.javaspace.ui.NameTag;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -20,6 +22,8 @@ public class NetworkingPlayer {
 	private DoubleProperty shield = new SimpleDoubleProperty(this, "shield", 1);
 	private DoubleProperty hull = new SimpleDoubleProperty(this, "hull", 1);
 
+	private ComponentePropulsor componentePropulsor;
+
 	private boolean shooting = false;
 
 	public NetworkingPlayer(String name, String skin, int id) {
@@ -30,12 +34,21 @@ public class NetworkingPlayer {
 		nameText.setName(name);
 
 		entity = new Entity();
-		entity.setViewFromTexture("navePruebaSmall.png");
-		
+		entity.setViewFromTexture("nave1Small.png");
+
+		entity.setRenderLayer(RenderLayer.TOP);
+
 		entity.setType(EntityTypes.ENEMY_PLAYER);
+
+		componentePropulsor = new ComponentePropulsor(entity);
+		componentePropulsor.setEmissionRate(1);
 
 		nameText.xProperty().bind(entity.xProperty().subtract(50));
 		nameText.yProperty().bind(entity.yProperty().subtract(50));
+	}
+
+	public ComponentePropulsor getComponentePropulsor() {
+		return componentePropulsor;
 	}
 
 	public boolean isShooting() {

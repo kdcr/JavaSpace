@@ -106,6 +106,7 @@ public class Main extends GameApplication {
 	@Override
 	protected void initGame() {
 		super.initGame();
+
 		// Cargar el launcher a la ventana
 		rootView = controller.getRootView();
 		getGameScene().addUINode(rootView);
@@ -126,6 +127,10 @@ public class Main extends GameApplication {
 		// Botones de modo espectador
 		nextButton.setOnAction(e -> spectateNext());
 		previousButton.setOnAction(e -> spectatePrevious());
+
+		// Mensaje de estado del launcher
+		// FIXME rompe el juego, ni siquiera importa si se desbindea etc
+		// controller.getLabelInfo().textProperty().bind(model.connectionStateProperty());
 	}
 
 	@Override
@@ -135,23 +140,26 @@ public class Main extends GameApplication {
 		input.addAction(new UserAction("Rotate Right") {
 			@Override
 			protected void onAction() {
-				if (model.getAngular() + 0.5 < 3)
-					model.setAngular(model.getAngular() + 0.5);
+				if (model.isPlayerAlive())
+					if (model.getAngular() + 0.5 < 3)
+						model.setAngular(model.getAngular() + 0.5);
 			}
 		}, KeyCode.D);
 
 		input.addAction(new UserAction("Rotate Left") {
 			@Override
 			protected void onAction() {
-				if (model.getAngular() - 0.5 > -3)
-					model.setAngular(model.getAngular() - 0.5);
+				if (model.isPlayerAlive())
+					if (model.getAngular() - 0.5 > -3)
+						model.setAngular(model.getAngular() - 0.5);
 			}
 		}, KeyCode.A);
 
 		input.addAction(new UserAction("Center") {
 			@Override
 			protected void onAction() {
-				model.setAngular(model.getAngular() * 0.9);
+				if (model.isPlayerAlive())
+					model.setAngular(model.getAngular() * 0.9);
 
 			}
 		}, KeyCode.Q);
@@ -159,7 +167,8 @@ public class Main extends GameApplication {
 		input.addAction(new UserAction("Add thrust") {
 			@Override
 			protected void onAction() {
-				addThrust();
+				if (model.isPlayerAlive())
+					addThrust();
 			}
 
 		}, KeyCode.W);
@@ -167,12 +176,11 @@ public class Main extends GameApplication {
 		input.addAction(new UserAction("Shoot") {
 			@Override
 			protected void onAction() {
-				makeShoot();
+				if (model.isPlayerAlive())
+					makeShoot();
 			}
 		}, KeyCode.SPACE);
 
-		input.save(model.getProfile());
-		input.clearAll();
 	}
 
 	private void startServer() {
@@ -202,6 +210,8 @@ public class Main extends GameApplication {
 
 	private void startConnection() {
 
+		controller.getLabelInfo().setVisible(true);
+
 		// Mostrar el icono de carga y bloquear el boton de jugar
 		controller.loadingAnimation();
 		controller.getLaunchButton().setDisable(true);
@@ -225,8 +235,6 @@ public class Main extends GameApplication {
 	}
 
 	private void startGame() {
-
-		getInput().load(model.getProfile());
 
 		for (NetworkingPlayer netPlayers : model.getJugadores()) {
 			getGameWorld().addEntity(netPlayers.getEntity());
@@ -277,7 +285,7 @@ public class Main extends GameApplication {
 		physics.setBodyType(BodyType.DYNAMIC);
 		// Al jugador se le asigna una textura y se agrega al mundo
 
-		player.setViewFromTexture("navePruebaSmall.png");
+		player.setViewFromTexture("nave1Small.png");
 
 		getGameWorld().addEntities(player);
 
@@ -331,23 +339,39 @@ public class Main extends GameApplication {
 		super.onUpdate(tpf);
 		if (model.isEnPartida()) {
 
+			// Si se cae la conexión sale del programa
+			// TODO cambiar a volver al launcher
 			if (!clientGameThread.isAlive())
 				System.exit(0);
 
 			physics.setAngularVelocity(model.getAngular());
 
+			// Llamar al método para generar estrellas
 			generateStars();
 
+			// Si no se esta pulsando W, decrementa el empuje del motor
 			if (!getInput().isHeld(KeyCode.W))
 				model.setThrust(model.getThrust() * 0.80);
+
+			// Limitar la velocidad
 			maxVel();
 
+			// Como no hay property de la velocidad lineal, se actualiza el hud a cada frame
 			hud.getModel().setSpeed((int) physics.getLinearVelocity().magnitude());
 
+			// Comprueba que el jugador nos e haya salido
 			checkBounds();
 
 			if (model.getHull() <= 0 && model.isPlayerAlive()) {
 				die();
+			}
+
+			// Comprobar el estado de otras naves (si ya fue destruida)
+			for (NetworkingPlayer ntp : model.getJugadores()) {
+				if (ntp.getHull() <= 0 && ntp.isAlive()) {
+					ntp.setAlive(false);
+					ntp.getComponentePropulsor().onShipDestroyed();
+				}
 			}
 
 			checkShots();
@@ -356,8 +380,7 @@ public class Main extends GameApplication {
 
 	private void die() {
 		model.setPlayerAlive(false);
-		input.clearAll();
-		
+
 		// Anadiendo CSS a los botones
 		nextButton.getStylesheets().setAll("/css/forwardbutton.css");
 		previousButton.getStylesheets().setAll("/css/previousbutton.css");
@@ -365,13 +388,15 @@ public class Main extends GameApplication {
 		previousButton.setMinHeight(120);
 		nextButton.setMinWidth(120);
 		nextButton.setMinHeight(120);
-		
-		
+
 		nextButton.setTranslateY(viewHeight / 2);
 		nextButton.setTranslateX(viewWidth - nextButton.getMinWidth());
 		previousButton.setTranslateY(viewHeight / 2);
 		getGameScene().addUINodes(nextButton, previousButton);
 		componentePropulsor.onShipDestroyed();
+
+		player.setViewFromTexture("nave1SmallDestroyed.png");
+
 		// TODO animacion para morir
 	}
 
@@ -506,6 +531,17 @@ public class Main extends GameApplication {
 				model.setCooldownBounds(System.currentTimeMillis());
 				doDamage(0.2);
 			}
+
+		// Si un jugador enemigo se ha muerto y sale de los bordes, se elimina del mundo
+		for (NetworkingPlayer ntp : model.getJugadores()) {
+			if (!ntp.isAlive()) {
+				if (ntp.getEntity().getX() > model.getMARGIN_HORIZONTAL() + 100
+						|| ntp.getEntity().getX() < -model.getMARGIN_HORIZONTAL() - 100
+						|| ntp.getEntity().getY() > model.getMARGIN_VERTICAL() + 100
+						|| ntp.getEntity().getY() < -model.getMARGIN_VERTICAL() - 100)
+					getGameWorld().removeEntity(ntp.getEntity());
+			}
+		}
 	}
 
 	private void spectateNext() {
@@ -553,10 +589,7 @@ public class Main extends GameApplication {
 				ntp.setShooting(false);
 				model.getProjectiles().add(new NetworkingProyectile(ntp.getName(),
 						Animations.shootTransition(ntp.getEntity(), getGameWorld())));
-				if (ntp.getEntity()
-						.isWithin(new Rectangle2D(getGameScene().getViewport().getX(),
-								getGameScene().getViewport().getY(), getGameScene().getViewport().getWidth(),
-								getGameScene().getViewport().getHeight())))
+				if (ntp.getEntity().distance(player) < 1000)
 					getAudioPlayer().playSound("laser.mp3");
 			}
 		}
