@@ -284,7 +284,7 @@ public class LauncherController implements Initializable {
 			 ***************************************************************************************************/
 
 			// Musica menu
-			String musicFile = "/assets/sounds/Vigil.mp3";
+			String musicFile = "/music/Vigil.mp3";
 			Media mainTheme = new Media(getClass().getResource(musicFile).toString());
 			mp = new MediaPlayer(mainTheme);
 			sonidoMusicaSlider.setMax(1.0);
