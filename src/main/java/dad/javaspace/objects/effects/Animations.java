@@ -22,7 +22,7 @@ import javafx.util.Duration;
 public class Animations {
 
 	public static Entity shootTransition(Entity player, GameWorld gameWorld) {
-		
+
 		Entity shoot = new Entity();
 		shoot.setViewFromTexture("laser.png");
 		shoot.setRotation(player.getRotation());
@@ -48,8 +48,8 @@ public class Animations {
 	public static void hitTransition(Entity player, GameWorld gameWorld) {
 
 //		Terminar animacion. posicion, rotacion, radio, particulas
-		double playerPosX = player.getCenter().getX() + 25;
-		double playerPosY = player.getCenter().getY() + 25;
+		double playerPosX = player.getPosition().getX() + 25;
+		double playerPosY = player.getPosition().getY() + 25;
 
 		ParticleEmitter hitEmitter = ParticleEmitters.newExplosionEmitter(50);
 		hitEmitter.setExpireFunction(e -> Duration.seconds(10));
@@ -60,32 +60,19 @@ public class Animations {
 				return punto;
 			}
 		});
-		
-		hitEmitter.setExpireFunction(e -> Duration.seconds(1));
+		hitEmitter.setExpireFunction(e -> Duration.seconds(2));
 		hitEmitter.setNumParticles((int) ((Math.random() * 5) + 3));
 		hitEmitter.setAllowParticleRotation(true);
 		hitEmitter.setSize(10, 25);
 
 		ParticleComponent hitComponent = new ParticleComponent(hitEmitter);
-		hitComponent.setOnFinished(player::removeFromWorld);
 
 		Entity hit = new Entity();
 		hit.addComponent(hitComponent);
 		hit.setRotation(player.getRotation());
 		gameWorld.addEntities(hit);
 
-		hitEmitter.setExpireFunction(new Function<Integer, Duration>() {
-
-			@Override
-			public Duration apply(Integer arg) {
-				return Duration.seconds(2);
-			}
-		});
-
-		hitComponent.setOnFinished(() -> {
-			player.getComponents().removeValueByIdentity(hitComponent);
-			gameWorld.removeEntity(hit);
-		});
+		hitComponent.setOnFinished(hit::removeFromWorld);
 
 		Entities.animationBuilder().duration(Duration.seconds(2)).scale(new Entity()).buildAndPlay()
 				.setOnFinished(() -> {
@@ -95,8 +82,11 @@ public class Animations {
 
 	}
 
-	public static void hiperJumpTransition(Entity player, double duration, double translateX, double translateY,
-			GameWorld gameWorld) {
+	public static void hiperJumpTransition(Entity player, GameWorld gameWorld) {
+		double duration = 1;
+		double translateX = -Math.sin(Math.toRadians(player.getRotation())) * 100;
+		double translateY = Math.cos(Math.toRadians(player.getRotation())) * 100;
+
 		double playerPosX = player.getPosition().getX();
 		double playerPosY = player.getPosition().getY();
 
@@ -182,7 +172,11 @@ public class Animations {
 				});
 	}
 
-	public static void tinkleTransition(Entity player, int duration, double tamMin, double tamMax, double velocity) {
+	public static void tinkleTransition(Entity player) {
+		int duration = 50;
+		double tamMin = Math.random();
+		double tamMax = (Math.random() * 1) + 1;
+		double velocity = (Math.random() * 1.5) + 0.5;
 		Point2D minSize = new Point2D(tamMin, tamMin);
 		Point2D maxSize = new Point2D(tamMax, tamMax);
 		ScaleAnimationBuilder maxToMin = Entities.animationBuilder().duration(Duration.seconds(velocity))
