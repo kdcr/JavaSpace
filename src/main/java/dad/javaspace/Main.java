@@ -250,6 +250,8 @@ public class Main extends GameApplication {
 
 		hud.getModel().shieldProperty().bind(model.shieldProperty());
 		hud.getModel().hpProperty().bind(model.hullProperty());
+		hud.getModel().thrustProperty().bind(model.thrustProperty().divide(8.0));
+		hud.getModel().setNombreJugador(model.getName());
 
 		// Estas cuatro lineas se encargan de mover la camara con el jugador, se hace
 		// asi para evitar que la camara rote
