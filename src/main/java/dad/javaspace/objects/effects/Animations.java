@@ -1,6 +1,7 @@
 package dad.javaspace.objects.effects;
 
 import com.almasb.fxgl.animation.Animation;
+import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.entity.Entities;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.GameWorld;
@@ -9,8 +10,10 @@ import com.almasb.fxgl.entity.animation.ScaleAnimationBuilder;
 import com.almasb.fxgl.particle.ParticleComponent;
 import com.almasb.fxgl.particle.ParticleEmitter;
 import com.almasb.fxgl.particle.ParticleEmitters;
+import com.almasb.fxgl.time.Timer;
 import com.almasb.fxgl.util.Function;
 
+import dad.javaspace.objects.EntityTypes;
 import javafx.geometry.Point2D;
 import javafx.scene.effect.BlendMode;
 import javafx.scene.paint.Color;
@@ -50,8 +53,6 @@ public class Animations {
 
 		ParticleEmitter hitEmitter = ParticleEmitters.newExplosionEmitter(50);
 		hitEmitter.setExpireFunction(e -> Duration.seconds(10));
-		hitEmitter.setNumParticles(3);
-
 		hitEmitter.setSpawnPointFunction(new Function<Integer, Point2D>() {
 			@Override
 			public Point2D apply(Integer arg) {
@@ -61,7 +62,9 @@ public class Animations {
 		});
 		
 		hitEmitter.setExpireFunction(e -> Duration.seconds(1));
-		hitEmitter.setNumParticles((int) ((Math.random() * 5) + 2));
+		hitEmitter.setNumParticles((int) ((Math.random() * 5) + 3));
+		hitEmitter.setAllowParticleRotation(true);
+		hitEmitter.setSize(10, 25);
 
 		ParticleComponent hitComponent = new ParticleComponent(hitEmitter);
 		hitComponent.setOnFinished(player::removeFromWorld);
@@ -117,19 +120,18 @@ public class Animations {
 		hiperJumpEmitter.setExpireFunction(e -> Duration.seconds(duration * 10));
 
 		ParticleComponent hiperJumpComponent = new ParticleComponent(hiperJumpEmitter);
-		hiperJumpComponent.setOnFinished(player::removeFromWorld);
 		Entity hiperJump = Entities.builder().at(playerPosX + translateX, playerPosY + translateY)
 				.renderLayer(RenderLayer.BOTTOM).buildAndAttach(gameWorld);
-
 		hiperJump.addComponent(hiperJumpComponent);
+		hiperJump.setType(EntityTypes.WARPFX);
+		hiperJumpComponent.setOnFinished(hiperJump::removeFromWorld);
 
 		// Animacion aumento de tama�o
 		Point2D min = new Point2D(0, 0);
 		Point2D max = new Point2D(1, 1);
 		Entities.animationBuilder().duration(Duration.seconds(duration)).scale(player).from(min).to(max).buildAndPlay()
 				.setOnFinished(() -> {
-					if (hiperJump.isActive())
-						gameWorld.removeEntity(hiperJump);
+
 				});
 
 		// Animacion desplazamiento desde X, Y a 0, 0
@@ -137,8 +139,7 @@ public class Animations {
 		Point2D to = new Point2D(playerPosX, playerPosY);
 		Entities.animationBuilder().duration(Duration.seconds(duration)).translate(player).from(from).to(to)
 				.buildAndPlay().setOnFinished(() -> {
-					if (hiperJump.isActive())
-						gameWorld.removeEntity(hiperJump);
+
 				});
 	}
 
@@ -169,11 +170,7 @@ public class Animations {
 
 		ParticleComponent explotionComponent = new ParticleComponent(explotionEmitter);
 		explotionComponent.setOnFinished(player::removeFromWorld);
-		Entity explotion = Entities.builder().at(playerPosX + 0, playerPosY + 0).renderLayer(RenderLayer.TOP)
-				.buildAndAttach(gameWorld);
-		explotionComponent.setOnFinished(() -> {
-			gameWorld.removeEntity(explotion);
-		});
+		Entity explotion = Entities.builder().at(playerPosX + 0, playerPosY + 0).buildAndAttach(gameWorld);
 		explotion.addComponent(explotionComponent);
 
 		Point2D min = new Point2D(0, 0);

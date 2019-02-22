@@ -16,6 +16,7 @@ import com.almasb.fxgl.physics.HitBox;
 import com.almasb.fxgl.physics.PhysicsComponent;
 import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
 import com.almasb.fxgl.settings.GameSettings;
+import com.almasb.fxgl.time.Timer;
 
 import dad.javaspace.HUD.JavaSpaceHUD;
 import dad.javaspace.interfacing.controller.LauncherController;
@@ -35,6 +36,7 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class Main extends GameApplication {
 
@@ -75,7 +77,7 @@ public class Main extends GameApplication {
 	AnchorPane rootView;
 	private ArrayList<Entity> starArray = new ArrayList<>();
 	ArrayList<Entity> starList = new ArrayList<>();
-	
+
 	ComponentePropulsor componentePropulsor;
 
 	private Stage gameStage = new Stage();
@@ -169,7 +171,7 @@ public class Main extends GameApplication {
 				makeShoot();
 			}
 		}, KeyCode.SPACE);
-		
+
 		input.save(model.getProfile());
 		input.clearAll();
 	}
@@ -226,7 +228,7 @@ public class Main extends GameApplication {
 	private void startGame() {
 
 		getInput().load(model.getProfile());
-		
+
 		for (NetworkingPlayer netPlayers : model.getJugadores()) {
 			getGameWorld().addEntity(netPlayers.getEntity());
 			getGameWorld().addEntities(netPlayers.getNameText());
@@ -290,6 +292,13 @@ public class Main extends GameApplication {
 
 		player.setType(EntityTypes.PLAYER);
 
+		getMasterTimer().runOnceAfter(() -> {
+			for (Entity entity : getGameWorld().getEntities()) {
+				if (entity.getType() == EntityTypes.WARPFX)
+					getGameWorld().removeEntity(entity);
+			}
+		}, Duration.seconds(5));
+
 	}
 
 	@Override
@@ -336,7 +345,7 @@ public class Main extends GameApplication {
 	private void die() {
 		model.setPlayerAlive(false);
 		input.clearAll();
-				
+
 		nextButton.setTranslateY(viewHeight / 2);
 		nextButton.setTranslateX(viewWidth - nextButton.getWidth());
 		previousButton.setTranslateY(viewHeight / 2);
@@ -351,7 +360,7 @@ public class Main extends GameApplication {
 
 		componentePropulsor = new ComponentePropulsor(player);
 		componentePropulsor.emissionRateProperty().bind(model.thrustProperty());
-		
+
 	}
 
 	private void initGameUI() {
