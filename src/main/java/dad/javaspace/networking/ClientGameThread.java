@@ -35,6 +35,8 @@ public class ClientGameThread extends Thread {
 				}
 			}
 		}
+		// Sale del bucle por lo que termina la partida
+		// TODO recibir informacion post-partida
 	}
 
 	private NetworkingPlayer find(int id) {
@@ -52,15 +54,20 @@ public class ClientGameThread extends Thread {
 		int id = 0;
 		for (String str : buffer) {
 			id = Integer.parseInt(str.split(",")[0].toString());
+
 			if (id != model.getIdentity()) {
 				NetworkingPlayer bufferPlayer = find(id);
-				bufferPlayer.getEntity().setX(Double.parseDouble(str.split(",")[1]));
-				bufferPlayer.getEntity().setY(Double.parseDouble(str.split(",")[2]));
-				bufferPlayer.getEntity().setRotation(Double.parseDouble(str.split(",")[3]));
-				if (Boolean.parseBoolean(str.split(",")[4]))
-					bufferPlayer.setShooting(true);
-				bufferPlayer.setShield(Double.parseDouble(str.split(",")[5]));
-				bufferPlayer.setHull(Double.parseDouble(str.split(",")[6]));
+				if (!(str.split(",").length >= 2)) {
+					bufferPlayer.getEntity().setX(Double.parseDouble(str.split(",")[1]));
+					bufferPlayer.getEntity().setY(Double.parseDouble(str.split(",")[2]));
+					bufferPlayer.getEntity().setRotation(Double.parseDouble(str.split(",")[3]));
+					if (Boolean.parseBoolean(str.split(",")[4]))
+						bufferPlayer.setShooting(true);
+					bufferPlayer.setShield(Double.parseDouble(str.split(",")[5]));
+					bufferPlayer.setHull(Double.parseDouble(str.split(",")[6]));
+				} else {
+					bufferPlayer.setHull(0);
+				}
 			}
 		}
 	}

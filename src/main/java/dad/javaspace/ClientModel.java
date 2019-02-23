@@ -2,11 +2,10 @@ package dad.javaspace;
 
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Scanner;
-
-import com.almasb.fxgl.saving.UserProfile;
 
 import dad.javaspace.networking.NetworkingPlayer;
 import dad.javaspace.networking.NetworkingProyectile;
@@ -39,6 +38,10 @@ public class ClientModel {
 
 	private double xForce, yForce;
 
+	private int alivePlayers = 0;
+
+	private long cooldownBounds = 0, cooldownShield = 0;
+
 	private BooleanProperty enPartida = new SimpleBooleanProperty(this, "enPartida", false);
 
 	private DoubleProperty thrust = new SimpleDoubleProperty();
@@ -47,13 +50,12 @@ public class ClientModel {
 
 	private StringProperty version = new SimpleStringProperty(this, "version", "0.0.1");
 
-	private long cooldownBounds = 0, cooldownShield = 0;
-
 	// Conectividad
 	private int port;
 	private String ip;
 	private Socket socket;
 	private Scanner scanner;
+	private ServerSocket serverSocket;
 
 	private StringProperty connectionState = new SimpleStringProperty(this, "connection State", "");
 
@@ -62,7 +64,13 @@ public class ClientModel {
 
 	private ArrayList<NetworkingPlayer> jugadores = new ArrayList<>();
 
-	private UserProfile profile = new UserProfile("JavaSpace", getVersion());
+	public int getAlivePlayers() {
+		return alivePlayers;
+	}
+
+	public void setAlivePlayers(int alivePlayers) {
+		this.alivePlayers = alivePlayers;
+	}
 
 	public long getCooldownShield() {
 		return cooldownShield;
@@ -78,14 +86,6 @@ public class ClientModel {
 
 	public void setProjectiles(ArrayList<NetworkingProyectile> projectiles) {
 		this.projectiles = projectiles;
-	}
-
-	public UserProfile getProfile() {
-		return profile;
-	}
-
-	public void setProfile(UserProfile profile) {
-		this.profile = profile;
 	}
 
 	public long getCooldownBounds() {
@@ -280,6 +280,15 @@ public class ClientModel {
 
 	public final double getPlayerY() {
 		return this.playerYProperty().get();
+	}
+
+	public ServerSocket getServerSocket() {
+		return serverSocket;
+	}
+
+	public void setServerSocket(ServerSocket serverSocket) {
+		
+		this.serverSocket = serverSocket;
 	}
 
 	public final DoubleProperty playerRotationProperty() {

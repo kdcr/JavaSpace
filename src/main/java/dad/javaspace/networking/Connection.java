@@ -15,6 +15,7 @@ public class Connection extends Thread {
 	private Socket sk;
 
 	private int identity;
+	private String itemStateString;
 
 	private String[] nombreSkin;
 	private String nombre, skin;
@@ -91,7 +92,7 @@ public class Connection extends Thread {
 
 		
 	
-			itemStateString = identity + "," + entrada.nextLine() + ","  + "_";
+		itemStateString = identity + "," + entrada.nextLine() + ","  + "_";
 		
 	}
 
@@ -117,7 +118,17 @@ public class Connection extends Thread {
 	public String getItemStateString() {
 		return itemStateString;
 	}
+	public String disconnect() {
+		try {
+			sk.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return  identity + ", dc";
+		
+		
+	}
 
-	private String itemStateString;
 
 }

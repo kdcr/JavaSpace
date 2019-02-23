@@ -2,6 +2,9 @@ package dad.javaspace.networking;
 
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.RenderLayer;
+import com.almasb.fxgl.entity.components.CollidableComponent;
+import com.almasb.fxgl.physics.BoundingShape;
+import com.almasb.fxgl.physics.HitBox;
 
 import dad.javaspace.objects.EntityTypes;
 import dad.javaspace.objects.effects.ComponentePropulsor;
@@ -39,6 +42,9 @@ public class NetworkingPlayer {
 		entity.setRenderLayer(RenderLayer.TOP);
 
 		entity.setType(EntityTypes.ENEMY_PLAYER);
+		
+		entity.getBoundingBoxComponent().addHitBox(new HitBox(BoundingShape.polygon(0, 0, 25, 50, 50, 0)));
+		entity.addComponent(new CollidableComponent(true));
 
 		componentePropulsor = new ComponentePropulsor(entity);
 		componentePropulsor.setEmissionRate(0.33);

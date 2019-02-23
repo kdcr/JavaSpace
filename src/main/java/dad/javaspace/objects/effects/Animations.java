@@ -1,7 +1,5 @@
 package dad.javaspace.objects.effects;
 
-import com.almasb.fxgl.animation.Animation;
-import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.entity.Entities;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.GameWorld;
@@ -10,7 +8,6 @@ import com.almasb.fxgl.entity.animation.ScaleAnimationBuilder;
 import com.almasb.fxgl.particle.ParticleComponent;
 import com.almasb.fxgl.particle.ParticleEmitter;
 import com.almasb.fxgl.particle.ParticleEmitters;
-import com.almasb.fxgl.time.Timer;
 import com.almasb.fxgl.util.Function;
 
 import dad.javaspace.objects.EntityTypes;
@@ -101,7 +98,7 @@ public class Animations {
 		hiperJumpEmitter.setSpawnPointFunction(new Function<Integer, Point2D>() {
 			@Override
 			public Point2D apply(Integer arg) {
-				Point2D punto = new Point2D(player.getX(), player.getY());
+				Point2D punto = new Point2D(25, 25);
 				return punto;
 			}
 		});

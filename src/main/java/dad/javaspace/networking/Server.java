@@ -5,13 +5,19 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
+
+import dad.javaspace.ClientModel;
 import javafx.concurrent.Task;
 //
 public class Server extends Task<Integer> {
 
+	
 	private static  int nPlayers;
 	private static ArrayList<Connection> connectionsArray = new ArrayList<Connection>();
 	private static String players = "", playersState = "";
+	
+	private ClientModel model;
+	private ServerSocket skServidor;
 
 	public static String getPlayers() {
 		return players;
@@ -25,9 +31,14 @@ public class Server extends Task<Integer> {
 	static int numCliente = 0;
 	private ArrayList<Integer> disconectedList = new ArrayList<Integer>();
 
-	public Server(int nPlayers, int port) {
-		setnPlayers(nPlayers);
-		Puerto=port;
+	public Server(ClientModel model) {
+		this.model=model;
+		setnPlayers(model.getNumPlayers());
+		Puerto=model.getPort();
+		
+		
+		
+		
 	}
 
 	
@@ -38,7 +49,8 @@ public class Server extends Task<Integer> {
 
 			// Inicio el servidor en el puerto
 
-			ServerSocket skServidor = new ServerSocket(Puerto);
+			 skServidor= new ServerSocket(Puerto);
+			model.setServerSocket(skServidor);
 
 			System.out.println("Escucho el puerto " + Puerto);
 
@@ -80,10 +92,12 @@ public class Server extends Task<Integer> {
 						playersState += con.getItemStateString();
 					} catch (NoSuchElementException e) {
 						disconectedList.add(con.getIdentity() - 1);
+						playersState+=con.disconnect();
 					}
 
 				}
 				for (Integer disconected : disconectedList) {
+
 					connectionsArray.remove(disconected);
 				}
 				disconectedList.clear();
