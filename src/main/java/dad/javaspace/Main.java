@@ -254,6 +254,9 @@ public class Main extends GameApplication {
 
 	private void startGame() {
 
+		// Jugadores vivos: otros jugadores + el propio
+		model.setAlivePlayers(model.getJugadores().size() + 1);
+
 		// Añadir las entidades de otros jugadores
 		for (NetworkingPlayer netPlayers : model.getJugadores()) {
 			getGameWorld().addEntity(netPlayers.getEntity());
@@ -294,8 +297,8 @@ public class Main extends GameApplication {
 		physics.setBodyType(BodyType.DYNAMIC);
 
 		// Colocar al jugador en una zona aleatoria del mundo
-		player.setX(Math.random() * model.getMARGIN_HORIZONTAL());
-		player.setY(Math.random() * model.getMARGIN_VERTICAL());
+		player.setX((Math.random() * model.getMARGIN_HORIZONTAL() * 2) - model.getMARGIN_HORIZONTAL());
+		player.setY((Math.random() * model.getMARGIN_VERTICAL() * 2) - model.getMARGIN_VERTICAL());
 		player.setRotation(Math.random() * 360);
 
 		// 0 gravedad
@@ -305,7 +308,6 @@ public class Main extends GameApplication {
 		player.addComponent(new CollidableComponent(true));
 
 		// Al jugador se le asigna una textura y se agrega al mundo
-
 		player.setViewFromTexture("Nave" + controller.getModel().getSelectedSkin() + ".png");
 		player.setType(EntityTypes.PLAYER);
 
@@ -315,6 +317,7 @@ public class Main extends GameApplication {
 
 		initGameEffects();
 
+		// Crea las bareras y las añade al mundo
 		for (Entity entity : ClientUtils.buildWalls(model.getMARGIN_HORIZONTAL(), model.getMARGIN_VERTICAL())) {
 			getGameWorld().addEntity(entity);
 		}
@@ -366,6 +369,8 @@ public class Main extends GameApplication {
 		super.onUpdate(tpf);
 		if (model.isEnPartida()) {
 
+			checkVictory();
+
 			// Si se cae la conexión sale del programa
 			// TODO cambiar a volver al launcher
 			if (!clientGameThread.isAlive())
@@ -386,21 +391,13 @@ public class Main extends GameApplication {
 			// Como no hay property de la velocidad lineal, se actualiza el hud a cada frame
 			hud.getModel().setSpeed((int) physics.getLinearVelocity().magnitude());
 
-			// Comprueba que el jugador nos e haya salido
+			// Comprueba que el jugador no se haya salido
 			checkBounds();
 
 			if (model.getHull() <= 0 && model.isPlayerAlive()) {
 				die();
 			}
 
-			// Comprobar el estado de otras naves (si ya fue destruida)
-			for (NetworkingPlayer ntp : model.getJugadores()) {
-				if (ntp.getHull() <= 0 && ntp.isAlive()) {
-					ntp.setAlive(false);
-					ntp.getComponentePropulsor().onShipDestroyed();
-				}
-			}
-			
 			// Recargar escudos
 			reloadShield();
 
@@ -420,15 +417,24 @@ public class Main extends GameApplication {
 		nextButton.setMinWidth(120);
 		nextButton.setMinHeight(120);
 
+		// Modo espectador
 		nextButton.setTranslateY(viewHeight / 2);
 		nextButton.setTranslateX(viewWidth - nextButton.getMinWidth());
 		previousButton.setTranslateY(viewHeight / 2);
 		getGameScene().addUINodes(nextButton, previousButton);
+
+		// Se cambian las propiedades del efecto del motor para que salga humo de forma
+		// continua
 		componentePropulsor.onShipDestroyed();
 
+		// Cambiar la apariencia a la nave destruida
 		player.setViewFromTexture("Nave" + model.getSkin() + "Destroyed.png");
 
-		// TODO animacion para morir
+		// Restar uno a los jugadores con vida
+		model.setAlivePlayers(model.getAlivePlayers() - 1);
+		
+		getGameScene().removeUINodes(hud, radar);
+
 	}
 
 	// Efectos del jugador
@@ -468,6 +474,7 @@ public class Main extends GameApplication {
 	private void maxVel() {
 		double maxVelocity = 400;
 		double x, y;
+
 		if (physics.getLinearVelocity().getX() > maxVelocity || physics.getLinearVelocity().getX() < -maxVelocity) {
 			if (physics.getLinearVelocity().getX() > 0)
 				x = maxVelocity;
@@ -507,18 +514,49 @@ public class Main extends GameApplication {
 	 * 
 	 * Metodos de gameplay
 	 * 
-	 * * * * * * * * * * * * * * * * * * * *
+	 * * * * * * * * * * * * * * * * * * * * *
 	 */
 
+	private void checkVictory() {
+
+		// Comprobar el estado de otras naves (si ya fue destruida)
+		for (NetworkingPlayer ntp : model.getJugadores()) {
+			if (ntp.getHull() <= 0 && ntp.isAlive()) {
+				ntp.setAlive(false);
+				ntp.getComponentePropulsor().onShipDestroyed();
+				ntp.getEntity().setViewFromTexture("Nave" + ntp.getSkin() + "Destroyed.png");
+			}
+		}
+
+		if (model.getAlivePlayers() == 1) {
+			// TODO descomentar cuando se termine
+//			model.setEnPartida(false);
+		}
+	}
+
 	private void reloadShield() {
-		if (model.getShield() < 1)
-			if (System.currentTimeMillis() > model.getCooldownShield() + 3000) {
+		// Antes de nada, si el escudo esta a 0, dejarlo en -1 para el efecto del
+		// progress bar de indefinido
+		if (model.getShield() <= 0)
+			model.setShield(-1);
+		
+		if (model.getShield() < 1) {
+			if (System.currentTimeMillis() > model.getCooldownShield() + 4000) {
 				model.setCooldownShield(System.currentTimeMillis());
-				if (model.getShield() + 0.1 >= 1)
+
+				if (model.getShield() + 0.25 >= 1)
 					model.setShield(1);
 				else
-					model.setShield(model.getShield() + 0.1);
+					model.setShield(model.getShield() + 0.25);
+
+				hud.getModel().setRegenerador(0);
+			} else {
+				hud.getModel().setRegenerador(hud.getModel().getRegenerador() + 0.004);
 			}
+		} else {
+			hud.getModel().setRegenerador(0);
+		}
+
 	}
 
 	private void makeShoot() {
@@ -536,6 +574,61 @@ public class Main extends GameApplication {
 
 		physics.applyBodyForceToCenter(new Vec2(model.getThrust() * -Math.sin(physics.getBody().getAngle()),
 				model.getThrust() * Math.cos(physics.getBody().getAngle())));
+	}
+
+	private void doDamage(double damage) {
+
+		// Animacion
+		Animations.hitTransition(player, getGameWorld());
+
+		// Reiniciar la carga de escudo
+		model.setCooldownShield(System.currentTimeMillis());
+		hud.getModel().setRegenerador(0);
+
+		if (model.getShield() <= 0)
+			model.setShield(-1);
+
+		// Distribuir el daño al escudo o casco
+		if (model.getShield() < 0) {
+			model.setHull(model.getHull() - damage);
+		} else {
+			model.setShield(model.getShield() - damage);
+		}
+
+	}
+
+	private void checkBounds() {
+		if (model.getPlayerX() > model.getMARGIN_HORIZONTAL() || model.getPlayerX() < -model.getMARGIN_HORIZONTAL()
+				|| model.getPlayerY() > model.getMARGIN_VERTICAL() || model.getPlayerY() < -model.getMARGIN_VERTICAL())
+			if (System.currentTimeMillis() >= model.getCooldownBounds() + 1000) {
+				model.setCooldownBounds(System.currentTimeMillis());
+				doDamage(0.2);
+			}
+
+		// Si un jugador enemigo se ha muerto y sale de los bordes, se elimina del mundo
+		for (NetworkingPlayer ntp : model.getJugadores()) {
+			if (!ntp.isAlive()) {
+				if (ntp.getEntity().getX() > model.getMARGIN_HORIZONTAL() + 100
+						|| ntp.getEntity().getX() < -model.getMARGIN_HORIZONTAL() - 100
+						|| ntp.getEntity().getY() > model.getMARGIN_VERTICAL() + 100
+						|| ntp.getEntity().getY() < -model.getMARGIN_VERTICAL() - 100)
+					getGameWorld().removeEntity(ntp.getEntity());
+			}
+		}
+	}
+
+	private void checkShots() {
+		// Crear disparos y comprobar si estan muertos
+		for (NetworkingPlayer ntp : model.getJugadores()) {
+			if (ntp.isShooting()) {
+				ntp.setShooting(false);
+				model.getProjectiles().add(new NetworkingProyectile(ntp.getName(),
+						Animations.shootTransition(ntp.getEntity(), getGameWorld())));
+				if (ntp.getEntity().distance(player) < 1500)
+					getAudioPlayer().playSound("laser.mp3");
+			}
+		}
+		// La animacion borra la entidad del mundo
 	}
 
 	/*
@@ -576,46 +669,6 @@ public class Main extends GameApplication {
 		}
 	}
 
-	private void doDamage(double damage) {
-
-		// Animacion
-		Animations.hitTransition(player, getGameWorld());
-		
-		// Reiniciar la carga de escudo
-		model.setCooldownShield(System.currentTimeMillis());
-		
-		// Distribuir el daño al escudo o casco
-		if (model.getShield() <= 0)
-			model.setShield(-1);
-
-		if (model.getShield() < 0) {
-			model.setHull(model.getHull() - damage);
-		} else {
-			model.setShield(model.getShield() - damage);
-		}
-
-	}
-
-	private void checkBounds() {
-		if (model.getPlayerX() > model.getMARGIN_HORIZONTAL() || model.getPlayerX() < -model.getMARGIN_HORIZONTAL()
-				|| model.getPlayerY() > model.getMARGIN_VERTICAL() || model.getPlayerY() < -model.getMARGIN_VERTICAL())
-			if (System.currentTimeMillis() >= model.getCooldownBounds() + 1000) {
-				model.setCooldownBounds(System.currentTimeMillis());
-				doDamage(0.2);
-			}
-
-		// Si un jugador enemigo se ha muerto y sale de los bordes, se elimina del mundo
-		for (NetworkingPlayer ntp : model.getJugadores()) {
-			if (!ntp.isAlive()) {
-				if (ntp.getEntity().getX() > model.getMARGIN_HORIZONTAL() + 100
-						|| ntp.getEntity().getX() < -model.getMARGIN_HORIZONTAL() - 100
-						|| ntp.getEntity().getY() > model.getMARGIN_VERTICAL() + 100
-						|| ntp.getEntity().getY() < -model.getMARGIN_VERTICAL() - 100)
-					getGameWorld().removeEntity(ntp.getEntity());
-			}
-		}
-	}
-
 	private void spectateNext() {
 		if (!model.getJugadores().isEmpty())
 			if (spectatorIndex + 1 < model.getJugadores().size()) {
@@ -652,20 +705,6 @@ public class Main extends GameApplication {
 				.subtract(viewWidth / 2).add(player.widthProperty()));
 		getGameScene().getViewport().yProperty().bind(model.getJugadores().get(spectatorIndex).getEntity().yProperty()
 				.subtract(viewHeight / 2).add((player.heightProperty())));
-	}
-
-	private void checkShots() {
-		// Crear disparos
-		for (NetworkingPlayer ntp : model.getJugadores()) {
-			if (ntp.isShooting()) {
-				ntp.setShooting(false);
-				model.getProjectiles().add(new NetworkingProyectile(ntp.getName(),
-						Animations.shootTransition(ntp.getEntity(), getGameWorld())));
-				if (ntp.getEntity().distance(player) < 1000)
-					getAudioPlayer().playSound("laser.mp3");
-			}
-		}
-		// La animacion borra la entidad del mundo
 	}
 
 }

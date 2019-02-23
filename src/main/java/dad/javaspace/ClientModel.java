@@ -6,8 +6,6 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import com.almasb.fxgl.saving.UserProfile;
-
 import dad.javaspace.networking.NetworkingPlayer;
 import dad.javaspace.networking.NetworkingProyectile;
 import javafx.beans.property.BooleanProperty;
@@ -39,6 +37,10 @@ public class ClientModel {
 
 	private double xForce, yForce;
 
+	private int alivePlayers = 0;
+
+	private long cooldownBounds = 0, cooldownShield = 0;
+
 	private BooleanProperty enPartida = new SimpleBooleanProperty(this, "enPartida", false);
 
 	private DoubleProperty thrust = new SimpleDoubleProperty();
@@ -46,8 +48,6 @@ public class ClientModel {
 	private DoubleProperty angular = new SimpleDoubleProperty();
 
 	private StringProperty version = new SimpleStringProperty(this, "version", "0.0.1");
-
-	private long cooldownBounds = 0, cooldownShield = 0;
 
 	// Conectividad
 	private int port;
@@ -62,7 +62,13 @@ public class ClientModel {
 
 	private ArrayList<NetworkingPlayer> jugadores = new ArrayList<>();
 
-	private UserProfile profile = new UserProfile("JavaSpace", getVersion());
+	public int getAlivePlayers() {
+		return alivePlayers;
+	}
+
+	public void setAlivePlayers(int alivePlayers) {
+		this.alivePlayers = alivePlayers;
+	}
 
 	public long getCooldownShield() {
 		return cooldownShield;
@@ -78,14 +84,6 @@ public class ClientModel {
 
 	public void setProjectiles(ArrayList<NetworkingProyectile> projectiles) {
 		this.projectiles = projectiles;
-	}
-
-	public UserProfile getProfile() {
-		return profile;
-	}
-
-	public void setProfile(UserProfile profile) {
-		this.profile = profile;
 	}
 
 	public long getCooldownBounds() {
