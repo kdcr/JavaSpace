@@ -85,11 +85,9 @@ public class Main extends GameApplication {
 
 	private Button nextButton = new Button();
 	private Button previousButton = new Button();
-	
-	
 
 	public static void main(String[] args) {
-		
+
 		launch(args);
 	}
 
@@ -105,7 +103,6 @@ public class Main extends GameApplication {
 		gameStage.setFullScreen(controller.getModel().isPantallaCompleta());
 		settings.setVersion(model.getVersion());
 		settings.setMenuEnabled(false);
-		
 
 		FXGL.configure(this, settings.toReadOnly(), gameStage);
 	}
@@ -188,9 +185,9 @@ public class Main extends GameApplication {
 			}
 		}, KeyCode.SPACE);
 		gameStage.setOnCloseRequest(event -> {
-		    System.out.println("Stage is closing");
-		    model.setEnPartida(false);
-		    try {
+			System.out.println("Stage is closing");
+			model.setEnPartida(false);
+			try {
 				model.getSocket().close();
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -199,6 +196,8 @@ public class Main extends GameApplication {
 
 	}
 
+	// Ocurre al hacer click en crear sala, ejecuta un hilo con el servidor como
+	// task
 	private void startServer() {
 		setServerConnectionConfig();
 
@@ -226,9 +225,11 @@ public class Main extends GameApplication {
 
 	private void startConnection() {
 
+		// Establece la skin segun la seleccionada en el modelo
 		model.setSkin(controller.getModel().getSelectedSkin() + "");
 
-		controller.getLabelInfo().setVisible(true);
+		// FIXME esta label esta desactivada porque rompe el juego
+		// controller.getLabelInfo().setVisible(true);
 
 		// Mostrar el icono de carga y bloquear el boton de jugar
 		controller.loadingAnimation();
@@ -331,12 +332,12 @@ public class Main extends GameApplication {
 //		}, Duration.seconds(5));
 	}
 
+	// Quita el nodo del launcher del juego
 	private void clearLauncher() {
 		getGameScene().removeUINode(rootView);
 		controller.guardarConfig();
 		model.setEnPartida(true);
 		controller.getMp().stop();
-
 	}
 
 	@Override
@@ -378,8 +379,8 @@ public class Main extends GameApplication {
 
 			physics.setAngularVelocity(model.getAngular());
 
-			// Llamar al método para generar estrellas
-			generateStars();
+			// Llamar al método para generar estrellas cada 160 milisegundos
+			generateStars(160);
 
 			// Si no se esta pulsando W, decrementa el empuje del motor
 			if (!getInput().isHeld(KeyCode.W))
@@ -432,7 +433,7 @@ public class Main extends GameApplication {
 
 		// Restar uno a los jugadores con vida
 		model.setAlivePlayers(model.getAlivePlayers() - 1);
-		
+
 		getGameScene().removeUINodes(hud, radar);
 
 	}
@@ -450,7 +451,6 @@ public class Main extends GameApplication {
 	private void initGameUI() {
 		player.setRenderLayer(RenderLayer.TOP);
 		getGameScene().setBackgroundColor(Color.BLACK);
-		
 
 		// Hud
 		hud.getModel().shieldProperty().bind(model.shieldProperty());
@@ -475,6 +475,7 @@ public class Main extends GameApplication {
 		double maxVelocity = 400;
 		double x, y;
 
+		// Tope en eje x
 		if (physics.getLinearVelocity().getX() > maxVelocity || physics.getLinearVelocity().getX() < -maxVelocity) {
 			if (physics.getLinearVelocity().getX() > 0)
 				x = maxVelocity;
@@ -483,6 +484,7 @@ public class Main extends GameApplication {
 		} else
 			x = physics.getLinearVelocity().getX();
 
+		// Tope en eje y
 		if (physics.getLinearVelocity().getY() > maxVelocity || physics.getLinearVelocity().getY() < -maxVelocity) {
 			if (physics.getLinearVelocity().getY() > 0)
 				y = maxVelocity;
@@ -539,16 +541,19 @@ public class Main extends GameApplication {
 		// progress bar de indefinido
 		if (model.getShield() <= 0)
 			model.setShield(-1);
-		
+
 		if (model.getShield() < 1) {
 			if (System.currentTimeMillis() > model.getCooldownShield() + 4000) {
 				model.setCooldownShield(System.currentTimeMillis());
 
-				if (model.getShield() + 0.25 >= 1)
+				if (!(model.getShield() >= 0))
+					model.setShield(0);
+				
+				if (model.getShield() + 0.25 >= 1) {
 					model.setShield(1);
-				else
+				} else {
 					model.setShield(model.getShield() + 0.25);
-
+				}
 				hud.getModel().setRegenerador(0);
 			} else {
 				hud.getModel().setRegenerador(hud.getModel().getRegenerador() + 0.004);
@@ -597,6 +602,9 @@ public class Main extends GameApplication {
 
 	}
 
+	/**
+	 * Comprueba si la nave se ha salido de los margenes del campo de juego
+	 */
 	private void checkBounds() {
 		if (model.getPlayerX() > model.getMARGIN_HORIZONTAL() || model.getPlayerX() < -model.getMARGIN_HORIZONTAL()
 				|| model.getPlayerY() > model.getMARGIN_VERTICAL() || model.getPlayerY() < -model.getMARGIN_VERTICAL())
@@ -617,6 +625,9 @@ public class Main extends GameApplication {
 		}
 	}
 
+	/**
+	 * Comprueba que naves enemigas estan disparando y cuales no
+	 */
 	private void checkShots() {
 		// Crear disparos y comprobar si estan muertos
 		for (NetworkingPlayer ntp : model.getJugadores()) {
@@ -631,12 +642,14 @@ public class Main extends GameApplication {
 		// La animacion borra la entidad del mundo
 	}
 
-	/*
-	 * genera una estrella cada 80 milisegundos, ademas borra de forma aleatoria
+	/**
+	 * Genera una estrella cada millis milisegundos, ademas borra de forma aleatoria
 	 * algunas que ya existian de antes
+	 * 
+	 * @param Milisegundos de refresco
 	 */
-	private void generateStars() {
-		if (System.currentTimeMillis() > coolDownStars + 160) {
+	private void generateStars(int millis) {
+		if (System.currentTimeMillis() > coolDownStars + millis) {
 			coolDownStars = System.currentTimeMillis();
 
 			Entity newStar = new Entity();
@@ -669,6 +682,9 @@ public class Main extends GameApplication {
 		}
 	}
 
+	/**
+	 * Cambia al siguiente jugador en el modo espectador
+	 */
 	private void spectateNext() {
 		if (!model.getJugadores().isEmpty())
 			if (spectatorIndex + 1 < model.getJugadores().size()) {
@@ -684,6 +700,9 @@ public class Main extends GameApplication {
 			}
 	}
 
+	/**
+	 * Cambia al anterior jugador en el modo espectador
+	 */
 	private void spectatePrevious() {
 		if (!model.getJugadores().isEmpty())
 			if (spectatorIndex - 1 >= 0) {
@@ -699,7 +718,10 @@ public class Main extends GameApplication {
 			}
 	}
 
-	// Para cuando se cambie de jugador al que se está observando
+	/**
+	 * Cambia la vista al jugador seleccionado a traves de los botones del modo
+	 * espectador
+	 */
 	private void rebindViewPort() {
 		getGameScene().getViewport().xProperty().bind(model.getJugadores().get(spectatorIndex).getEntity().xProperty()
 				.subtract(viewWidth / 2).add(player.widthProperty()));

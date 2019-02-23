@@ -4,6 +4,12 @@ import com.almasb.fxgl.entity.Entity;
 
 public class ClientUtils {
 
+	/**
+	 * 
+	 * @param maxWidth Margen lateral
+	 * @param maxHeight Margen vertical
+	 * @return Un array de 4 entities, las 4 franjas rojas que componen el mapa
+	 */
 	public static Entity[] buildWalls(int maxWidth, int maxHeight) {
 		Entity[] walls = new Entity[4];
 
