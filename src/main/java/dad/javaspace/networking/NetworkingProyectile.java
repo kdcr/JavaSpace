@@ -21,7 +21,6 @@ public class NetworkingProyectile {
 		this.entity.setType(EntityTypes.ENEMY_LASER);
 		
 		entity.getBoundingBoxComponent().addHitBox(new HitBox(BoundingShape.polygon(0, 0, 16, 32, 32, 0)));
-		
 		entity.addComponent(new CollidableComponent(true));
 		
 		entity.setViewFromTexture("laser.png");

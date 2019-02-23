@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import com.almasb.fxgl.app.FXGL;
 import com.almasb.fxgl.app.GameApplication;
+import com.almasb.fxgl.audio.Music;
 import com.almasb.fxgl.core.math.Vec2;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.RenderLayer;
@@ -17,6 +18,8 @@ import com.almasb.fxgl.physics.HitBox;
 import com.almasb.fxgl.physics.PhysicsComponent;
 import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
 import com.almasb.fxgl.settings.GameSettings;
+import com.gluonhq.charm.down.plugins.audio.Audio;
+
 import dad.javaspace.HUD.JavaSpaceHUD;
 import dad.javaspace.interfacing.controller.LauncherController;
 import dad.javaspace.networking.ClientConnectionTask;
@@ -36,7 +39,6 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
 public class Main extends GameApplication {
 
@@ -82,8 +84,7 @@ public class Main extends GameApplication {
 	ComponentePropulsor componentePropulsor;
 
 	private Stage gameStage = new Stage();
-	private MediaPlayer mp;
-	private MediaPlayer musica;
+	private MediaPlayer thrusterMp;
 	private ArrayList<Media> listaCanciones;
 	private int cancionActual = 0;
 
@@ -114,6 +115,11 @@ public class Main extends GameApplication {
 	@Override
 	protected void initGame() {
 		super.initGame();
+
+		model.setPlayerAlive(false);
+
+		// Volumenes del audio del juego
+		getAudioPlayer().globalSoundVolumeProperty().bind(controller.getModel().volumenJuegoProperty().divide(2));
 
 		// Cargar el launcher a la ventana
 		rootView = controller.getRootView();
@@ -264,6 +270,8 @@ public class Main extends GameApplication {
 
 	private void startGame() {
 
+		model.setPlayerAlive(true);
+
 		// Jugadores vivos: otros jugadores + el propio
 		model.setAlivePlayers(model.getJugadores().size() + 1);
 
@@ -296,10 +304,12 @@ public class Main extends GameApplication {
 				.bind(player.yProperty().subtract(viewHeight / 2).add((player.heightProperty())));
 
 		// Sonido del motor
-		mp = new MediaPlayer(new Media(new File("src/main/resources/assets/sounds/thruster.mp3").toURI().toString()));
-		mp.setCycleCount(MediaPlayer.INDEFINITE);
-		mp.volumeProperty().bind(model.thrustProperty());
-		mp.play();
+		thrusterMp = new MediaPlayer(
+				new Media(new File("src/main/resources/assets/sounds/thruster.mp3").toURI().toString()));
+		thrusterMp.setCycleCount(MediaPlayer.INDEFINITE);
+		thrusterMp.volumeProperty().bind(
+				(model.thrustProperty().divide(2)).multiply(controller.getModel().volumenJuegoProperty().divide(2)));
+		thrusterMp.play();
 
 		// Música del juego
 		listaCanciones = new ArrayList<>();
@@ -368,7 +378,6 @@ public class Main extends GameApplication {
 			@Override
 			protected void onCollisionBegin(Entity player, Entity laser) {
 				doDamage(0.15);
-
 				getGameWorld().removeEntity(laser);
 			}
 		});
@@ -379,6 +388,7 @@ public class Main extends GameApplication {
 			@Override
 			protected void onCollisionBegin(Entity player, Entity laser) {
 				getGameWorld().removeEntity(laser);
+				System.out.println("colision");
 			}
 		});
 	}
@@ -406,7 +416,7 @@ public class Main extends GameApplication {
 				model.setThrust(model.getThrust() * 0.80);
 
 			// Limitar la velocidad
-			maxVel();
+			// maxVel();
 
 			// Como no hay property de la velocidad lineal, se actualiza el hud a cada frame
 			hud.getModel().setSpeed((int) physics.getLinearVelocity().magnitude());
@@ -462,7 +472,7 @@ public class Main extends GameApplication {
 		Animations.hiperJumpTransition(player, getGameWorld());
 
 		componentePropulsor = new ComponentePropulsor(player);
-		componentePropulsor.emissionRateProperty().bind(model.thrustProperty());
+		componentePropulsor.emissionRateProperty().bind(model.thrustProperty().divide(8));
 	}
 
 	// La interfaz del juego en si
@@ -749,9 +759,10 @@ public class Main extends GameApplication {
 	}
 
 	private void playMediaTracks(ArrayList<Media> lista) {
+
 		if (lista.size() == 0)
 			return;
-		
+
 		int nuevoValor = cancionActual;
 
 		while (nuevoValor == cancionActual)
