@@ -36,6 +36,7 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class Main extends GameApplication {
 
@@ -82,6 +83,9 @@ public class Main extends GameApplication {
 
 	private Stage gameStage = new Stage();
 	private MediaPlayer mp;
+	private MediaPlayer musica;
+	private ArrayList<Media> listaCanciones;
+	private int cancionActual = 0;
 
 	private Button nextButton = new Button();
 	private Button previousButton = new Button();
@@ -292,7 +296,17 @@ public class Main extends GameApplication {
 		mp.setCycleCount(MediaPlayer.INDEFINITE);
 		mp.volumeProperty().bind(model.thrustProperty());
 		mp.play();
+		
+		// Música del juego
+		listaCanciones = new ArrayList<>();
+		listaCanciones.add(new Media(new File("src/main/resources/music/track01.mp3").toURI().toString()));
+		listaCanciones.add(new Media(new File("src/main/resources/music/track02.mp3").toURI().toString()));
+		listaCanciones.add(new Media(new File("src/main/resources/music/track03.mp3").toURI().toString()));
+		listaCanciones.add(new Media(new File("src/main/resources/music/track04.mp3").toURI().toString()));
 
+		playMediaTracks(new ArrayList<>(listaCanciones));
+
+		
 		// Inicializar las fisicas del propio jugador y el modelo de colisiones
 		physics = new PhysicsComponent();
 		player.addComponent(physics);
@@ -630,19 +644,6 @@ public class Main extends GameApplication {
 	/**
 	 * Comprueba que naves enemigas estan disparando y cuales no
 	 */
-	private void checkShots() {
-		// Crear disparos y comprobar si estan muertos
-		for (NetworkingPlayer ntp : model.getJugadores()) {
-			if (ntp.isShooting()) {
-				ntp.setShooting(false);
-				model.getProjectiles().add(new NetworkingProyectile(ntp.getName(),
-						Animations.shootTransition(ntp.getEntity(), getGameWorld())));
-				if (ntp.getEntity().distance(player) < 1500)
-					getAudioPlayer().playSound("laser.mp3");
-			}
-		}
-		// La animacion borra la entidad del mundo
-	}
 
 	/**
 	 * Genera una estrella cada millis milisegundos, ademas borra de forma aleatoria
@@ -731,4 +732,35 @@ public class Main extends GameApplication {
 				.subtract(viewHeight / 2).add((player.heightProperty())));
 	}
 
+	private void checkShots() {
+		// Crear disparos y comprobar si estan muertos
+		for (NetworkingPlayer ntp : model.getJugadores()) {
+			if (ntp.isShooting()) {
+				ntp.setShooting(false);
+				model.getProjectiles().add(new NetworkingProyectile(ntp.getName(),
+						Animations.shootTransition(ntp.getEntity(), getGameWorld())));
+				if (ntp.getEntity().distance(player) < 1500)
+					getAudioPlayer().playSound("laser.mp3");
+			}
+		}
+		// La animacion borra la entidad del mundo
+	}
+
+	private void playMediaTracks(ArrayList<Media> lista) {
+		if (lista.size() == 0)
+			return;
+		if (cancionActual == 4)
+			cancionActual = 0;
+		MediaPlayer mediaPlayer = new MediaPlayer(lista.get(cancionActual++));
+		mediaPlayer.play();
+		
+		mediaPlayer.setOnEndOfMedia(new Runnable() {
+
+			@Override
+			public void run() {
+				playMediaTracks(lista);
+			}
+		});
+		
+	}
 }
