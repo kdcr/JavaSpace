@@ -1,6 +1,7 @@
 package dad.javaspace;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import com.almasb.fxgl.app.FXGL;
@@ -84,8 +85,11 @@ public class Main extends GameApplication {
 
 	private Button nextButton = new Button();
 	private Button previousButton = new Button();
+	
+	
 
 	public static void main(String[] args) {
+		
 		launch(args);
 	}
 
@@ -101,6 +105,7 @@ public class Main extends GameApplication {
 		gameStage.setFullScreen(controller.getModel().isPantallaCompleta());
 		settings.setVersion(model.getVersion());
 		settings.setMenuEnabled(false);
+		
 
 		FXGL.configure(this, settings.toReadOnly(), gameStage);
 	}
@@ -182,6 +187,15 @@ public class Main extends GameApplication {
 					makeShoot();
 			}
 		}, KeyCode.SPACE);
+		gameStage.setOnCloseRequest(event -> {
+		    System.out.println("Stage is closing");
+		    model.setEnPartida(false);
+		    try {
+				model.getSocket().close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		});
 
 	}
 
@@ -430,6 +444,7 @@ public class Main extends GameApplication {
 	private void initGameUI() {
 		player.setRenderLayer(RenderLayer.TOP);
 		getGameScene().setBackgroundColor(Color.BLACK);
+		
 
 		// Hud
 		hud.getModel().shieldProperty().bind(model.shieldProperty());
