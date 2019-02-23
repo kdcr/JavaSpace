@@ -51,6 +51,7 @@ public class NetworkingPlayer {
 
 		nameText.xProperty().bind(entity.xProperty().subtract(50));
 		nameText.yProperty().bind(entity.yProperty().subtract(50));
+		nameText.shieldProperty().bind(this.shieldProperty());
 	}
 
 	public ComponentePropulsor getComponentePropulsor() {
