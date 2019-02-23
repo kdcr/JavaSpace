@@ -85,8 +85,8 @@ public class Animations {
 		double translateX = -Math.sin(Math.toRadians(player.getRotation())) * 100;
 		double translateY = Math.cos(Math.toRadians(player.getRotation())) * 100;
 
-		double playerPosX = player.getPosition().getX();
-		double playerPosY = player.getPosition().getY();
+		double playerPosX = player.getX();
+		double playerPosY = player.getY();
 
 		ParticleEmitter hiperJumpEmitter = ParticleEmitters.newExplosionEmitter(50);
 		hiperJumpEmitter.setBlendMode(BlendMode.SRC_OVER);
@@ -101,7 +101,7 @@ public class Animations {
 		hiperJumpEmitter.setSpawnPointFunction(new Function<Integer, Point2D>() {
 			@Override
 			public Point2D apply(Integer arg) {
-				Point2D punto = new Point2D(25, 25);
+				Point2D punto = new Point2D(player.getX(), player.getY());
 				return punto;
 			}
 		});

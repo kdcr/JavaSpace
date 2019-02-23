@@ -28,20 +28,20 @@ public class NetworkingPlayer {
 
 	public NetworkingPlayer(String name, String skin, int id) {
 		this.name = name;
-		this.skin = skin;
+		this.skin = skin + 1;
 		this.id = id;
 
 		nameText.setName(name);
 
 		entity = new Entity();
-		entity.setViewFromTexture("nave1Small.png");
+		entity.setViewFromTexture("Nave" + skin + ".png");
 
 		entity.setRenderLayer(RenderLayer.TOP);
 
 		entity.setType(EntityTypes.ENEMY_PLAYER);
 
 		componentePropulsor = new ComponentePropulsor(entity);
-		componentePropulsor.setEmissionRate(1);
+		componentePropulsor.setEmissionRate(0.33);
 
 		nameText.xProperty().bind(entity.xProperty().subtract(50));
 		nameText.yProperty().bind(entity.yProperty().subtract(50));
