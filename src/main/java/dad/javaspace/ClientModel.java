@@ -2,6 +2,7 @@ package dad.javaspace;
 
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -54,6 +55,7 @@ public class ClientModel {
 	private String ip;
 	private Socket socket;
 	private Scanner scanner;
+	private ServerSocket serverSocket;
 
 	private StringProperty connectionState = new SimpleStringProperty(this, "connection State", "");
 
@@ -278,6 +280,15 @@ public class ClientModel {
 
 	public final double getPlayerY() {
 		return this.playerYProperty().get();
+	}
+
+	public ServerSocket getServerSocket() {
+		return serverSocket;
+	}
+
+	public void setServerSocket(ServerSocket serverSocket) {
+		
+		this.serverSocket = serverSocket;
 	}
 
 	public final DoubleProperty playerRotationProperty() {
