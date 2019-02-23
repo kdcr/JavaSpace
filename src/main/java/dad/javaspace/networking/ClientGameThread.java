@@ -66,7 +66,7 @@ public class ClientGameThread extends Thread {
 					bufferPlayer.setShield(Double.parseDouble(str.split(",")[5]));
 					bufferPlayer.setHull(Double.parseDouble(str.split(",")[6]));
 				} else {
-					bufferPlayer.setAlive(false);
+					bufferPlayer.setHull(0);
 				}
 			}
 		}
