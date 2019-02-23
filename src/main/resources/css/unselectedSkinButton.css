@@ -1,0 +1,13 @@
+.skinButtons {
+	-fx-background-color: transparent;
+}
+
+.skinButtons:hover {
+	-fx-background-color: rgba(255.0, 255.0, 255.0, 0.1);
+	-fx-background-radius: 0.0;
+}
+
+.skinButtons:pressed {
+	-fx-background-color: rgba(255.0, 255.0, 255.0, 0.3);
+	-fx-background-radius: 0.0;
+}

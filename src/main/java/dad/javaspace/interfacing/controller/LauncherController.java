@@ -3,6 +3,7 @@ package dad.javaspace.interfacing.controller;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import org.ini4j.InvalidFileFormatException;
@@ -125,7 +126,7 @@ public class LauncherController implements Initializable {
 
 	@FXML
 	private TextField ipTextField;
-	
+
 	@FXML
 	private TextField playersNumText;
 
@@ -146,10 +147,10 @@ public class LauncherController implements Initializable {
 
 	@FXML
 	private Button launchButton;
-	
+
 	@FXML
 	private Button createRoomButton;
-	
+
 	@FXML
 	private Label labelInfo;
 
@@ -214,9 +215,12 @@ public class LauncherController implements Initializable {
 	double ejeX;
 	double ejeY;
 
-	// Contador nombre mal
-
+	// Contador nombre mal escrito (_)
 	int nameCount;
+
+	// Array de botones para poder seleccionar el que necesitamos y ponerlo como
+	// focused al principio
+	private ArrayList<Button> botonesSkins;
 
 	public LauncherController() {
 		loadView("/fxml/MainMenuView.fxml");
@@ -230,8 +234,6 @@ public class LauncherController implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 
 		if (cfgHoverRoot != null) {
-
-//			TODO Platform.setImplicitExit(false);
 
 			/****************************************************************************************************
 			 * 
@@ -249,8 +251,20 @@ public class LauncherController implements Initializable {
 			 * CSS
 			 * 
 			 ***************************************************************************************************/
+			botonesSkins = new ArrayList<>();
+			botonesSkins.add(skinUno);
+			botonesSkins.add(skinDos);
+			botonesSkins.add(skinTres);
+			botonesSkins.add(skinCuatro);
+			botonesSkins.add(skinCinco);
+			botonesSkins.add(skinSeis);
+			botonesSkins.add(skinSiete);
+			botonesSkins.add(skinOcho);
+			
+			onSelectedSkinChanged();
 
 			rootView.getStylesheets().setAll("/css/launcher.css");
+			model.selectedSkinProperty().addListener(e -> onSelectedSkinChanged());
 
 			/****************************************************************************************************
 			 * 
@@ -266,14 +280,14 @@ public class LauncherController implements Initializable {
 			labelInfo.setVisible(false);
 
 			// Skins
-			skinUno.setGraphic(new ImageView(new Image("/assets/textures/Nave1.png")));
-			skinDos.setGraphic(new ImageView(new Image("/assets/textures/navePrueba.png")));
-			skinTres.setGraphic(new ImageView(new Image("/assets/textures/navePrueba.png")));
-			skinCuatro.setGraphic(new ImageView(new Image("/assets/textures/navePrueba.png")));
-			skinCinco.setGraphic(new ImageView(new Image("/assets/textures/navePrueba.png")));
-			skinSeis.setGraphic(new ImageView(new Image("/assets/textures/navePrueba.png")));
-			skinSiete.setGraphic(new ImageView(new Image("/assets/textures/navePrueba.png")));
-			skinOcho.setGraphic(new ImageView(new Image("/assets/textures/navePrueba.png")));
+			skinUno.setGraphic(new ImageView(new Image("/assets/textures/Nave0.png")));
+			skinDos.setGraphic(new ImageView(new Image("/assets/textures/nave1small.png")));
+			skinTres.setGraphic(new ImageView(new Image("/assets/textures/nave1small.png")));
+			skinCuatro.setGraphic(new ImageView(new Image("/assets/textures/nave1small.png")));
+			skinCinco.setGraphic(new ImageView(new Image("/assets/textures/nave1small.png")));
+			skinSeis.setGraphic(new ImageView(new Image("/assets/textures/nave1small.png")));
+			skinSiete.setGraphic(new ImageView(new Image("/assets/textures/nave1small.png")));
+			skinOcho.setGraphic(new ImageView(new Image("/assets/textures/nave1small.png")));
 
 			/****************************************************************************************************
 			 * 
@@ -378,7 +392,8 @@ public class LauncherController implements Initializable {
 			Bindings.bindBidirectional(fullScreenCheckBox.selectedProperty(), model.pantallaCompletaProperty());
 			model.resolucionProperty().bind(resolutionComboBox.getSelectionModel().selectedItemProperty());
 			avisoLabel.setVisible(false);
-			Bindings.bindBidirectional(playersNumText.textProperty(), model.numPlayersProperty(), new NumberStringConverter());
+			Bindings.bindBidirectional(playersNumText.textProperty(), model.numPlayersProperty(),
+					new NumberStringConverter());
 
 			// Tamano Launcher
 			rootView.setPrefSize(model.getResolucion().getX(), model.getResolucion().getY());
@@ -401,6 +416,19 @@ public class LauncherController implements Initializable {
 		}
 	}
 
+	public void onSelectedSkinChanged() {
+		for (int i = 0; i < botonesSkins.size(); i++) {
+			if (i != model.getSelectedSkin()) {
+				botonesSkins.get(i).getStylesheets().clear();
+				botonesSkins.get(i).getStylesheets().add("/css/unselectedSkinButton.css");
+			}
+			else {
+				botonesSkins.get(i).getStylesheets().clear();
+				botonesSkins.get(i).getStylesheets().add("/css/selectedSkinButton.css");
+			}
+		}
+	}
+
 	public ImageView getLoadingImage() {
 		return loadingImage;
 	}
@@ -414,7 +442,7 @@ public class LauncherController implements Initializable {
 		launchButtonMP.stop();
 		launchButtonMP.play();
 	}
-	
+
 	private void onCloseAction() {
 		guardarConfig();
 		Platform.exit();
@@ -558,7 +586,7 @@ public class LauncherController implements Initializable {
 				modelCarga.setNumPlayers(ini.get("Opciones de RED", "numPlayers", int.class));
 				modelCarga.setIp(ini.get("Opciones de RED", "ip", String.class));
 				modelCarga.setPuerto(ini.get("Opciones de RED", "puerto", int.class));
-				modelCarga.setSelectedSkin(ini.get("Skin", "Skin Seleccionada", int.class));
+				modelCarga.setSelectedSkin(ini.get("Skins", "Skin Seleccionada", int.class));
 
 			} catch (InvalidFileFormatException e) {
 				e.printStackTrace();
@@ -623,7 +651,7 @@ public class LauncherController implements Initializable {
 	public Button getLaunchButton() {
 		return launchButton;
 	}
-	
+
 	public Button getCreateRoomButton() {
 		return createRoomButton;
 	}
@@ -631,7 +659,7 @@ public class LauncherController implements Initializable {
 	public LauncherModel getModel() {
 		return this.model;
 	}
-	
+
 	public Label getLabelInfo() {
 		return labelInfo;
 	}

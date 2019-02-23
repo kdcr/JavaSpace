@@ -285,7 +285,7 @@ public class Main extends GameApplication {
 		physics.setBodyType(BodyType.DYNAMIC);
 		// Al jugador se le asigna una textura y se agrega al mundo
 
-		player.setViewFromTexture("Nave1.png");
+		player.setViewFromTexture("Nave" + controller.getModel().getSelectedSkin() + ".png");
 
 		getGameWorld().addEntities(player);
 
