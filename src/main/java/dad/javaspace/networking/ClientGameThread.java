@@ -1,6 +1,7 @@
 package dad.javaspace.networking;
 
 import java.io.IOException;
+import java.util.NoSuchElementException;
 
 import dad.javaspace.ClientModel;
 
@@ -30,9 +31,10 @@ public class ClientGameThread extends Thread {
 				} catch (Exception e) {
 					indexError++;
 					if (indexError == 5) {
-						System.err.println("Se ha perdido la conexión con el servidor, partida cancelada");
-						e.printStackTrace();
+						
 						model.setEnPartida(false);
+						
+						throw new ServerConnectionLostException();
 					}
 				}
 			}
@@ -76,8 +78,8 @@ public class ClientGameThread extends Thread {
 		}
 	}
 
-	private void sendPlayerPosition() {
-		try {
+	private void sendPlayerPosition() throws Exception {
+		
 			String paquete = model.getPlayerX() + "," + model.getPlayerY() + "," + model.getPlayerRotation();
 
 			if (model.isCanShoot()) {
@@ -88,8 +90,6 @@ public class ClientGameThread extends Thread {
 				model.getFlujoSalida()
 						.write(paquete + "," + false + "," + model.getShield() + "," + model.getHull() + "\n");
 			model.getFlujoSalida().flush();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		
 	}
 }

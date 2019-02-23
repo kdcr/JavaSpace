@@ -254,7 +254,11 @@ public class Main extends GameApplication {
 		});
 		clientConnectionThread = new Thread(clientConnectionTask);
 
-		clientConnectionThread.start();
+		try {
+			clientConnectionThread.start();
+		} catch (Exception e1) {
+			System.out.println("yayayayaa");
+		}
 
 	}
 
