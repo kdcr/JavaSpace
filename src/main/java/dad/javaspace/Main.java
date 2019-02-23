@@ -189,8 +189,8 @@ public class Main extends GameApplication {
 			model.setEnPartida(false);
 			try {
 				model.getSocket().close();
+				model.getServerSocket().close();
 			} catch (IOException e) {
-				e.printStackTrace();
 			}
 		});
 
@@ -201,7 +201,7 @@ public class Main extends GameApplication {
 	private void startServer() {
 		setServerConnectionConfig();
 
-		serverTask = new Server(model.getNumPlayers(), model.getPort());
+		serverTask = new Server(model);
 
 		// Boton de crear sala
 		serverTask.setOnFailed(e -> controller.getCreateRoomButton().setDisable(false));
