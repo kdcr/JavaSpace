@@ -20,20 +20,24 @@ public class ClientGameThread extends Thread {
 		System.out.println("Esperando start para sincronizar");
 		System.out.println(model.getScanner().nextLine());
 		model.setEnPartida(true);
+		try {
 
-		while (model.isEnPartida()) {
-			try {
-				sendPlayerPosition();
-				desempaquetarPosiciones(model.getScanner().nextLine());
-				indexError = 0;
-			} catch (Exception e) {
-				indexError++;
-				if (indexError == 5) {
-					System.err.println("Se ha perdido la conexión con el servidor, partida cancelada");
-					e.printStackTrace();
-					model.setEnPartida(false);
+			while (model.isEnPartida()) {
+				try {
+					sendPlayerPosition();
+					desempaquetarPosiciones(model.getScanner().nextLine());
+					indexError = 0;
+				} catch (Exception e) {
+					indexError++;
+					if (indexError == 5) {
+						System.err.println("Se ha perdido la conexión con el servidor, partida cancelada");
+						e.printStackTrace();
+						model.setEnPartida(false);
+					}
 				}
 			}
+		} catch (Exception e) {
+			this.interrupt();
 		}
 		// Sale del bucle por lo que termina la partida
 		// TODO recibir informacion post-partida
