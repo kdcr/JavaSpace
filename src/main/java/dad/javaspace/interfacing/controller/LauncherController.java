@@ -281,13 +281,13 @@ public class LauncherController implements Initializable {
 
 			// Skins
 			skinUno.setGraphic(new ImageView(new Image("/assets/textures/Nave0.png")));
-			skinDos.setGraphic(new ImageView(new Image("/assets/textures/nave1small.png")));
-			skinTres.setGraphic(new ImageView(new Image("/assets/textures/nave1small.png")));
-			skinCuatro.setGraphic(new ImageView(new Image("/assets/textures/nave1small.png")));
-			skinCinco.setGraphic(new ImageView(new Image("/assets/textures/nave1small.png")));
-			skinSeis.setGraphic(new ImageView(new Image("/assets/textures/nave1small.png")));
-			skinSiete.setGraphic(new ImageView(new Image("/assets/textures/nave1small.png")));
-			skinOcho.setGraphic(new ImageView(new Image("/assets/textures/nave1small.png")));
+			skinDos.setGraphic(new ImageView(new Image("/assets/textures/Nave1.png")));
+			skinTres.setGraphic(new ImageView(new Image("/assets/textures/Nave1.png")));
+			skinCuatro.setGraphic(new ImageView(new Image("/assets/textures/Nave1.png")));
+			skinCinco.setGraphic(new ImageView(new Image("/assets/textures/Nave1.png")));
+			skinSeis.setGraphic(new ImageView(new Image("/assets/textures/Nave1.png")));
+			skinSiete.setGraphic(new ImageView(new Image("/assets/textures/Nave1.png")));
+			skinOcho.setGraphic(new ImageView(new Image("/assets/textures/Nave1.png")));
 
 			/****************************************************************************************************
 			 * 
