@@ -57,7 +57,7 @@ public class ClientGameThread extends Thread {
 
 			if (id != model.getIdentity()) {
 				NetworkingPlayer bufferPlayer = find(id);
-				if (!(str.split(",").length >= 2)) {
+				if ((str.split(",").length >= 2)) {
 					bufferPlayer.getEntity().setX(Double.parseDouble(str.split(",")[1]));
 					bufferPlayer.getEntity().setY(Double.parseDouble(str.split(",")[2]));
 					bufferPlayer.getEntity().setRotation(Double.parseDouble(str.split(",")[3]));
