@@ -26,6 +26,7 @@ import dad.javaspace.networking.Server;
 import dad.javaspace.objects.EntityTypes;
 import dad.javaspace.objects.effects.Animations;
 import dad.javaspace.objects.effects.ComponentePropulsor;
+import dad.javaspace.radar.RadarController;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Button;
@@ -35,7 +36,6 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
 public class Main extends GameApplication {
 
@@ -44,6 +44,7 @@ public class Main extends GameApplication {
 	double viewHeight;
 
 	JavaSpaceHUD hud = new JavaSpaceHUD();
+	RadarController radar = new RadarController();
 
 	private int spectatorIndex = 0;
 
@@ -100,6 +101,8 @@ public class Main extends GameApplication {
 		settings.setFullScreenAllowed(controller.getModel().isPantallaCompleta());
 		gameStage.setFullScreen(controller.getModel().isPantallaCompleta());
 		settings.setVersion(model.getVersion());
+		settings.setMenuEnabled(false);
+
 		FXGL.configure(this, settings.toReadOnly(), gameStage);
 	}
 
@@ -184,7 +187,7 @@ public class Main extends GameApplication {
 	}
 
 	private void startServer() {
-		setConnectionConfig();
+		setServerConnectionConfig();
 
 		serverTask = new Server(model.getNumPlayers(), model.getPort());
 
@@ -198,7 +201,7 @@ public class Main extends GameApplication {
 		serverThread.start();
 	}
 
-	private void setConnectionConfig() {
+	private void setServerConnectionConfig() {
 
 		// Establecer los datos al modelo a partir de los datos del launcher
 		model.setIp(controller.getModel().getIp());
@@ -209,6 +212,8 @@ public class Main extends GameApplication {
 	}
 
 	private void startConnection() {
+		
+		model.setSkin(controller.getModel().getSelectedSkin() + 1 + "");
 
 		controller.getLabelInfo().setVisible(true);
 
@@ -216,7 +221,7 @@ public class Main extends GameApplication {
 		controller.loadingAnimation();
 		controller.getLaunchButton().setDisable(true);
 
-		setConnectionConfig();
+		setServerConnectionConfig();
 
 		// Configurar y arrancar la task para unirse a una partida
 		clientConnectionTask = new ClientConnectionTask(model);
@@ -236,28 +241,23 @@ public class Main extends GameApplication {
 
 	private void startGame() {
 
+		// Añadir las entidades de otros jugadores
 		for (NetworkingPlayer netPlayers : model.getJugadores()) {
 			getGameWorld().addEntity(netPlayers.getEntity());
 			getGameWorld().addEntities(netPlayers.getNameText());
 		}
 
+		// Arrancar el hilo para la conexion del juego
 		clientGameThread = new ClientGameThread(model);
 		clientGameThread.start();
 
-		getGameScene().removeUINode(rootView);
-		controller.guardarConfig();
-		model.setEnPartida(true);
-		controller.getMp().stop();
+		// Eliminar la interfaz del launcher
+		clearLauncher();
 
 		// Bindeos modelo de datos
 		model.playerXProperty().bind(player.xProperty());
 		model.playerYProperty().bind(player.yProperty());
 		model.playerRotationProperty().bind(player.angleProperty());
-
-		hud.getModel().shieldProperty().bind(model.shieldProperty());
-		hud.getModel().hpProperty().bind(model.hullProperty());
-		hud.getModel().thrustProperty().bind(model.thrustProperty().divide(8.0));
-		hud.getModel().setNombreJugador(model.getName());
 
 		// Estas cuatro lineas se encargan de mover la camara con el jugador, se hace
 		// asi para evitar que la camara rote
@@ -275,21 +275,28 @@ public class Main extends GameApplication {
 		mp.volumeProperty().bind(model.thrustProperty());
 		mp.play();
 
+		// Inicializar las fisicas del propio jugador y el modelo de colisiones
 		physics = new PhysicsComponent();
+		player.addComponent(physics);
+		physics.setBodyType(BodyType.DYNAMIC);
+
+		// Colocar al jugador en una zona aleatoria del mundo
+		player.setX(Math.random() * model.getMARGIN_HORIZONTAL());
+		player.setY(Math.random() * model.getMARGIN_VERTICAL());
+		player.setRotation(Math.random() * 360);
+
+		// 0 gravedad
+		getPhysicsWorld().setGravity(0, 0);
 
 		player.getBoundingBoxComponent().addHitBox(new HitBox(BoundingShape.polygon(0, 0, 25, 50, 50, 0)));
-		player.addComponent(physics);
-
 		player.addComponent(new CollidableComponent(true));
 
-		physics.setBodyType(BodyType.DYNAMIC);
 		// Al jugador se le asigna una textura y se agrega al mundo
 
-		player.setViewFromTexture("Nave1.png");
+		player.setViewFromTexture("Nave" + model.getSkin() + ".png");
+		player.setType(EntityTypes.PLAYER);
 
 		getGameWorld().addEntities(player);
-
-		getPhysicsWorld().setGravity(0, 0);
 
 		initGameUI();
 
@@ -299,14 +306,21 @@ public class Main extends GameApplication {
 			getGameWorld().addEntity(entity);
 		}
 
-		player.setType(EntityTypes.PLAYER);
+		// Este timer hace que el juego se brickee
+//		getMasterTimer().runOnceAfter(() -> {
+//			for (Entity entity : getGameWorld().getEntities()) {
+//				if (entity.getType() == EntityTypes.WARPFX)
+//					getGameWorld().removeEntity(entity);
+//			}
+//		}, Duration.seconds(5));
+	}
 
-		getMasterTimer().runOnceAfter(() -> {
-			for (Entity entity : getGameWorld().getEntities()) {
-				if (entity.getType() == EntityTypes.WARPFX)
-					getGameWorld().removeEntity(entity);
-			}
-		}, Duration.seconds(5));
+	private void clearLauncher() {
+		getGameScene().removeUINode(rootView);
+		controller.guardarConfig();
+		model.setEnPartida(true);
+		controller.getMp().stop();
+
 	}
 
 	@Override
@@ -395,11 +409,12 @@ public class Main extends GameApplication {
 		getGameScene().addUINodes(nextButton, previousButton);
 		componentePropulsor.onShipDestroyed();
 
-		player.setViewFromTexture("nave1SmallDestroyed.png");
+		player.setViewFromTexture("Nave" + model.getSkin() + "1Destroyed.png");
 
 		// TODO animacion para morir
 	}
 
+	// Efectos del jugador
 	private void initGameEffects() {
 		Animations.hiperJumpTransition(player, getGameWorld());
 
@@ -408,15 +423,30 @@ public class Main extends GameApplication {
 
 	}
 
+	// La interfaz del juego en si
 	private void initGameUI() {
 		player.setRenderLayer(RenderLayer.TOP);
 		getGameScene().setBackgroundColor(Color.BLACK);
 
+		// Hud
+		hud.getModel().shieldProperty().bind(model.shieldProperty());
+		hud.getModel().hpProperty().bind(model.hullProperty());
+		hud.getModel().thrustProperty().bind(model.thrustProperty().divide(8.0));
+		hud.getModel().setNombreJugador(model.getName());
 		getGameScene().addUINode(hud);
 		hud.setTranslateX(hud.getWidth());
 
+		// Radar/minimapa
+		getGameScene().addUINode(radar);
+		radar.setTranslateX(viewWidth - radar.getPrefWidth());
+		radar.getModel().playerXProperty()
+				.bind((player.xProperty().divide(radar.prefWidthProperty()).add(radar.prefWidthProperty().divide(2))));
+		radar.getModel().playerYProperty().bind(
+				(player.yProperty().divide(radar.prefHeightProperty()).add(radar.prefHeightProperty().divide(2))));
+		radar.getModel().playerRotationProperty().bind(player.angleProperty());
 	}
 
+	// Limite de velocidad en el eje x e y, por eso en diagonal no funciona bien
 	private void maxVel() {
 		double maxVelocity = 400;
 		double x, y;
