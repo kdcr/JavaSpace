@@ -189,6 +189,7 @@ public class Main extends GameApplication {
 			model.setEnPartida(false);
 			try {
 				model.getSocket().close();
+				if(null!=model.getServerSocket())
 				model.getServerSocket().close();
 			} catch (IOException e) {
 			}
