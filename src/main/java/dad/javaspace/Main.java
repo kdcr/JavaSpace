@@ -374,8 +374,9 @@ public class Main extends GameApplication {
 
 			// Si se cae la conexión sale del programa
 			// TODO cambiar a volver al launcher
-			if (!clientGameThread.isAlive())
+			if (!clientGameThread.isAlive()) {
 				System.exit(0);
+			}
 
 			physics.setAngularVelocity(model.getAngular());
 
@@ -444,7 +445,6 @@ public class Main extends GameApplication {
 
 		componentePropulsor = new ComponentePropulsor(player);
 		componentePropulsor.emissionRateProperty().bind(model.thrustProperty());
-
 	}
 
 	// La interfaz del juego en si
@@ -496,19 +496,19 @@ public class Main extends GameApplication {
 		physics.setLinearVelocity(x, y);
 	}
 
+	
+	@SuppressWarnings("unused")
 	private void maxVelExperimental() {
 		double maxVelocity = 400;
 
 		double x = 0, y = 0;
 
 		if (physics.getLinearVelocity().magnitude() >= maxVelocity) {
-
 			// TODO procesar x e y para que sea la diferencia de la velocidad maxima y la
 			// velocidad actual
 
 			physics.setLinearVelocity(physics.getLinearVelocity().subtract(new Point2D(x, y)));
 		}
-
 	}
 
 	/*
@@ -548,12 +548,13 @@ public class Main extends GameApplication {
 
 				if (!(model.getShield() >= 0))
 					model.setShield(0);
-				
+
 				if (model.getShield() + 0.25 >= 1) {
 					model.setShield(1);
 				} else {
 					model.setShield(model.getShield() + 0.25);
 				}
+				
 				hud.getModel().setRegenerador(0);
 			} else {
 				hud.getModel().setRegenerador(hud.getModel().getRegenerador() + 0.004);
