@@ -193,8 +193,8 @@ public class Main extends GameApplication {
 			model.setEnPartida(false);
 			try {
 				model.getSocket().close();
-				if(null!=model.getServerSocket())
-				model.getServerSocket().close();
+				if (null != model.getServerSocket())
+					model.getServerSocket().close();
 			} catch (IOException e) {
 			}
 		});
@@ -296,7 +296,7 @@ public class Main extends GameApplication {
 		mp.setCycleCount(MediaPlayer.INDEFINITE);
 		mp.volumeProperty().bind(model.thrustProperty());
 		mp.play();
-		
+
 		// Música del juego
 		listaCanciones = new ArrayList<>();
 		listaCanciones.add(new Media(new File("src/main/resources/music/track01.mp3").toURI().toString()));
@@ -306,7 +306,6 @@ public class Main extends GameApplication {
 
 		playMediaTracks(new ArrayList<>(listaCanciones));
 
-		
 		// Inicializar las fisicas del propio jugador y el modelo de colisiones
 		physics = new PhysicsComponent();
 		player.addComponent(physics);
@@ -511,7 +510,6 @@ public class Main extends GameApplication {
 		physics.setLinearVelocity(x, y);
 	}
 
-	
 	@SuppressWarnings("unused")
 	private void maxVelExperimental() {
 		double maxVelocity = 400;
@@ -569,7 +567,7 @@ public class Main extends GameApplication {
 				} else {
 					model.setShield(model.getShield() + 0.25);
 				}
-				
+
 				hud.getModel().setRegenerador(0);
 			} else {
 				hud.getModel().setRegenerador(hud.getModel().getRegenerador() + 0.004);
@@ -749,11 +747,18 @@ public class Main extends GameApplication {
 	private void playMediaTracks(ArrayList<Media> lista) {
 		if (lista.size() == 0)
 			return;
-		if (cancionActual == 4)
-			cancionActual = 0;
-		MediaPlayer mediaPlayer = new MediaPlayer(lista.get(cancionActual++));
-		mediaPlayer.play();
 		
+		int nuevoValor = cancionActual;
+
+		while (nuevoValor == cancionActual)
+			nuevoValor = (int) (Math.random() * 4);
+
+		cancionActual = nuevoValor;
+
+		MediaPlayer mediaPlayer = new MediaPlayer(lista.get(cancionActual));
+		mediaPlayer.setVolume(controller.getModel().getVolumenMusica() / 2);
+		mediaPlayer.play();
+
 		mediaPlayer.setOnEndOfMedia(new Runnable() {
 
 			@Override
@@ -761,6 +766,6 @@ public class Main extends GameApplication {
 				playMediaTracks(lista);
 			}
 		});
-		
+
 	}
 }
