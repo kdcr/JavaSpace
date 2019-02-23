@@ -47,7 +47,7 @@ public class ClientModel {
 
 	private StringProperty version = new SimpleStringProperty(this, "version", "0.0.1");
 
-	private long cooldownBounds = 0;
+	private long cooldownBounds = 0, cooldownShield = 0;
 
 	// Conectividad
 	private int port;
@@ -63,6 +63,14 @@ public class ClientModel {
 	private ArrayList<NetworkingPlayer> jugadores = new ArrayList<>();
 
 	private UserProfile profile = new UserProfile("JavaSpace", getVersion());
+
+	public long getCooldownShield() {
+		return cooldownShield;
+	}
+
+	public void setCooldownShield(long cooldownShield) {
+		this.cooldownShield = cooldownShield;
+	}
 
 	public ArrayList<NetworkingProyectile> getProjectiles() {
 		return projectiles;

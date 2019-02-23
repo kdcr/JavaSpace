@@ -28,7 +28,7 @@ public class NetworkingPlayer {
 
 	public NetworkingPlayer(String name, String skin, int id) {
 		this.name = name;
-		this.skin = skin + 1;
+		this.skin = skin;
 		this.id = id;
 
 		nameText.setName(name);

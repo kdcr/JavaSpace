@@ -28,7 +28,6 @@ import dad.javaspace.objects.effects.Animations;
 import dad.javaspace.objects.effects.ComponentePropulsor;
 import dad.javaspace.radar.RadarController;
 import javafx.geometry.Point2D;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
@@ -212,8 +211,8 @@ public class Main extends GameApplication {
 	}
 
 	private void startConnection() {
-		
-		model.setSkin(controller.getModel().getSelectedSkin() + 1 + "");
+
+		model.setSkin(controller.getModel().getSelectedSkin() + "");
 
 		controller.getLabelInfo().setVisible(true);
 
@@ -387,7 +386,11 @@ public class Main extends GameApplication {
 					ntp.getComponentePropulsor().onShipDestroyed();
 				}
 			}
+			
+			// Recargar escudos
+			reloadShield();
 
+			// Comprobar nuevos disparos de otros jugadores
 			checkShots();
 		}
 	}
@@ -409,7 +412,7 @@ public class Main extends GameApplication {
 		getGameScene().addUINodes(nextButton, previousButton);
 		componentePropulsor.onShipDestroyed();
 
-		player.setViewFromTexture("Nave" + model.getSkin() + "1Destroyed.png");
+		player.setViewFromTexture("Nave" + model.getSkin() + "Destroyed.png");
 
 		// TODO animacion para morir
 	}
@@ -484,6 +487,25 @@ public class Main extends GameApplication {
 
 	}
 
+	/*
+	 * * * * * * * * * * * * * * * * * * * * *
+	 * 
+	 * Metodos de gameplay
+	 * 
+	 * * * * * * * * * * * * * * * * * * * *
+	 */
+
+	private void reloadShield() {
+		if (model.getShield() < 1)
+			if (System.currentTimeMillis() > model.getCooldownShield() + 3000) {
+				model.setCooldownShield(System.currentTimeMillis());
+				if (model.getShield() + 0.1 >= 1)
+					model.setShield(1);
+				else
+					model.setShield(model.getShield() + 0.1);
+			}
+	}
+
 	private void makeShoot() {
 		if (System.currentTimeMillis() >= coolDown + 500) {
 			coolDown = System.currentTimeMillis();
@@ -541,8 +563,13 @@ public class Main extends GameApplication {
 
 	private void doDamage(double damage) {
 
+		// Animacion
 		Animations.hitTransition(player, getGameWorld());
-
+		
+		// Reiniciar la carga de escudo
+		model.setCooldownShield(System.currentTimeMillis());
+		
+		// Distribuir el daño al escudo o casco
 		if (model.getShield() <= 0)
 			model.setShield(-1);
 

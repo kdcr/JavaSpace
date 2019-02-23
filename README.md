@@ -8,7 +8,7 @@
 
 * Multijugador estilo battle royale
 * Servidor embebido en el juego
-* Sistema de físicas realista
+* Sistema de físicas semirealista
 
 
 
