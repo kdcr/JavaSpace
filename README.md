@@ -52,10 +52,10 @@ Dirección de la máquina que ejecutará al servidor. Si es la nuestra propia, e
 #### Puerto servidor: 
 Puerto por el que nos antenderá la máquina a la que nos conectamos. El servidor lo usará como puerto desde el que atenderá a las peticiones.
 
-* ### Seleccionar Skin
+* #### Seleccionar Skin
 En esta sección podremos elegir la skin que deseemos usar para jugar nuestra partida. Ninguna de ellas ofrece ninguna ventaja al juego. Aunque no prometemos que las que vengan por DLC de pago tampoco lo hagan.
 
-* ### Sobre nosotros
+* #### Sobre nosotros
 Sección dedicada a los creadores del juego, en ella encontrarás información sobre los desarrolladores.
 
 * #### Salir
