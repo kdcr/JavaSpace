@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
 import dad.javaspace.ClientModel;
+import dad.javaspace.reports.ServerReportBean;
 import javafx.concurrent.Task;
 
 //
@@ -17,6 +18,8 @@ public class Server extends Task<Integer> {
 
 	private ClientModel model;
 	private ServerSocket skServidor;
+
+	private ServerReportBean serverReportBean = new ServerReportBean();
 
 	public static String getPlayers() {
 		return players;
@@ -82,6 +85,11 @@ public class Server extends Task<Integer> {
 
 					try {
 						con.recive();
+
+						// Sumar un disparo
+						if (con.getItemStateString().split(",")[3] == "true") {
+							serverReportBean.setDisparos(serverReportBean.getDisparos() + 1);
+						}
 
 						playersState += con.getItemStateString();
 					} catch (NoSuchElementException e) {

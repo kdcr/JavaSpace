@@ -6,7 +6,6 @@ import java.util.ArrayList;
 
 import com.almasb.fxgl.app.FXGL;
 import com.almasb.fxgl.app.GameApplication;
-import com.almasb.fxgl.audio.Music;
 import com.almasb.fxgl.core.math.Vec2;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.RenderLayer;
@@ -18,14 +17,12 @@ import com.almasb.fxgl.physics.HitBox;
 import com.almasb.fxgl.physics.PhysicsComponent;
 import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
 import com.almasb.fxgl.settings.GameSettings;
-import com.gluonhq.charm.down.plugins.audio.Audio;
 
 import dad.javaspace.HUD.JavaSpaceHUD;
 import dad.javaspace.interfacing.controller.LauncherController;
 import dad.javaspace.networking.ClientConnectionTask;
 import dad.javaspace.networking.ClientGameThread;
 import dad.javaspace.networking.NetworkingPlayer;
-import dad.javaspace.networking.NetworkingProyectile;
 import dad.javaspace.networking.Server;
 import dad.javaspace.objects.EntityTypes;
 import dad.javaspace.objects.effects.Animations;
@@ -189,15 +186,6 @@ public class Main extends GameApplication {
 			}
 
 		}, KeyCode.W);
-		
-//		input.addAction(new UserAction("Add thrust") {
-//			@Override
-//			protected void onAction() {
-//				if (model.isPlayerAlive())
-//					addThrust();
-//			}
-//
-//		}, KeyCode.CONTROL);
 
 		input.addAction(new UserAction("Shoot") {
 			@Override
@@ -355,7 +343,7 @@ public class Main extends GameApplication {
 		player.setType(EntityTypes.PLAYER);
 
 		getGameWorld().addEntities(player);
-		
+
 		initGameUI();
 
 		initGameEffects();
@@ -429,8 +417,8 @@ public class Main extends GameApplication {
 				model.setThrust(model.getThrust() * 0.80);
 
 			// Limitar la velocidad
-			// maxVel();
-			maxVelExperimental();
+			maxVel();
+			//maxVelExperimental();
 
 			// Como no hay property de la velocidad lineal, se actualiza el hud a cada frame
 			hud.getModel().setSpeed((int) physics.getLinearVelocity().magnitude());
@@ -452,6 +440,7 @@ public class Main extends GameApplication {
 
 	private void die() {
 		model.setPlayerAlive(false);
+		model.setThrust(0);
 
 		// Anadiendo CSS a los botones
 		nextButton.getStylesheets().setAll("/css/forwardbutton.css");
@@ -476,7 +465,7 @@ public class Main extends GameApplication {
 
 		// Restar uno a los jugadores con vida
 		model.setAlivePlayers(model.getAlivePlayers() - 1);
-		
+
 		// Reproducir sonido de explosion
 		getAudioPlayer().playSound("explosion.mp3");
 
@@ -550,8 +539,8 @@ public class Main extends GameApplication {
 		if (physics.getLinearVelocity().magnitude() >= maxVelocity) {
 			// TODO procesar x e y para que sea la diferencia de la velocidad maxima y la
 			// velocidad actual
-
-			physics.setLinearVelocity(physics.getLinearVelocity().subtract(new Point2D(Math.sin(maxVelocity), Math.cos(maxVelocity))));
+			physics.setLinearVelocity(physics.getLinearVelocity().subtract(new Point2D(Math.sin(Math.toRadians(player.getRotation())) * (physics.getLinearVelocity().getX() - maxVelocity),
+					-Math.cos(Math.toRadians(player.getRotation())) * (physics.getLinearVelocity().getY() - maxVelocity))));
 		}
 	}
 
