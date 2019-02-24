@@ -186,6 +186,15 @@ public class Main extends GameApplication {
 			}
 
 		}, KeyCode.W);
+		
+		input.addAction(new UserAction("Add thrust") {
+			@Override
+			protected void onAction() {
+				if (model.isPlayerAlive())
+					addThrust();
+			}
+
+		}, KeyCode.CONTROL);
 
 		input.addAction(new UserAction("Shoot") {
 			@Override
@@ -326,9 +335,11 @@ public class Main extends GameApplication {
 		physics.setBodyType(BodyType.DYNAMIC);
 
 		// Colocar al jugador en una zona aleatoria del mundo
-		player.setX((Math.random() * model.getMARGIN_HORIZONTAL() * 2) - model.getMARGIN_HORIZONTAL());
-		player.setY((Math.random() * model.getMARGIN_VERTICAL() * 2) - model.getMARGIN_VERTICAL());
-		player.setRotation(Math.random() * 360);
+		// player.setX((Math.random() * model.getMARGIN_HORIZONTAL() * 2) -
+		// model.getMARGIN_HORIZONTAL());
+		// player.setY((Math.random() * model.getMARGIN_VERTICAL() * 2) -
+		// model.getMARGIN_VERTICAL());
+		// player.setRotation(Math.random() * 360);
 
 		// 0 gravedad
 		getPhysicsWorld().setGravity(0, 0);
@@ -341,7 +352,7 @@ public class Main extends GameApplication {
 		player.setType(EntityTypes.PLAYER);
 
 		getGameWorld().addEntities(player);
-
+		
 		initGameUI();
 
 		initGameEffects();
@@ -388,7 +399,6 @@ public class Main extends GameApplication {
 			@Override
 			protected void onCollisionBegin(Entity player, Entity laser) {
 				getGameWorld().removeEntity(laser);
-				System.out.println("colision");
 			}
 		});
 	}
@@ -417,6 +427,7 @@ public class Main extends GameApplication {
 
 			// Limitar la velocidad
 			// maxVel();
+			maxVelExperimental();
 
 			// Como no hay property de la velocidad lineal, se actualiza el hud a cada frame
 			hud.getModel().setSpeed((int) physics.getLinearVelocity().magnitude());
@@ -462,6 +473,9 @@ public class Main extends GameApplication {
 
 		// Restar uno a los jugadores con vida
 		model.setAlivePlayers(model.getAlivePlayers() - 1);
+		
+		// Reproducir sonido de explosion
+		getAudioPlayer().playSound("explosion.mp3");
 
 		getGameScene().removeUINodes(hud, radar);
 
@@ -469,8 +483,8 @@ public class Main extends GameApplication {
 
 	// Efectos del jugador
 	private void initGameEffects() {
+		getAudioPlayer().playSound("warp.mp3");
 		Animations.hiperJumpTransition(player, getGameWorld());
-
 		componentePropulsor = new ComponentePropulsor(player);
 		componentePropulsor.emissionRateProperty().bind(model.thrustProperty().divide(8));
 	}
@@ -534,7 +548,7 @@ public class Main extends GameApplication {
 			// TODO procesar x e y para que sea la diferencia de la velocidad maxima y la
 			// velocidad actual
 
-			physics.setLinearVelocity(physics.getLinearVelocity().subtract(new Point2D(x, y)));
+			physics.setLinearVelocity(physics.getLinearVelocity().subtract(new Point2D(Math.sin(maxVelocity), Math.cos(maxVelocity))));
 		}
 	}
 
@@ -554,6 +568,8 @@ public class Main extends GameApplication {
 				ntp.setAlive(false);
 				ntp.getComponentePropulsor().onShipDestroyed();
 				ntp.getEntity().setViewFromTexture("Nave" + ntp.getSkin() + "Destroyed.png");
+				if (ntp.getEntity().distance(player) < 1500)
+					getAudioPlayer().playSound("explosion.mp3");
 			}
 		}
 
@@ -597,7 +613,7 @@ public class Main extends GameApplication {
 			coolDown = System.currentTimeMillis();
 			model.setCanShoot(true);
 			getAudioPlayer().playSound("laser.mp3");
-			Animations.shootTransition(player, getGameWorld());
+			Animations.shootTransition(player, getGameWorld(), EntityTypes.LASER);
 		}
 	}
 
@@ -749,8 +765,8 @@ public class Main extends GameApplication {
 		for (NetworkingPlayer ntp : model.getJugadores()) {
 			if (ntp.isShooting()) {
 				ntp.setShooting(false);
-				model.getProjectiles().add(new NetworkingProyectile(ntp.getName(),
-						Animations.shootTransition(ntp.getEntity(), getGameWorld())));
+
+				Animations.shootTransition(ntp.getEntity(), getGameWorld(), EntityTypes.ENEMY_LASER);
 				if (ntp.getEntity().distance(player) < 1500)
 					getAudioPlayer().playSound("laser.mp3");
 			}

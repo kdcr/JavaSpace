@@ -5,9 +5,12 @@ import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.GameWorld;
 import com.almasb.fxgl.entity.RenderLayer;
 import com.almasb.fxgl.entity.animation.ScaleAnimationBuilder;
+import com.almasb.fxgl.entity.components.CollidableComponent;
 import com.almasb.fxgl.particle.ParticleComponent;
 import com.almasb.fxgl.particle.ParticleEmitter;
 import com.almasb.fxgl.particle.ParticleEmitters;
+import com.almasb.fxgl.physics.BoundingShape;
+import com.almasb.fxgl.physics.HitBox;
 import com.almasb.fxgl.util.Function;
 
 import dad.javaspace.objects.EntityTypes;
@@ -18,10 +21,13 @@ import javafx.util.Duration;
 
 public class Animations {
 
-	public static Entity shootTransition(Entity player, GameWorld gameWorld) {
+	public static Entity shootTransition(Entity player, GameWorld gameWorld, EntityTypes entityType) {
 
 		Entity shoot = new Entity();
 		shoot.setViewFromTexture("laser.png");
+		shoot.setType(entityType);
+		shoot.getBoundingBoxComponent().addHitBox(new HitBox(BoundingShape.polygon(0, 0, 16, 32, 32, 0)));
+		shoot.addComponent(new CollidableComponent(true));
 		shoot.setRotation(player.getRotation());
 		shoot.setOnNotActive(() -> {
 			explotionTransition(shoot, gameWorld);

@@ -5,8 +5,7 @@ import com.almasb.fxgl.entity.components.CollidableComponent;
 import com.almasb.fxgl.physics.BoundingShape;
 import com.almasb.fxgl.physics.HitBox;
 
-import dad.javaspace.objects.EntityTypes;
-
+@Deprecated
 public class NetworkingProyectile {
 
 	private String owner;
@@ -17,8 +16,6 @@ public class NetworkingProyectile {
 		super();
 		this.owner = owner;
 		this.entity = projectile;
-		
-		this.entity.setType(EntityTypes.ENEMY_LASER);
 		
 		entity.getBoundingBoxComponent().addHitBox(new HitBox(BoundingShape.polygon(0, 0, 16, 32, 32, 0)));
 		entity.addComponent(new CollidableComponent(true));

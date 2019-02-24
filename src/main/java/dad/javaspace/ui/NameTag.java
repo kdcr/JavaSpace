@@ -19,6 +19,7 @@ public class NameTag extends Entity implements Initializable {
 	public NameTag() {
 		super();
 		this.setView(componenteNombre);
+		componenteNombre.shieldProperty().bind(this.shield);
 	}
 
 	@Override

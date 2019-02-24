@@ -18,7 +18,7 @@ public class NetworkingPlayer {
 
 	private Entity entity;
 	private NameTag nameText = new NameTag();
-
+	
 	private String name, skin;
 	private int id;
 
@@ -48,7 +48,7 @@ public class NetworkingPlayer {
 
 		componentePropulsor = new ComponentePropulsor(entity);
 		componentePropulsor.setEmissionRate(0.33);
-
+		
 		nameText.xProperty().bind(entity.xProperty().subtract(50));
 		nameText.yProperty().bind(entity.yProperty().subtract(50));
 		nameText.shieldProperty().bind(this.shieldProperty());
