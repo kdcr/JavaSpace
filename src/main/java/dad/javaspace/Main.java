@@ -187,14 +187,14 @@ public class Main extends GameApplication {
 
 		}, KeyCode.W);
 		
-		input.addAction(new UserAction("Add thrust") {
-			@Override
-			protected void onAction() {
-				if (model.isPlayerAlive())
-					addThrust();
-			}
-
-		}, KeyCode.CONTROL);
+//		input.addAction(new UserAction("Add thrust") {
+//			@Override
+//			protected void onAction() {
+//				if (model.isPlayerAlive())
+//					addThrust();
+//			}
+//
+//		}, KeyCode.CONTROL);
 
 		input.addAction(new UserAction("Shoot") {
 			@Override
