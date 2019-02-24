@@ -80,6 +80,8 @@ Pues eso, no creo que haga falta explicar esta. Pero por si acaso.... Solo tiene
 ​	El juego sigue el famoso formato "Battle royale", en el que un número de jugadores se enfrentan entre todos y sólo el último vivo es el ganador. El campo de juego está limitado por unas franjas rojas, que al salirse de estas se recibe daño por segundo. Si la nave del jugador es derribada, se pasa al modo espectador, en el que puede ver en directo lo que está sucediendo desde el punto de vista de otros jugadores.
 
 ### HUD
+
+[[https://github.com/KevinDavidCabreraRodriguez/JavaSpace/blob/master/src/main/resources/assets/textures/ImagenConfiguracion.jpg|alt=configuracion]]
 El hud cuenta de varias secciones. 
 Arriba al centro veremos nuestro nombre.
 A la izquierda encontraremos un número que indica la velocidad. Justo debajo de ese número podemos observar un circulo que se rellena. Esto es la aceleración. A más relleno el círculo, mas fuerte será la aceleración de la nave.
