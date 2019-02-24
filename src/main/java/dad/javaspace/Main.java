@@ -201,6 +201,7 @@ public class Main extends GameApplication {
 			System.out.println("Stage is closing");
 			model.setEnPartida(false);
 			try {
+				if(null!=model.getSocket())
 				model.getSocket().close();
 				if (null != model.getServerSocket())
 					model.getServerSocket().close();
