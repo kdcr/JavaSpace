@@ -35,7 +35,7 @@ public class ClientModel {
 
 	private double xForce, yForce;
 
-	private int alivePlayers = 0, pos = 0;
+	private int alivePlayers = 0;
 
 	private long cooldownBounds = 0, cooldownShield = 0;
 
@@ -60,14 +60,6 @@ public class ClientModel {
 	private OutputStreamWriter flujoSalida;
 
 	private ArrayList<NetworkingPlayer> jugadores = new ArrayList<>();
-
-	public int getPos() {
-		return pos;
-	}
-
-	public void setPos(int pos) {
-		this.pos = pos;
-	}
 
 	public int getAlivePlayers() {
 		return alivePlayers;

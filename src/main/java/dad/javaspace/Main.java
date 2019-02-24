@@ -403,8 +403,6 @@ public class Main extends GameApplication {
 		super.onUpdate(tpf);
 		if (model.isEnPartida()) {
 
-			checkVictory();
-
 			// Si se cae la conexión sale del juego
 			if (!clientGameThread.isAlive()) {
 				//gameOver();
@@ -438,6 +436,9 @@ public class Main extends GameApplication {
 
 			// Comprobar nuevos disparos de otros jugadores
 			checkShots();
+			
+			// Comprueba el estado de la partida
+			checkVictory();
 		}
 	}
 
@@ -470,8 +471,6 @@ public class Main extends GameApplication {
 		getAudioPlayer().playSound("explosion.mp3");
 
 		getGameScene().removeUINodes(hud, radar);
-
-		model.setPos(model.getAlivePlayers());
 
 		// Restar uno a los jugadores con vida
 		model.setAlivePlayers(model.getAlivePlayers() - 1);
@@ -571,6 +570,7 @@ public class Main extends GameApplication {
 				ntp.getEntity().setViewFromTexture("Nave" + ntp.getSkin() + "Destroyed.png");
 				if (ntp.getEntity().distance(player) < 1500)
 					getAudioPlayer().playSound("explosion.mp3");
+				model.setAlivePlayers(model.getAlivePlayers() -1);
 			}
 		}
 
