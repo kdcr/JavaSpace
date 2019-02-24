@@ -1,9 +1,9 @@
 package dad.javaspace.networking;
 
-import java.io.IOException;
-import java.util.NoSuchElementException;
+
 
 import dad.javaspace.ClientModel;
+
 
 public class ClientGameThread extends Thread {
 
@@ -21,7 +21,6 @@ public class ClientGameThread extends Thread {
 		System.out.println("Esperando start para sincronizar");
 		System.out.println(model.getScanner().nextLine());
 		model.setEnPartida(true);
-		try {
 
 			while (model.isEnPartida()) {
 				try {
@@ -33,18 +32,15 @@ public class ClientGameThread extends Thread {
 					if (indexError == 5) {
 
 						model.setEnPartida(false);
-
-						throw new ServerConnectionLostException();
+						this.interrupt();
 					}
 				}
 			}
-		} catch (Exception e) {
-			this.interrupt();
-		}
+		
 		// Sale del bucle por lo que termina la partida
 		// TODO recibir informacion post-partida
 	}
-
+	
 	private NetworkingPlayer find(int id) {
 
 		for (NetworkingPlayer player : model.getJugadores()) {
@@ -95,4 +91,5 @@ public class ClientGameThread extends Thread {
 		model.getFlujoSalida().flush();
 
 	}
+
 }
