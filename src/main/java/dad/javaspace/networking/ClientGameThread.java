@@ -31,9 +31,9 @@ public class ClientGameThread extends Thread {
 				} catch (Exception e) {
 					indexError++;
 					if (indexError == 5) {
-						
+
 						model.setEnPartida(false);
-						
+
 						throw new ServerConnectionLostException();
 					}
 				}
@@ -79,17 +79,20 @@ public class ClientGameThread extends Thread {
 	}
 
 	private void sendPlayerPosition() throws Exception {
-		
-			String paquete = model.getPlayerX() + "," + model.getPlayerY() + "," + model.getPlayerRotation();
 
-			if (model.isCanShoot()) {
-				model.setCanShoot(false);
+		String paquete = model.getPlayerX() + "," + model.getPlayerY() + "," + model.getPlayerRotation();
 
-				model.getFlujoSalida().write(paquete + "," + true + "\n");
-			} else
-				model.getFlujoSalida()
-						.write(paquete + "," + false + "," + model.getShield() + "," + model.getHull() + "\n");
-			model.getFlujoSalida().flush();
+		if (model.isCanShoot()) {
+			model.setCanShoot(false);
+			paquete += "," + true;
+
+		} else
+			paquete += "," + false;
 		
+		paquete += "," + model.getShield() + "," + model.getHull() + "\n";
+
+		model.getFlujoSalida().write(paquete);
+		model.getFlujoSalida().flush();
+
 	}
 }
