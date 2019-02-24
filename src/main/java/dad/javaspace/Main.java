@@ -801,7 +801,7 @@ public class Main extends GameApplication {
 	}
 
 	private void gameOver() {
-		endGameScreen = new EndGameScreen(model.getPos());
+		endGameScreen = new EndGameScreen(model.getAlivePlayers() + 1);
 		endGameScreen.setTranslateY(viewHeight / 2 - endGameScreen.getPrefHeight() / 2);
 		endGameScreen.setTranslateX(viewWidth / 2 - endGameScreen.getPrefWidth() / 2);
 		getGameScene().addUINode(endGameScreen);

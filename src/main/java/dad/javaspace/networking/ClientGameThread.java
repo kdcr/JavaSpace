@@ -1,9 +1,6 @@
 package dad.javaspace.networking;
 
-
-
 import dad.javaspace.ClientModel;
-
 
 public class ClientGameThread extends Thread {
 
@@ -22,25 +19,28 @@ public class ClientGameThread extends Thread {
 		System.out.println(model.getScanner().nextLine());
 		model.setEnPartida(true);
 
-			while (model.isEnPartida()) {
-				try {
-					sendPlayerPosition();
-					desempaquetarPosiciones(model.getScanner().nextLine());
-					indexError = 0;
-				} catch (Exception e) {
-					indexError++;
-					if (indexError == 5) {
+		while (model.isEnPartida()) {
+			try {
+				sendPlayerPosition();
+				desempaquetarPosiciones(model.getScanner().nextLine());
+				indexError = 0;
+			} catch (Exception e) {
+				indexError++;
+				if (indexError == 5) {
 
-						model.setEnPartida(false);
-						this.interrupt();
-					}
+					model.setEnPartida(false);
+					this.interrupt();
 				}
 			}
-		
+		}
+		try {
+			model.getSocket().close();
+		} catch (Exception e) {
+		}
 		// Sale del bucle por lo que termina la partida
 		// TODO recibir informacion post-partida
 	}
-	
+
 	private NetworkingPlayer find(int id) {
 
 		for (NetworkingPlayer player : model.getJugadores()) {
@@ -84,7 +84,7 @@ public class ClientGameThread extends Thread {
 
 		} else
 			paquete += "," + false;
-		
+
 		paquete += "," + model.getShield() + "," + model.getHull() + "\n";
 
 		model.getFlujoSalida().write(paquete);
