@@ -32,14 +32,27 @@ public class Server extends Task<Integer> {
 	private static int Puerto;
 	static int numCliente = 0;
 	private ArrayList<Integer> disconectedList = new ArrayList<Integer>();
-
+/**
+ * Constructor del servidor que recibe como parámetro el modelo del cliente para inicializar sus variables
+ * 
+ * @param model
+ */
 	public Server(ClientModel model) {
 		this.model = model;
-		setnPlayers(model.getNumPlayers());
+		nPlayers=model.getNumPlayers();
 		Puerto = model.getPort();
 
 	}
-
+/**
+ * esccha las distintas peticiones de los clientes según el número de jugadores establecido por el
+ * usuario en el correspondiente apartado de la intrerfaz.
+ * se crea una clase Connection por cada usuario, usando una cyclicBarrier para sincronizar todos los clientes
+ * 
+ * En un bucle while se realizan las distintas funciones necesarias para el funcionamiento del juego
+ * y se sale de este una vez haya quedado solo unjugador en partida, es decir, el ganador.
+ * @return null 
+ * 
+ */
 	@Override
 	protected Integer call() throws Exception {
 		try {
@@ -127,8 +140,6 @@ public class Server extends Task<Integer> {
 		return nPlayers;
 	}
 
-	public static void setnPlayers(int nPlayers) {
-		Server.nPlayers = nPlayers;
-	}
+	
 
 }
