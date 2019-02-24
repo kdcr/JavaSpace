@@ -82,6 +82,7 @@ Pues eso, no creo que haga falta explicar esta. Pero por si acaso.... Solo tiene
 ### HUD
 
 [[https://github.com/KevinDavidCabreraRodriguez/JavaSpace/blob/master/src/main/resources/assets/textures/ImagenConfiguracion.jpg|alt=configuracion]]
+
 El hud cuenta de varias secciones. 
 Arriba al centro veremos nuestro nombre.
 A la izquierda encontraremos un número que indica la velocidad. Justo debajo de ese número podemos observar un circulo que se rellena. Esto es la aceleración. A más relleno el círculo, mas fuerte será la aceleración de la nave.
