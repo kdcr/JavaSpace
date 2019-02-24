@@ -125,7 +125,7 @@ public class Connection extends Thread {
 			e.printStackTrace();
 		}
 		
-		return  identity + ", dc";
+		return  identity + ",0.0,0.0,0.0,false,0.0,0.0";
 		
 		
 	}

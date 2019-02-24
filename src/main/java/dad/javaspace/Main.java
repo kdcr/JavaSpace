@@ -19,6 +19,7 @@ import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
 import com.almasb.fxgl.settings.GameSettings;
 
 import dad.javaspace.HUD.JavaSpaceHUD;
+import dad.javaspace.alerts.EndGameScreen;
 import dad.javaspace.interfacing.controller.LauncherController;
 import dad.javaspace.networking.ClientConnectionTask;
 import dad.javaspace.networking.ClientGameThread;
@@ -47,6 +48,8 @@ public class Main extends GameApplication {
 	RadarController radar = new RadarController();
 
 	private int spectatorIndex = 0;
+
+	EndGameScreen endGameScreen;
 
 	// Mecanica interna
 	Input input;
@@ -398,10 +401,9 @@ public class Main extends GameApplication {
 
 			checkVictory();
 
-			// Si se cae la conexión sale del programa
-			// TODO cambiar a volver al launcher
+			// Si se cae la conexión sale del juego
 			if (!clientGameThread.isAlive()) {
-				System.exit(0);
+				//gameOver();
 			}
 
 			physics.setAngularVelocity(model.getAngular());
@@ -415,7 +417,7 @@ public class Main extends GameApplication {
 
 			// Limitar la velocidad
 			maxVel();
-			//maxVelExperimental();
+			// maxVelExperimental();
 
 			// Como no hay property de la velocidad lineal, se actualiza el hud a cada frame
 			hud.getModel().setSpeed((int) physics.getLinearVelocity().magnitude());
@@ -460,13 +462,15 @@ public class Main extends GameApplication {
 		// Cambiar la apariencia a la nave destruida
 		player.setViewFromTexture("Nave" + model.getSkin() + "Destroyed.png");
 
-		// Restar uno a los jugadores con vida
-		model.setAlivePlayers(model.getAlivePlayers() - 1);
-
 		// Reproducir sonido de explosion
 		getAudioPlayer().playSound("explosion.mp3");
 
 		getGameScene().removeUINodes(hud, radar);
+
+		model.setPos(model.getAlivePlayers());
+
+		// Restar uno a los jugadores con vida
+		model.setAlivePlayers(model.getAlivePlayers() - 1);
 
 	}
 
@@ -536,8 +540,12 @@ public class Main extends GameApplication {
 		if (physics.getLinearVelocity().magnitude() >= maxVelocity) {
 			// TODO procesar x e y para que sea la diferencia de la velocidad maxima y la
 			// velocidad actual
-			physics.setLinearVelocity(physics.getLinearVelocity().subtract(new Point2D(Math.sin(Math.toRadians(player.getRotation())) * (physics.getLinearVelocity().getX() - maxVelocity),
-					-Math.cos(Math.toRadians(player.getRotation())) * (physics.getLinearVelocity().getY() - maxVelocity))));
+			physics.setLinearVelocity(physics.getLinearVelocity()
+					.subtract(new Point2D(
+							Math.sin(Math.toRadians(player.getRotation()))
+									* (physics.getLinearVelocity().getX() - maxVelocity),
+							-Math.cos(Math.toRadians(player.getRotation()))
+									* (physics.getLinearVelocity().getY() - maxVelocity))));
 		}
 	}
 
@@ -563,8 +571,8 @@ public class Main extends GameApplication {
 		}
 
 		if (model.getAlivePlayers() == 1) {
-			// TODO descomentar cuando se termine
-//			model.setEnPartida(false);
+			gameOver();
+			model.setEnPartida(false);
 		}
 	}
 
@@ -787,5 +795,12 @@ public class Main extends GameApplication {
 			}
 		});
 
+	}
+
+	private void gameOver() {
+		endGameScreen = new EndGameScreen(model.getPos());
+		endGameScreen.setTranslateY(viewHeight / 2 - endGameScreen.getPrefHeight() / 2);
+		endGameScreen.setTranslateX(viewWidth / 2 - endGameScreen.getPrefWidth() / 2);
+		getGameScene().addUINode(endGameScreen);
 	}
 }

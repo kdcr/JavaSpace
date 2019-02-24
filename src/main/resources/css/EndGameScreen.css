@@ -1,0 +1,11 @@
+.rootPane{
+	-fx-background-color:rgba(255, 255, 255, 0.1);
+}
+
+.victoryLabel{
+	-fx-font-size: 50pt;
+}
+
+.posPane{
+	-fx-font-size: 20pt;
+}
