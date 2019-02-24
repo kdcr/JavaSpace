@@ -1,11 +1,15 @@
-.rootPane{
-	-fx-background-color:rgba(255, 255, 255, 0.1);
+.rootPane {
+	-fx-background-color:rgba(255.0, 255.0, 255.0, 0.1);
 }
 
-.victoryLabel{
-	-fx-font-size: 50pt;
+.victoryLabel {
+	-fx-font-size: 50.0pt;
 }
 
-.posPane{
-	-fx-font-size: 20pt;
+.posPane {
+	-fx-font-size: 20.0pt;
+}
+
+.cerrarButton{
+	-fx-background-color:rgba(255.0, 255.0, 255.0, 0.2);
 }
