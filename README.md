@@ -22,10 +22,10 @@ El launcher se compone de dos secciones. El menú, que se encuentra en la parte 
 
 Dentro del menú, encontramos varias secciones.
 
-* ### Empezar partida: 
+* #### Empezar partida: 
 En esta parte, nos encontraremos dos botones. El primero, será para unirse directamente a un servidor y el  segundo botón, que será crear servidor. Este nos permitirá actuar como servidor de una partida, y posteriormente, con el botón de arriba, nos uniremos a nuestro propio servidor.
 
-* ### Configuración: 
+* #### Configuración: 
 Aquí encontraremos todos los parámetros necesarios para poder jugar.
 
 #### Resolución:
