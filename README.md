@@ -25,8 +25,12 @@ Dentro del menú, encontramos varias secciones.
 * #### Empezar partida: 
 En esta parte, nos encontraremos dos botones. El primero, será para unirse directamente a un servidor y el  segundo botón, que será crear servidor. Este nos permitirá actuar como servidor de una partida, y posteriormente, con el botón de arriba, nos uniremos a nuestro propio servidor.
 
+[[https://github.com/KevinDavidCabreraRodriguez/JavaSpace/blob/master/src/main/resources/assets/textures/ImagenIniciarPartida.jpg|alt=iniciarPartida]]
+
 * #### Configuración: 
 Aquí encontraremos todos los parámetros necesarios para poder jugar.
+
+[[https://github.com/KevinDavidCabreraRodriguez/JavaSpace/blob/master/src/main/resources/assets/textures/ImagenConfiguracion.jpg|alt=configuracion]]
 
 #### Resolución:
 Determinará el tamaño de la ventana en la que jugamos.
@@ -54,6 +58,8 @@ Puerto por el que nos antenderá la máquina a la que nos conectamos. El servido
 
 * #### Seleccionar Skin
 En esta sección podremos elegir la skin que deseemos usar para jugar nuestra partida. Ninguna de ellas ofrece ninguna ventaja al juego. Aunque no prometemos que las que vengan por DLC de pago tampoco lo hagan.
+
+[[https://github.com/KevinDavidCabreraRodriguez/JavaSpace/blob/master/src/main/resources/assets/textures/ImagenElegirSkin.jpg|alt=seleccionarSkin]]
 
 * #### Sobre nosotros
 Sección dedicada a los creadores del juego, en ella encontrarás información sobre los desarrolladores.
