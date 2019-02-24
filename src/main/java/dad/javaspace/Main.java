@@ -33,6 +33,7 @@ import dad.javaspace.objects.effects.ComponentePropulsor;
 import dad.javaspace.radar.RadarController;
 import javafx.geometry.Point2D;
 import javafx.scene.control.Button;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.media.Media;
@@ -140,7 +141,9 @@ public class Main extends GameApplication {
 
 		// Botones de modo espectador
 		nextButton.setOnAction(e -> spectateNext());
+		nextButton.setTooltip(new Tooltip("Ver cámara de siguiente jugador"));
 		previousButton.setOnAction(e -> spectatePrevious());
+		previousButton.setTooltip(new Tooltip("Ver cámara de jugador anterior"));
 
 		// Mensaje de estado del launcher
 		// FIXME rompe el juego, ni siquiera importa si se desbindea etc

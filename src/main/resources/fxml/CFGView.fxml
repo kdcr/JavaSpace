@@ -36,7 +36,7 @@
                   <Insets />
                </GridPane.margin>
             </Label>
-            <ComboBox fx:id="resolutionComboBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <ComboBox fx:id="resolutionComboBox" prefWidth="150.0" promptText="Resolución de juego" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <CheckBox fx:id="fullScreenCheckBox" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="3" />
             <TextField fx:id="nombreField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
             <Slider fx:id="sonidoMusicaSlider" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="5" />

@@ -28,6 +28,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -335,18 +336,25 @@ public class LauncherController implements Initializable {
 			 ***************************************************************************************************/
 
 			createRoomButton.setOnMousePressed(e -> onCreateRoomPressed());
-			launchButton.setOnMousePressed(e -> onLaunchButtonPressed());
+			createRoomButton.setTooltip(new Tooltip("Crear sala usando los datos de la configuración de RED"));
 			cfgButton.hoverProperty().addListener(e -> onCFGButtonHovered());
 			exitButton.hoverProperty().addListener(e -> onExitButtonHovered());
+			exitButton.setOnAction(e -> onCloseAction());
 			empezarPartidaButton.hoverProperty().addListener(e -> onEmpezarPartidaButtonHovered());
 			selectSkinButton.hoverProperty().addListener(e -> onSelectSkinButtonHovered());
-			exitButton.setOnAction(e -> onCloseAction());
+			launchButton.setOnMousePressed(e -> onLaunchButtonPressed());
 			launchButton.setOnAction(e -> guardarConfig());
+			launchButton.setTooltip(new Tooltip("Empezar partida"));
 			skinUno.setOnAction(e -> onSkinUnoAction());
+			skinUno.setTooltip(new Tooltip("Interestelar 1"));
 			skinDos.setOnAction(e -> onSkinDosAction());
+			skinDos.setTooltip(new Tooltip("Supernova"));
 			skinTres.setOnAction(e -> onSkinTresAction());
+			skinTres.setTooltip(new Tooltip("Black Hole"));
 			skinCuatro.setOnAction(e -> onSkinCuatroAction());
+			skinCuatro.setTooltip(new Tooltip("Abomination"));
 			skinCinco.setOnAction(e -> onSkinCincoAction());
+			skinCinco.setTooltip(new Tooltip("Galactic Destroyer"));
 			skinSeis.setOnAction(e -> onSkinSeisAction());
 			skinSiete.setOnAction(e -> onSkinSieteAction());
 			skinOcho.setOnAction(e -> onSkinOchoAction());
