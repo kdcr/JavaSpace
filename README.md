@@ -27,12 +27,10 @@ Dentro del menú, encontramos varias secciones.
 
   ![](src/main/resources/assets/textures/ImagenIniciarPartida.jpg)
 
-[[https://github.com/KevinDavidCabreraRodriguez/JavaSpace/blob/master/src/main/resources/assets/textures/ImagenIniciarPartida.jpg|alt=iniciarPartida]]
-
 * #### Configuración: 
-Aquí encontraremos todos los parámetros necesarios para poder jugar.
+  Aquí encontraremos todos los parámetros necesarios para poder jugar.
 
-[[https://github.com/KevinDavidCabreraRodriguez/JavaSpace/blob/master/src/main/resources/assets/textures/ImagenConfiguracion.jpg|alt=configuracion]]
+  ![](src/main/resources/assets/textures/ImagenConfiguracion.jpg)
 
 #### Resolución:
 Determinará el tamaño de la ventana en la que jugamos.
@@ -59,9 +57,9 @@ Dirección de la máquina que ejecutará al servidor. Si es la nuestra propia, e
 Puerto por el que nos antenderá la máquina a la que nos conectamos. El servidor lo usará como puerto desde el que atenderá a las peticiones.
 
 * #### Seleccionar Skin
-En esta sección podremos elegir la skin que deseemos usar para jugar nuestra partida. Ninguna de ellas ofrece ninguna ventaja al juego. Aunque no prometemos que las que vengan por DLC de pago tampoco lo hagan.
+  En esta sección podremos elegir la skin que deseemos usar para jugar nuestra partida. Ninguna de ellas ofrece ninguna ventaja al juego. Aunque no prometemos que las que vengan por DLC de pago tampoco lo hagan.
 
-[[https://github.com/KevinDavidCabreraRodriguez/JavaSpace/blob/master/src/main/resources/assets/textures/ImagenElegirSkin.jpg|alt=seleccionarSkin]]
+  ![](src/main/resources/assets/textures/ImagenElegirSkin.jpg)
 
 * #### Sobre nosotros
 Sección dedicada a los creadores del juego, en ella encontrarás información sobre los desarrolladores.
@@ -83,7 +81,7 @@ Pues eso, no creo que haga falta explicar esta. Pero por si acaso.... Solo tiene
 
 ### HUD
 
-[[https://github.com/KevinDavidCabreraRodriguez/JavaSpace/blob/master/src/main/resources/assets/textures/ImagenConfiguracion.jpg|alt=configuracion]]
+![](src/main/resources/assets/textures/hud.png)
 
 El hud cuenta de varias secciones. 
 Arriba al centro veremos nuestro nombre.
