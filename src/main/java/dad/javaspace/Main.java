@@ -93,6 +93,8 @@ public class Main extends GameApplication {
 
 	private Button nextButton = new Button();
 	private Button previousButton = new Button();
+	
+	MediaPlayer mediaPlayer;
 
 	public static void main(String[] args) {
 
@@ -425,6 +427,9 @@ public class Main extends GameApplication {
 		for (NetworkingPlayer ntp : model.getJugadores()) {
 			getGameWorld().removeEntity(ntp.getEntity());
 		}
+		
+		thrusterMp.stop();
+		mediaPlayer.stop();
 
 		getGameWorld().removeEntities(player);
 
@@ -823,7 +828,7 @@ public class Main extends GameApplication {
 
 		cancionActual = nuevoValor;
 
-		MediaPlayer mediaPlayer = new MediaPlayer(lista.get(cancionActual));
+		mediaPlayer = new MediaPlayer(lista.get(cancionActual));
 		mediaPlayer.setVolume(controller.getModel().getVolumenMusica() / 2);
 		mediaPlayer.play();
 

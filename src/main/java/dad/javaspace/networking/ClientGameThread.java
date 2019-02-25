@@ -21,28 +21,28 @@ public class ClientGameThread extends Thread {
 
 		while (model.isEnPartida()) {
 			try {
-				sendPlayerPosition();
+				if (model.isPlayerAlive())
+					sendPlayerPosition();
 				desempaquetarPosiciones(model.getScanner().nextLine());
 				indexError = 0;
 			} catch (Exception e) {
 				indexError++;
 				if (indexError == 5) {
-					
+
 					model.setEnPartida(false);
-					
+
 					try {
 						model.getSocket().close();
 					} catch (Exception ex) {
 					}
-					System.exit(1);
-					
+
 					this.interrupt();
 				}
 			}
 		}
-		
+
 		// Sale del bucle por lo que termina la partida
-		
+
 	}
 
 	private NetworkingPlayer find(int id) {
