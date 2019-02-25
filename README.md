@@ -94,7 +94,9 @@ A la derecha hay 3 barras. De arriba a abajo, la primera es nuestro escudo, la s
 
 ### Dependencias
 
+#### Git
 
+https://git-scm.com/
 
 #### Nametags
 
@@ -107,3 +109,18 @@ https://github.com/KevinDavidCabreraRodriguez/JavaSpaceRadar
 #### HUD
 
 https://github.com/RushTfe/JavaSpaceHUD
+
+
+
+#### Otras dependencias:
+
+#### FXGL
+
+https://github.com/AlmasB/FXGL
+
+#### Ini4J
+
+https://github.com/qxo/ini4j
+
+
+

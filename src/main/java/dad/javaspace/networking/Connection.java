@@ -118,14 +118,10 @@ public class Connection extends Thread {
 	public String getItemStateString() {
 		return itemStateString;
 	}
-	public String disconnect() {
-		try {
-			sk.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public String disconnect() {		
 		
 		return  identity + ",dc";
+		
 		
 		
 	}
