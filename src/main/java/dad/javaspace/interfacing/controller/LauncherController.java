@@ -453,7 +453,8 @@ public class LauncherController implements Initializable {
 
 	private void onCloseAction() {
 		guardarConfig();
-		Platform.exit();
+		System.exit(0);
+		//Platform.exit();
 	}
 
 //	private void onLaunchAction() {
