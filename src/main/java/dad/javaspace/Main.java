@@ -412,13 +412,13 @@ public class Main extends GameApplication {
 		});
 
 		// Colision del proyectil enemigo ocn otro enemigo
-		getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityTypes.ENEMY_PLAYER, EntityTypes.ENEMY_LASER) {
-
-			@Override
-			protected void onCollisionBegin(Entity player, Entity laser) {
-				getGameWorld().removeEntity(laser);
-			}
-		});
+//		getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityTypes.ENEMY_PLAYER, EntityTypes.ENEMY_LASER) {
+//
+//			@Override
+//			protected void onCollisionBegin(Entity player, Entity laser) {
+//				getGameWorld().removeEntity(laser);
+//			}
+//		});
 	}
 
 	private void restartGame() {

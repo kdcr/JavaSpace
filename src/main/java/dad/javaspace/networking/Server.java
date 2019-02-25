@@ -13,6 +13,8 @@ import javafx.concurrent.Task;
 public class Server extends Task<Integer> {
 
 	private static int nPlayers;
+	private static ArrayList<Connection> playersArray = new ArrayList<Connection>();
+
 	private static ArrayList<Connection> connectionsArray = new ArrayList<Connection>();
 	private static String players = "", playersState = "";
 
@@ -25,9 +27,7 @@ public class Server extends Task<Integer> {
 		return players;
 	}
 
-	public static ArrayList<Connection> getConnectionsArray() {
-		return connectionsArray;
-	}
+
 
 	private static int Puerto;
 	static int numCliente = 0;
@@ -77,17 +77,18 @@ public class Server extends Task<Integer> {
 				System.out.println("Cliente conectado");
 
 //				Atiendo al cliente mediante un thread
-				connectionsArray.add(new Connection(skCliente, ++numCliente, connectionsArray));
+				playersArray.add(new Connection(skCliente, ++numCliente, playersArray));
 			}
 
-			for (Connection con : connectionsArray) {
+			connectionsArray.addAll(playersArray);
+			for (Connection con : playersArray) {
 				con.start();
 
 			}
 
 			Connection.barrera.await();
 
-			for (Connection con : connectionsArray) {
+			for (Connection con : playersArray) {
 				players += con.getIdentity() + "," + con.getNombre() + "," + con.getSkin() + "_";
 			}
 
@@ -96,10 +97,10 @@ public class Server extends Task<Integer> {
 
 			Connection.barrera.await();
 
-			while (connectionsArray.size() != 1) {
+			while (playersArray.size() != 1) {
 
 				playersState = "";
-				for (Connection con : connectionsArray) {
+				for (Connection con : playersArray) {
 					// if(con.getIdentity()!=this.identity)
 
 					try {
@@ -110,6 +111,8 @@ public class Server extends Task<Integer> {
 							serverReportBean.setDisparos(serverReportBean.getDisparos() + 1);
 						}
 
+						if (Double.parseDouble(con.getItemStateString().split(",")[5]) <= 0.0)
+							disconectedList.add(con.getIdentity() - 1);
 						playersState += con.getItemStateString();
 					} catch (NoSuchElementException e) {
 						disconectedList.add(con.getIdentity() - 1);
@@ -117,16 +120,17 @@ public class Server extends Task<Integer> {
 					}
 
 				}
+
 				for (Integer disconected : disconectedList) {
 
-					connectionsArray.remove(disconected.intValue());
+					playersArray.remove(disconected.intValue());
 				}
 				disconectedList.clear();
 
 				playersState += "\n";
-				for (Connection con : connectionsArray) {
+				for (Connection con : playersArray) {
 					try {
-//						System.out.println(playersState);
+						System.out.println(playersState);
 						con.send(playersState);
 					} catch (Exception e) {
 					}
@@ -135,11 +139,11 @@ public class Server extends Task<Integer> {
 
 			}
 			for (Connection con : connectionsArray) {
-				if (con.isAlive()) {
+				if(con.isAlive())
 					con.getSocket().close();
-					con.interrupt();
-				}
+				
 			}
+
 			skServidor.close();
 
 		} catch (Exception e) {
