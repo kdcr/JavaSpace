@@ -28,6 +28,9 @@ public class EndGameScreen extends VBox implements Initializable {
 
 	@FXML
 	private Button cerrarButton;
+	
+	@FXML
+	private Button hideButton;
 
 	private int pos;
 
@@ -53,9 +56,13 @@ public class EndGameScreen extends VBox implements Initializable {
 		else
 			victoryLabel.setText("Lástima...");
 		
-		cerrarButton.setOnAction(e->{
+		hideButton.setOnAction(e->{
 			this.setVisible(false);
 		});
+	}
+	
+	public Button getCerrarButton() {
+		return this.cerrarButton;
 	}
 
 }
