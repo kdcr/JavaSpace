@@ -119,10 +119,11 @@ public class Main extends GameApplication {
 	protected void initGame() {
 		super.initGame();
 
+		controller = new LauncherController();
+		
 		model.enPartidaProperty().addListener((ob, ov, nv) -> {
 			if (nv.equals(false) && clientGameThread.isAlive()) {
 				clientConnectionThread.interrupt();
-				restartGame();
 			}
 		});
 
@@ -437,7 +438,8 @@ public class Main extends GameApplication {
 
 			// Si se cae la conexión sale del juego
 			if (!clientGameThread.isAlive()) {
-				restartGame();
+				model.setEnPartida(false);
+				gameOver();
 			}
 
 			physics.setAngularVelocity(model.getAngular());
@@ -836,6 +838,11 @@ public class Main extends GameApplication {
 	private void gameOver() {
 		if (!pantallaFinMostrada) {
 			endGameScreen = new EndGameScreen(model.getAlivePlayers());
+			
+			endGameScreen.getCerrarButton().setOnAction(e->{
+				restartGame();
+			});
+			
 			endGameScreen.setTranslateY(viewHeight / 2 - endGameScreen.getPrefHeight() / 2);
 			endGameScreen.setTranslateX(viewWidth / 2 - endGameScreen.getPrefWidth() / 2);
 			getGameScene().addUINode(endGameScreen);
