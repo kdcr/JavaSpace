@@ -111,7 +111,7 @@ public class Server extends Task<Integer> {
 							serverReportBean.setDisparos(serverReportBean.getDisparos() + 1);
 						}
 
-						if (Double.parseDouble(con.getItemStateString().split(",")[5]) <= 0.0)
+						if (Double.parseDouble(con.getItemStateString().split(",")[6]) <= 0.0)
 							disconectedList.add(con.getIdentity() - 1);
 						playersState += con.getItemStateString();
 					} catch (NoSuchElementException e) {
@@ -141,6 +141,7 @@ public class Server extends Task<Integer> {
 			for (Connection con : connectionsArray) {
 				if(con.isAlive())
 					con.getSocket().close();
+				con.interrupt();
 				
 			}
 
