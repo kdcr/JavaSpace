@@ -29,10 +29,13 @@ public class ClientGameThread extends Thread {
 				if (indexError == 5) {
 					
 					model.setEnPartida(false);
+					
 					try {
 						model.getSocket().close();
 					} catch (Exception ex) {
 					}
+					System.exit(1);
+					
 					this.interrupt();
 				}
 			}
