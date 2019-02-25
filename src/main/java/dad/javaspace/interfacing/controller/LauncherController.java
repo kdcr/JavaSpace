@@ -285,9 +285,9 @@ public class LauncherController implements Initializable {
 			skinTres.setGraphic(new ImageView(new Image("/assets/textures/Nave2.png")));
 			skinCuatro.setGraphic(new ImageView(new Image("/assets/textures/Nave3.png")));
 			skinCinco.setGraphic(new ImageView(new Image("/assets/textures/Nave4.png")));
-			skinSeis.setGraphic(new ImageView(new Image("/assets/textures/Nave1.png")));
-			skinSiete.setGraphic(new ImageView(new Image("/assets/textures/Nave1.png")));
-			skinOcho.setGraphic(new ImageView(new Image("/assets/textures/Nave1.png")));
+			skinSeis.setGraphic(new ImageView(new Image("/assets/textures/NaveLocked.png")));
+			skinSiete.setGraphic(new ImageView(new Image("/assets/textures/NaveLocked.png")));
+			skinOcho.setGraphic(new ImageView(new Image("/assets/textures/NaveLocked.png")));
 
 			/****************************************************************************************************
 			 * 

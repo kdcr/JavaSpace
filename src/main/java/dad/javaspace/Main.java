@@ -1,6 +1,5 @@
 package dad.javaspace;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -48,7 +47,7 @@ public class Main extends GameApplication {
 	JavaSpaceHUD hud = new JavaSpaceHUD();
 	RadarController radar = new RadarController();
 
-	private boolean pantallaFinMostrada;
+	private boolean pantallaFinMostrada = false, pantallaFinOculta = false;
 
 	private int spectatorIndex = 0;
 
@@ -93,7 +92,7 @@ public class Main extends GameApplication {
 
 	private Button nextButton = new Button();
 	private Button previousButton = new Button();
-	
+
 	MediaPlayer mediaPlayer;
 
 	public static void main(String[] args) {
@@ -103,7 +102,6 @@ public class Main extends GameApplication {
 
 	@Override
 	protected void initSettings(GameSettings settings) {
-
 		settings.setManualResizeEnabled(true);
 		settings.setWidth(controller.getModel().getResolucion().getX());
 		settings.setHeight(controller.getModel().getResolucion().getY());
@@ -121,16 +119,16 @@ public class Main extends GameApplication {
 	protected void initGame() {
 		super.initGame();
 
-		controller = new LauncherController();
-		
+		// Reinizializar objetos y demas parareutilizar el juego
+		model = new ClientModel();
+
 		model.enPartidaProperty().addListener((ob, ov, nv) -> {
 			if (nv.equals(false) && clientGameThread.isAlive()) {
 				clientConnectionThread.interrupt();
 			}
 		});
 
-		model = new ClientModel();
-
+		pantallaFinOculta = false;
 		pantallaFinMostrada = false;
 
 		model.setPlayerAlive(false);
@@ -289,6 +287,8 @@ public class Main extends GameApplication {
 	}
 
 	private void startGame() {
+		
+		controller.getLaunchButton().setDisable(false);
 
 		model.setPlayerAlive(true);
 
@@ -324,9 +324,8 @@ public class Main extends GameApplication {
 				.bind(player.yProperty().subtract(viewHeight / 2).add((player.heightProperty())));
 
 		// Sonido del motor
-				
-		thrusterMp = new MediaPlayer(
-				new Media(getClass().getResource("/assets/sounds/thruster.mp3").toString()));
+
+		thrusterMp = new MediaPlayer(new Media(getClass().getResource("/assets/sounds/thruster.mp3").toString()));
 		thrusterMp.setCycleCount(MediaPlayer.INDEFINITE);
 		thrusterMp.volumeProperty().bind(
 				(model.thrustProperty().divide(2)).multiply(controller.getModel().volumenJuegoProperty().divide(2)));
@@ -338,6 +337,7 @@ public class Main extends GameApplication {
 		listaCanciones.add(new Media(getClass().getResource("/music/track02.mp3").toString()));
 		listaCanciones.add(new Media(getClass().getResource("/music/track03.mp3").toString()));
 		listaCanciones.add(new Media(getClass().getResource("/music/track04.mp3").toString()));
+		listaCanciones.add(new Media(getClass().getResource("/music/track05.mp3").toString()));
 
 		playMediaTracks(new ArrayList<>(listaCanciones));
 
@@ -347,11 +347,9 @@ public class Main extends GameApplication {
 		physics.setBodyType(BodyType.DYNAMIC);
 
 		// Colocar al jugador en una zona aleatoria del mundo
-		// player.setX((Math.random() * model.getMARGIN_HORIZONTAL() * 2) -
-		// model.getMARGIN_HORIZONTAL());
-		// player.setY((Math.random() * model.getMARGIN_VERTICAL() * 2) -
-		// model.getMARGIN_VERTICAL());
-		// player.setRotation(Math.random() * 360);
+		player.setX((Math.random() * model.getMARGIN_HORIZONTAL() * 2) - model.getMARGIN_HORIZONTAL());
+		player.setY((Math.random() * model.getMARGIN_VERTICAL() * 2) - model.getMARGIN_VERTICAL());
+		player.setRotation(Math.random() * 360);
 
 		// 0 gravedad
 		getPhysicsWorld().setGravity(0, 0);
@@ -428,7 +426,7 @@ public class Main extends GameApplication {
 		for (NetworkingPlayer ntp : model.getJugadores()) {
 			getGameWorld().removeEntity(ntp.getEntity());
 		}
-		
+
 		thrusterMp.stop();
 		mediaPlayer.stop();
 
@@ -488,20 +486,6 @@ public class Main extends GameApplication {
 
 		gameOver();
 
-		// Anadiendo CSS a los botones
-		nextButton.getStylesheets().setAll("/css/forwardbutton.css");
-		previousButton.getStylesheets().setAll("/css/previousbutton.css");
-		previousButton.setMinWidth(120);
-		previousButton.setMinHeight(120);
-		nextButton.setMinWidth(120);
-		nextButton.setMinHeight(120);
-
-		// Modo espectador
-		nextButton.setTranslateY(viewHeight / 2);
-		nextButton.setTranslateX(viewWidth - nextButton.getMinWidth());
-		previousButton.setTranslateY(viewHeight / 2);
-		getGameScene().addUINodes(nextButton, previousButton);
-
 		// Se cambian las propiedades del efecto del motor para que salga humo de forma
 		// continua
 		componentePropulsor.onShipDestroyed();
@@ -511,8 +495,6 @@ public class Main extends GameApplication {
 
 		// Reproducir sonido de explosion
 		getAudioPlayer().playSound("explosion.mp3");
-
-		getGameScene().removeUINodes(hud, radar);
 
 		// Restar uno a los jugadores con vida
 		model.setAlivePlayers(model.getAlivePlayers() - 1);
@@ -843,14 +825,40 @@ public class Main extends GameApplication {
 
 	private void gameOver() {
 		if (!pantallaFinMostrada) {
-			endGameScreen = new EndGameScreen(model.getAlivePlayers());
-			
-			endGameScreen.getCerrarButton().setOnAction(e->{
+
+			// Anadiendo CSS a los botones
+			nextButton.getStylesheets().setAll("/css/forwardbutton.css");
+			previousButton.getStylesheets().setAll("/css/previousbutton.css");
+			previousButton.setMinWidth(120);
+			previousButton.setMinHeight(120);
+			nextButton.setMinWidth(120);
+			nextButton.setMinHeight(120);
+
+			// Modo espectador
+			nextButton.setTranslateY(viewHeight / 2);
+			nextButton.setTranslateX(viewWidth - nextButton.getMinWidth());
+			previousButton.setTranslateY(viewHeight / 2);
+			getGameScene().addUINodes(nextButton, previousButton);
+
+			getGameScene().removeUINodes(hud, radar);
+
+			endGameScreen = new EndGameScreen(model.getAlivePlayers(), model.getJugadores().size());
+
+			endGameScreen.getCerrarButton().setOnAction(e -> {
 				restartGame();
 			});
-			
+
 			endGameScreen.setTranslateY(viewHeight / 2 - endGameScreen.getPrefHeight() / 2);
 			endGameScreen.setTranslateX(viewWidth / 2 - endGameScreen.getPrefWidth() / 2);
+
+			endGameScreen.getHideButton().setOnAction(e -> {
+				Animations.hideEndScreen(endGameScreen, pantallaFinOculta, viewHeight);
+				if (pantallaFinOculta)
+					pantallaFinOculta = false;
+				else
+					pantallaFinOculta = true;
+			});
+
 			getGameScene().addUINode(endGameScreen);
 			pantallaFinMostrada = true;
 		}
