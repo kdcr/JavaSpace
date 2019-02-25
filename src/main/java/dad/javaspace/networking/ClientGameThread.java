@@ -27,16 +27,17 @@ public class ClientGameThread extends Thread {
 			} catch (Exception e) {
 				indexError++;
 				if (indexError == 5) {
-
+					
 					model.setEnPartida(false);
+					try {
+						model.getSocket().close();
+					} catch (Exception ex) {
+					}
 					this.interrupt();
 				}
 			}
 		}
-		try {
-			model.getSocket().close();
-		} catch (Exception e) {
-		}
+		
 		// Sale del bucle por lo que termina la partida
 	}
 
@@ -67,7 +68,7 @@ public class ClientGameThread extends Thread {
 					bufferPlayer.setShield(Double.parseDouble(str.split(",")[5]));
 					bufferPlayer.setHull(Double.parseDouble(str.split(",")[6]));
 				} else {
-					bufferPlayer.setHull(0);
+					bufferPlayer.setHull(0.0);
 				}
 			}
 		}

@@ -38,6 +38,7 @@ public class EndGameScreen extends VBox implements Initializable {
 			loader.setController(this);
 			loader.setRoot(this);
 			loader.load();
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
