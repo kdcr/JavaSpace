@@ -62,7 +62,7 @@ public class Animations {
 			}
 		});
 		hitEmitter.setExpireFunction(e -> Duration.seconds(2));
-		hitEmitter.setNumParticles((int) ((Math.random() * 10) + 5));
+		hitEmitter.setNumParticles((int) ((Math.random() * 7) + 5));
 		hitEmitter.setAllowParticleRotation(true);
 		hitEmitter.setSize(5, 20);
 		hitEmitter.setEmissionRate(1);

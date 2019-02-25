@@ -43,5 +43,12 @@
 			<artifactId>JavaSpaceRadar</artifactId>
 			<version>0.0.1</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports</artifactId>
+			<version>6.7.0</version>
+		</dependency>
+		
 	</dependencies>
 </project>
