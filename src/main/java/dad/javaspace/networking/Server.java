@@ -120,7 +120,7 @@ public class Server extends Task<Integer> {
 				playersState += "\n";
 				for (Connection con : connectionsArray) {
 					try {
-						System.out.println(playersState);
+//						System.out.println(playersState);
 						con.send(playersState);
 					} catch (Exception e) {
 					}

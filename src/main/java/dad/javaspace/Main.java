@@ -383,13 +383,22 @@ public class Main extends GameApplication {
 
 			@Override
 			protected void onCollisionBegin(Entity player, Entity laser) {
-				doDamage(0.15);
+				doDamage(0.25);
 				getGameWorld().removeEntity(laser);
 			}
 		});
 
 		// Colision del proyectil propio
 		getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityTypes.ENEMY_PLAYER, EntityTypes.LASER) {
+
+			@Override
+			protected void onCollisionBegin(Entity player, Entity laser) {
+				getGameWorld().removeEntity(laser);
+			}
+		});
+
+		// Colision del proyectil enemigo ocn otro enemigo
+		getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityTypes.ENEMY_PLAYER, EntityTypes.ENEMY_LASER) {
 
 			@Override
 			protected void onCollisionBegin(Entity player, Entity laser) {
@@ -445,7 +454,7 @@ public class Main extends GameApplication {
 	private void die() {
 		model.setPlayerAlive(false);
 		model.setThrust(0);
-		
+
 		gameOver();
 
 		// Anadiendo CSS a los botones
@@ -612,7 +621,7 @@ public class Main extends GameApplication {
 	}
 
 	private void makeShoot() {
-		if (System.currentTimeMillis() >= coolDown + 500) {
+		if (System.currentTimeMillis() >= coolDown + 250) {
 			coolDown = System.currentTimeMillis();
 			model.setCanShoot(true);
 			getAudioPlayer().playSound("laser.mp3");
