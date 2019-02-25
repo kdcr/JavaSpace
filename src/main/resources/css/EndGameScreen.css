@@ -31,6 +31,10 @@
 
 .hideButton {
 	-fx-background-color: rgba(255, 0, 0, 0.5);
+	-fx-background-image:url(../assets/textures/scrollverticalarrows.png);
+	-fx-background-repeat:no-repeat;
+	-fx-background-position:center;
+	-fx-background-size:20 20;
 	-fx-border-color:rgba(255, 0, 0, 0.8);
 }
 
