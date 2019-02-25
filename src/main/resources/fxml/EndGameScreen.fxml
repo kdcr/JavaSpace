@@ -10,7 +10,7 @@
    <children>
       <HBox alignment="CENTER_RIGHT" VBox.vgrow="NEVER">
          <children>
-            <Button fx:id="hideButton" mnemonicParsing="false" styleClass="hideButton" text="X" />
+            <Button fx:id="hideButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefWidth="350.0" styleClass="hideButton" text="Arriba / Abajo flechas, añadir con css despues" />
          </children>
       </HBox>
       <Label fx:id="victoryLabel" styleClass="victoryLabel" text="Label" VBox.vgrow="ALWAYS" />
@@ -20,7 +20,7 @@
             <Label fx:id="posLabel" text="0" />
          </children>
       </HBox>
-      <Button fx:id="cerrarButton" mnemonicParsing="false" styleClass="cerrarButton" text="Salir del juego" />
+      <Button fx:id="cerrarButton" mnemonicParsing="false" styleClass="cerrarButton" text="Salir" />
    </children>
    <padding>
       <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
