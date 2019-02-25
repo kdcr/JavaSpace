@@ -48,6 +48,8 @@ public class Main extends GameApplication {
 	JavaSpaceHUD hud = new JavaSpaceHUD();
 	RadarController radar = new RadarController();
 
+	private boolean pantallaFinMostrada;
+
 	private int spectatorIndex = 0;
 
 	EndGameScreen endGameScreen;
@@ -116,6 +118,17 @@ public class Main extends GameApplication {
 	@Override
 	protected void initGame() {
 		super.initGame();
+
+		model.enPartidaProperty().addListener((ob, ov, nv) -> {
+			if (nv.equals(false) && clientGameThread.isAlive()) {
+				clientConnectionThread.interrupt();
+				restartGame();
+			}
+		});
+
+		model = new ClientModel();
+
+		pantallaFinMostrada = false;
 
 		model.setPlayerAlive(false);
 
@@ -407,6 +420,16 @@ public class Main extends GameApplication {
 		});
 	}
 
+	private void restartGame() {
+		for (NetworkingPlayer ntp : model.getJugadores()) {
+			getGameWorld().removeEntity(ntp.getEntity());
+		}
+
+		getGameWorld().removeEntities(player);
+
+		this.initGame();
+	}
+
 	@Override
 	protected void onUpdate(double tpf) {
 		super.onUpdate(tpf);
@@ -414,7 +437,7 @@ public class Main extends GameApplication {
 
 			// Si se cae la conexión sale del juego
 			if (!clientGameThread.isAlive()) {
-				// gameOver();
+				restartGame();
 			}
 
 			physics.setAngularVelocity(model.getAngular());
@@ -586,8 +609,8 @@ public class Main extends GameApplication {
 		}
 
 		if (model.getAlivePlayers() == 1) {
-			gameOver();
 			model.setEnPartida(false);
+			gameOver();
 		}
 	}
 
@@ -811,9 +834,12 @@ public class Main extends GameApplication {
 	}
 
 	private void gameOver() {
-		endGameScreen = new EndGameScreen(model.getAlivePlayers());
-		endGameScreen.setTranslateY(viewHeight / 2 - endGameScreen.getPrefHeight() / 2);
-		endGameScreen.setTranslateX(viewWidth / 2 - endGameScreen.getPrefWidth() / 2);
-		getGameScene().addUINode(endGameScreen);
+		if (!pantallaFinMostrada) {
+			endGameScreen = new EndGameScreen(model.getAlivePlayers());
+			endGameScreen.setTranslateY(viewHeight / 2 - endGameScreen.getPrefHeight() / 2);
+			endGameScreen.setTranslateX(viewWidth / 2 - endGameScreen.getPrefWidth() / 2);
+			getGameScene().addUINode(endGameScreen);
+			pantallaFinMostrada = true;
+		}
 	}
 }

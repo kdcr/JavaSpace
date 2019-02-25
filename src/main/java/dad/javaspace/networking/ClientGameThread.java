@@ -39,6 +39,7 @@ public class ClientGameThread extends Thread {
 		}
 		
 		// Sale del bucle por lo que termina la partida
+		
 	}
 
 	private NetworkingPlayer find(int id) {

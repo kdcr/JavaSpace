@@ -88,3 +88,22 @@ Arriba al centro veremos nuestro nombre.
 A la izquierda encontraremos un número que indica la velocidad. Justo debajo de ese número podemos observar un circulo que se rellena. Esto es la aceleración. A más relleno el círculo, mas fuerte será la aceleración de la nave.
 A la derecha hay 3 barras. De arriba a abajo, la primera es nuestro escudo, la segunda la integridad estructural de la nave (HP), y la tercera es una pequeña barra para la regeneración de escudo. Cuando perdamos escudo, cada 3 segundos sin recibir daño regeneraremos una porción de este escudo. Esto es lo que nos indica esta barra.
 
+
+
+## Instalación
+
+### Dependencias
+
+
+
+#### Nametags
+
+https://github.com/KevinDavidCabreraRodriguez/JavaSpace-ComponenteNombre
+
+#### Minimapa/Radar
+
+https://github.com/KevinDavidCabreraRodriguez/JavaSpaceRadar
+
+#### HUD
+
+https://github.com/RushTfe/JavaSpaceHUD

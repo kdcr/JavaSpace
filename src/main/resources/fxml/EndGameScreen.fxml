@@ -6,9 +6,13 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-
-<fx:root fx:id="rootPane" alignment="CENTER" prefHeight="200.0" prefWidth="350.0" spacing="5.0" styleClass="rootPane" stylesheets="@../css/EndGameScreen.css" type="VBox" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/10.0.1">
+<fx:root fx:id="rootPane" alignment="CENTER" prefHeight="200.0" prefWidth="350.0" spacing="5.0" styleClass="rootPane" stylesheets="@../css/EndGameScreen.css" type="VBox" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
+      <HBox alignment="CENTER_RIGHT" VBox.vgrow="NEVER">
+         <children>
+            <Button fx:id="hideButton" mnemonicParsing="false" styleClass="hideButton" text="X" />
+         </children>
+      </HBox>
       <Label fx:id="victoryLabel" styleClass="victoryLabel" text="Label" VBox.vgrow="ALWAYS" />
       <HBox fx:id="posPane" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" styleClass="posPane">
          <children>
@@ -16,7 +20,7 @@
             <Label fx:id="posLabel" text="0" />
          </children>
       </HBox>
-      <Button fx:id="cerrarButton" mnemonicParsing="false" styleClass="cerrarButton" text="Cerrar" />
+      <Button fx:id="cerrarButton" mnemonicParsing="false" styleClass="cerrarButton" text="Salir del juego" />
    </children>
    <padding>
       <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
