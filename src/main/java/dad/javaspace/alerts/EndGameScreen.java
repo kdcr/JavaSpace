@@ -33,12 +33,11 @@ public class EndGameScreen extends VBox implements Initializable {
 
 	public EndGameScreen(int pos) {
 		try {
+			this.pos = pos;
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/EndGameScreen.fxml"));
 			loader.setController(this);
 			loader.setRoot(this);
 			loader.load();
-
-			this.pos = pos;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

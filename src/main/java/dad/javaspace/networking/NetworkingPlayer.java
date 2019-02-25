@@ -18,7 +18,7 @@ public class NetworkingPlayer {
 
 	private Entity entity;
 	private NameTag nameText = new NameTag();
-	
+
 	private String name, skin;
 	private int id;
 
@@ -42,16 +42,21 @@ public class NetworkingPlayer {
 		entity.setRenderLayer(RenderLayer.TOP);
 
 		entity.setType(EntityTypes.ENEMY_PLAYER);
-		
+
 		entity.getBoundingBoxComponent().addHitBox(new HitBox(BoundingShape.polygon(0, 0, 25, 50, 50, 0)));
 		entity.addComponent(new CollidableComponent(true));
 
 		componentePropulsor = new ComponentePropulsor(entity);
 		componentePropulsor.setEmissionRate(0.33);
-		
+
 		nameText.xProperty().bind(entity.xProperty().subtract(50));
 		nameText.yProperty().bind(entity.yProperty().subtract(50));
-		nameText.shieldProperty().bind(this.shieldProperty());
+		shieldProperty().addListener((ob, ov, nv) -> {
+			if ((Double) nv < 0) {
+				nameText.setShield(0);
+			} else
+				nameText.setShield((Double) nv);
+		});
 	}
 
 	public ComponentePropulsor getComponentePropulsor() {

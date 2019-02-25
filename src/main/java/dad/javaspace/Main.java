@@ -201,8 +201,8 @@ public class Main extends GameApplication {
 			System.out.println("Stage is closing");
 			model.setEnPartida(false);
 			try {
-				if(null!=model.getSocket())
-				model.getSocket().close();
+				if (null != model.getSocket())
+					model.getSocket().close();
 				if (null != model.getServerSocket())
 					model.getServerSocket().close();
 			} catch (IOException e) {
@@ -405,7 +405,7 @@ public class Main extends GameApplication {
 
 			// Si se cae la conexión sale del juego
 			if (!clientGameThread.isAlive()) {
-				//gameOver();
+				// gameOver();
 			}
 
 			physics.setAngularVelocity(model.getAngular());
@@ -436,7 +436,7 @@ public class Main extends GameApplication {
 
 			// Comprobar nuevos disparos de otros jugadores
 			checkShots();
-			
+
 			// Comprueba el estado de la partida
 			checkVictory();
 		}
@@ -570,7 +570,7 @@ public class Main extends GameApplication {
 				ntp.getEntity().setViewFromTexture("Nave" + ntp.getSkin() + "Destroyed.png");
 				if (ntp.getEntity().distance(player) < 1500)
 					getAudioPlayer().playSound("explosion.mp3");
-				model.setAlivePlayers(model.getAlivePlayers() -1);
+				model.setAlivePlayers(model.getAlivePlayers() - 1);
 			}
 		}
 
@@ -792,17 +792,15 @@ public class Main extends GameApplication {
 		mediaPlayer.play();
 
 		mediaPlayer.setOnEndOfMedia(new Runnable() {
-
 			@Override
 			public void run() {
 				playMediaTracks(lista);
 			}
 		});
-
 	}
 
 	private void gameOver() {
-		endGameScreen = new EndGameScreen(model.getAlivePlayers() + 1);
+		endGameScreen = new EndGameScreen(model.getAlivePlayers());
 		endGameScreen.setTranslateY(viewHeight / 2 - endGameScreen.getPrefHeight() / 2);
 		endGameScreen.setTranslateX(viewWidth / 2 - endGameScreen.getPrefWidth() / 2);
 		getGameScene().addUINode(endGameScreen);
