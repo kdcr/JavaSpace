@@ -14,7 +14,7 @@ import javafx.beans.property.SimpleDoubleProperty;
 
 public class NetworkingPlayer {
 
-	private boolean alive;
+	private boolean alive = true;
 
 	private Entity entity;
 	private NameTag nameText = new NameTag();

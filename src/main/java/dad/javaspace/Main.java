@@ -445,6 +445,8 @@ public class Main extends GameApplication {
 	private void die() {
 		model.setPlayerAlive(false);
 		model.setThrust(0);
+		
+		gameOver();
 
 		// Anadiendo CSS a los botones
 		nextButton.getStylesheets().setAll("/css/forwardbutton.css");
