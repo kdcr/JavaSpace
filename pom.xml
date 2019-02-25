@@ -7,7 +7,7 @@
 	<name>JavaSpaceFX</name>
 	<description>Simple multiplayer game made with JavaFXGL</description>
 	<version>0.0.1</version>
-	
+
 	<properties>
 		<!-- versión de java para la que se compilará el proyecto -->
 		<maven.compiler.source>10</maven.compiler.source>
@@ -75,7 +75,7 @@
 							<icon>assets/windows/javaspace.ico</icon>
 							<classPath>
 								<!-- clase principal del jar (la que contiene el main) -->
-								<mainClass>dad.calculadorafxml.CalculadoraApp</mainClass>
+								<mainClass>dad.javaspace.Main</mainClass>
 							</classPath>
 							<jre>
 								<bundledJre64Bit>true</bundledJre64Bit>
@@ -100,7 +100,28 @@
 					</execution>
 				</executions>
 			</plugin>
-
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.1.0</version>
+				<executions>
+					<execution>
+						<id>copy-jre</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/app/jre</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${jre.path}</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 	<dependencies>
