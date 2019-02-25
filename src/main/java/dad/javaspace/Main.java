@@ -48,6 +48,8 @@ public class Main extends GameApplication {
 	JavaSpaceHUD hud = new JavaSpaceHUD();
 	RadarController radar = new RadarController();
 
+	private boolean pantallaFinMostrada;
+
 	private int spectatorIndex = 0;
 
 	EndGameScreen endGameScreen;
@@ -91,6 +93,8 @@ public class Main extends GameApplication {
 
 	private Button nextButton = new Button();
 	private Button previousButton = new Button();
+	
+	MediaPlayer mediaPlayer;
 
 	public static void main(String[] args) {
 
@@ -116,6 +120,18 @@ public class Main extends GameApplication {
 	@Override
 	protected void initGame() {
 		super.initGame();
+
+		controller = new LauncherController();
+		
+		model.enPartidaProperty().addListener((ob, ov, nv) -> {
+			if (nv.equals(false) && clientGameThread.isAlive()) {
+				clientConnectionThread.interrupt();
+			}
+		});
+
+		model = new ClientModel();
+
+		pantallaFinMostrada = false;
 
 		model.setPlayerAlive(false);
 
@@ -308,8 +324,9 @@ public class Main extends GameApplication {
 				.bind(player.yProperty().subtract(viewHeight / 2).add((player.heightProperty())));
 
 		// Sonido del motor
+				
 		thrusterMp = new MediaPlayer(
-				new Media(new File("src/main/resources/assets/sounds/thruster.mp3").toURI().toString()));
+				new Media(getClass().getResource("/assets/sounds/thruster.mp3").toString()));
 		thrusterMp.setCycleCount(MediaPlayer.INDEFINITE);
 		thrusterMp.volumeProperty().bind(
 				(model.thrustProperty().divide(2)).multiply(controller.getModel().volumenJuegoProperty().divide(2)));
@@ -317,10 +334,10 @@ public class Main extends GameApplication {
 
 		// Música del juego
 		listaCanciones = new ArrayList<>();
-		listaCanciones.add(new Media(new File("src/main/resources/music/track01.mp3").toURI().toString()));
-		listaCanciones.add(new Media(new File("src/main/resources/music/track02.mp3").toURI().toString()));
-		listaCanciones.add(new Media(new File("src/main/resources/music/track03.mp3").toURI().toString()));
-		listaCanciones.add(new Media(new File("src/main/resources/music/track04.mp3").toURI().toString()));
+		listaCanciones.add(new Media(getClass().getResource("/music/track01.mp3").toString()));
+		listaCanciones.add(new Media(getClass().getResource("/music/track02.mp3").toString()));
+		listaCanciones.add(new Media(getClass().getResource("/music/track03.mp3").toString()));
+		listaCanciones.add(new Media(getClass().getResource("/music/track04.mp3").toString()));
 
 		playMediaTracks(new ArrayList<>(listaCanciones));
 
@@ -383,7 +400,7 @@ public class Main extends GameApplication {
 
 			@Override
 			protected void onCollisionBegin(Entity player, Entity laser) {
-				doDamage(0.15);
+				doDamage(0.25);
 				getGameWorld().removeEntity(laser);
 			}
 		});
@@ -396,6 +413,28 @@ public class Main extends GameApplication {
 				getGameWorld().removeEntity(laser);
 			}
 		});
+
+		// Colision del proyectil enemigo ocn otro enemigo
+//		getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityTypes.ENEMY_PLAYER, EntityTypes.ENEMY_LASER) {
+//
+//			@Override
+//			protected void onCollisionBegin(Entity player, Entity laser) {
+//				getGameWorld().removeEntity(laser);
+//			}
+//		});
+	}
+
+	private void restartGame() {
+		for (NetworkingPlayer ntp : model.getJugadores()) {
+			getGameWorld().removeEntity(ntp.getEntity());
+		}
+		
+		thrusterMp.stop();
+		mediaPlayer.stop();
+
+		getGameWorld().removeEntities(player);
+
+		this.initGame();
 	}
 
 	@Override
@@ -405,7 +444,8 @@ public class Main extends GameApplication {
 
 			// Si se cae la conexión sale del juego
 			if (!clientGameThread.isAlive()) {
-				// gameOver();
+				model.setEnPartida(false);
+				gameOver();
 			}
 
 			physics.setAngularVelocity(model.getAngular());
@@ -445,6 +485,8 @@ public class Main extends GameApplication {
 	private void die() {
 		model.setPlayerAlive(false);
 		model.setThrust(0);
+
+		gameOver();
 
 		// Anadiendo CSS a los botones
 		nextButton.getStylesheets().setAll("/css/forwardbutton.css");
@@ -575,8 +617,8 @@ public class Main extends GameApplication {
 		}
 
 		if (model.getAlivePlayers() == 1) {
-			gameOver();
 			model.setEnPartida(false);
+			gameOver();
 		}
 	}
 
@@ -610,7 +652,7 @@ public class Main extends GameApplication {
 	}
 
 	private void makeShoot() {
-		if (System.currentTimeMillis() >= coolDown + 500) {
+		if (System.currentTimeMillis() >= coolDown + 250) {
 			coolDown = System.currentTimeMillis();
 			model.setCanShoot(true);
 			getAudioPlayer().playSound("laser.mp3");
@@ -787,7 +829,7 @@ public class Main extends GameApplication {
 
 		cancionActual = nuevoValor;
 
-		MediaPlayer mediaPlayer = new MediaPlayer(lista.get(cancionActual));
+		mediaPlayer = new MediaPlayer(lista.get(cancionActual));
 		mediaPlayer.setVolume(controller.getModel().getVolumenMusica() / 2);
 		mediaPlayer.play();
 
@@ -800,9 +842,17 @@ public class Main extends GameApplication {
 	}
 
 	private void gameOver() {
-		endGameScreen = new EndGameScreen(model.getAlivePlayers());
-		endGameScreen.setTranslateY(viewHeight / 2 - endGameScreen.getPrefHeight() / 2);
-		endGameScreen.setTranslateX(viewWidth / 2 - endGameScreen.getPrefWidth() / 2);
-		getGameScene().addUINode(endGameScreen);
+		if (!pantallaFinMostrada) {
+			endGameScreen = new EndGameScreen(model.getAlivePlayers());
+			
+			endGameScreen.getCerrarButton().setOnAction(e->{
+				restartGame();
+			});
+			
+			endGameScreen.setTranslateY(viewHeight / 2 - endGameScreen.getPrefHeight() / 2);
+			endGameScreen.setTranslateX(viewWidth / 2 - endGameScreen.getPrefWidth() / 2);
+			getGameScene().addUINode(endGameScreen);
+			pantallaFinMostrada = true;
+		}
 	}
 }

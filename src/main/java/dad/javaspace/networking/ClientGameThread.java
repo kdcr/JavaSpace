@@ -21,7 +21,8 @@ public class ClientGameThread extends Thread {
 
 		while (model.isEnPartida()) {
 			try {
-				sendPlayerPosition();
+				if (model.isPlayerAlive())
+					sendPlayerPosition();
 				desempaquetarPosiciones(model.getScanner().nextLine());
 				indexError = 0;
 			} catch (Exception e) {
@@ -29,15 +30,19 @@ public class ClientGameThread extends Thread {
 				if (indexError == 5) {
 
 					model.setEnPartida(false);
+
+					try {
+						model.getSocket().close();
+					} catch (Exception ex) {
+					}
+
 					this.interrupt();
 				}
 			}
 		}
-		try {
-			model.getSocket().close();
-		} catch (Exception e) {
-		}
+
 		// Sale del bucle por lo que termina la partida
+
 	}
 
 	private NetworkingPlayer find(int id) {
@@ -67,7 +72,7 @@ public class ClientGameThread extends Thread {
 					bufferPlayer.setShield(Double.parseDouble(str.split(",")[5]));
 					bufferPlayer.setHull(Double.parseDouble(str.split(",")[6]));
 				} else {
-					bufferPlayer.setHull(0);
+					bufferPlayer.setHull(0.0);
 				}
 			}
 		}

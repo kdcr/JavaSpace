@@ -1,9 +1,11 @@
 .rootPane {
-	-fx-background-color:rgba(255.0, 255.0, 255.0, 0.1);
+	-fx-background-color:rgba(255.0, 255.0, 255.0, 0.4);
+	-fx-border-color:white;
 }
 
 .victoryLabel {
 	-fx-font-size: 50.0pt;
+	-fx-text-fill: white;
 }
 
 .posPane {
@@ -11,5 +13,35 @@
 }
 
 .cerrarButton{
-	-fx-background-color:rgba(255.0, 255.0, 255.0, 0.2);
+	-fx-background-color:rgba(200.0, 200.0, 200.0, 0.8);
+	-fx-background-radius: 0;
+	-fx-text-fill:black;
+	-fx-font-size: 15px;
+	-fx-background-insets: 0.0;
+	-fx-padding: 10;
+}
+
+.cerrarButton:hover {
+	-fx-background-color:rgba(255.0, 255.0, 255.0, 0.8);
+}
+
+.cerrarButton:pressed {
+	-fx-background-color:rgba(255.0, 255.0, 255.0, 0.5);	
+}
+
+.hideButton {
+	-fx-background-color: rgba(255, 0, 0, 0.5);
+	-fx-background-image:url(../assets/textures/scrollverticalarrows.png);
+	-fx-background-repeat:no-repeat;
+	-fx-background-position:center;
+	-fx-background-size:20 20;
+	-fx-border-color:rgba(255, 0, 0, 0.8);
+}
+
+.hideButton:hover {
+	-fx-background-color: rgba(255, 0, 0, 0.4);
+}
+
+.hideButton:pressed {
+	-fx-background-color: rgba(255, 0, 0, 0.3);
 }
