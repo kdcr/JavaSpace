@@ -324,8 +324,9 @@ public class Main extends GameApplication {
 				.bind(player.yProperty().subtract(viewHeight / 2).add((player.heightProperty())));
 
 		// Sonido del motor
+				
 		thrusterMp = new MediaPlayer(
-				new Media(new File("src/main/resources/assets/sounds/thruster.mp3").toURI().toString()));
+				new Media(getClass().getResource("/assets/sounds/thruster.mp3").toString()));
 		thrusterMp.setCycleCount(MediaPlayer.INDEFINITE);
 		thrusterMp.volumeProperty().bind(
 				(model.thrustProperty().divide(2)).multiply(controller.getModel().volumenJuegoProperty().divide(2)));
@@ -333,10 +334,10 @@ public class Main extends GameApplication {
 
 		// Música del juego
 		listaCanciones = new ArrayList<>();
-		listaCanciones.add(new Media(new File("src/main/resources/music/track01.mp3").toURI().toString()));
-		listaCanciones.add(new Media(new File("src/main/resources/music/track02.mp3").toURI().toString()));
-		listaCanciones.add(new Media(new File("src/main/resources/music/track03.mp3").toURI().toString()));
-		listaCanciones.add(new Media(new File("src/main/resources/music/track04.mp3").toURI().toString()));
+		listaCanciones.add(new Media(getClass().getResource("/music/track01.mp3").toString()));
+		listaCanciones.add(new Media(getClass().getResource("/music/track02.mp3").toString()));
+		listaCanciones.add(new Media(getClass().getResource("/music/track03.mp3").toString()));
+		listaCanciones.add(new Media(getClass().getResource("/music/track04.mp3").toString()));
 
 		playMediaTracks(new ArrayList<>(listaCanciones));
 
