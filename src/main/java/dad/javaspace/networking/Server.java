@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
 import dad.javaspace.ClientModel;
+import dad.javaspace.reports.Report;
 import dad.javaspace.reports.ServerReportBean;
 import javafx.concurrent.Task;
 
@@ -83,7 +84,6 @@ public class Server extends Task<Integer> {
 			connectionsArray.addAll(playersArray);
 			for (Connection con : playersArray) {
 				con.start();
-				serverReportBean.getNombreJugadores().add(con.getNombre());
 			}
 
 			Connection.barrera.await();
@@ -154,6 +154,9 @@ public class Server extends Task<Integer> {
 				if (serverReportBean.getRanking().contains(connection.getNombre()))
 					serverReportBean.getRanking().add(connection.getNombre());
 			}
+			
+			new Report(serverReportBean);
+			
 			skServidor.close();
 
 		} catch (Exception e) {
