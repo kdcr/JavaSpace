@@ -310,7 +310,7 @@ public class LauncherController implements Initializable {
 			skinCuatro.setGraphic(new ImageView(new Image("/assets/textures/Nave3.png")));
 			skinCinco.setGraphic(new ImageView(new Image("/assets/textures/Nave4.png")));
 			skinSeis.setGraphic(new ImageView(new Image("/assets/textures/NaveLocked.png")));
-			skinSiete.setGraphic(new ImageView(new Image("/assets/textures/NaveLocked.png")));
+			skinSiete.setGraphic(new ImageView(new Image("/assets/textures/xwing.png")));
 			skinOcho.setGraphic(new ImageView(new Image("/assets/textures/placeholder.png")));
 
 			// Desactivar botones de dlc
