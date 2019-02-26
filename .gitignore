@@ -4,3 +4,7 @@
 target/*
 /logs/
 *.class
+
+\.settings/
+
+\.classpath
