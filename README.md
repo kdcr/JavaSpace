@@ -16,7 +16,7 @@
 
 ### Presentación
 
-​	Al abrir el juego la pantalla muestra el launcher, en el que podremos configurar los aspectos del funcionamiento del juego así como elegir con qué nave jugar, el nombre a usar... Ahora pasaremos a detallar más correctamente las diferentes secciones del launcher.
+	Al abrir el juego la pantalla muestra el launcher, en el que podremos configurar los aspectos del funcionamiento del juego así como elegir con qué nave jugar, el nombre a usar... Ahora pasaremos a detallar más correctamente las diferentes secciones del launcher.
 
 El launcher se compone de dos secciones. El menú, que se encuentra en la parte izquierda, y el contenido del mismo, que se enfocará en el centro-derecha.
 
@@ -69,15 +69,15 @@ Pues eso, no creo que haga falta explicar esta. Pero por si acaso.... Solo tiene
 
 ### Cómo jugar
 
-​	Para poder unirse a una partida es necesario introducir una dirección ip en la casilla correspondiente en la configuracion, así como el puerto. Para crear una sala de juego, solo es necesario el numero de puerto. La ip de la máqina que crea la sala debe ser compartida con el resto de jugadores, así como el puerto para que estos puedan configurar su cliente en consecuencia.
+Para poder unirse a una partida es necesario introducir una dirección ip en la casilla correspondiente en la configuracion, así como el puerto. Para crear una sala de juego, solo es necesario el numero de puerto. La ip de la máqina que crea la sala debe ser compartida con el resto de jugadores, así como el puerto para que estos puedan configurar su cliente en consecuencia.
 
 ### Controles
 
-​	Debido a que el juego presenta un movimiento semirealista, no hay pérdida de energía cinética en las naves, es decir, si se quiere frenar hay que propulsar la nave (W) en dirección contraria a su movimiento. Para orientar la nave se usan las teclas A y D, la velocidad angular también se conserva, pero se peude frenar presionando la tecla Q. Tanto la velocidad lineal como angular han sido limitadas para que el juego sea realmente jugable. Para usar el arma de la nave se pulsa la tecla de ESPACIO, hay que tener en consideración que el projectil es un láser, es decir, nos e ve afectado por la rotación de la nave.
+Debido a que el juego presenta un movimiento semirealista, no hay pérdida de energía cinética en las naves, es decir, si se quiere frenar hay que propulsar la nave (W) en dirección contraria a su movimiento. Para orientar la nave se usan las teclas A y D, la velocidad angular también se conserva, pero se peude frenar presionando la tecla Q. Tanto la velocidad lineal como angular han sido limitadas para que el juego sea realmente jugable. Para usar el arma de la nave se pulsa la tecla de ESPACIO, hay que tener en consideración que el projectil es un láser, es decir, nos e ve afectado por la rotación de la nave.
 
 ### Partida
 
-​	El juego sigue el famoso formato "Battle royale", en el que un número de jugadores se enfrentan entre todos y sólo el último vivo es el ganador. El campo de juego está limitado por unas franjas rojas, que al salirse de estas se recibe daño por segundo. Si la nave del jugador es derribada, se pasa al modo espectador, en el que puede ver en directo lo que está sucediendo desde el punto de vista de otros jugadores.
+El juego sigue el famoso formato "Battle royale", en el que un número de jugadores se enfrentan entre todos y sólo el último vivo es el ganador. El campo de juego está limitado por unas franjas rojas, que al salirse de estas se recibe daño por segundo. Si la nave del jugador es derribada, se pasa al modo espectador, en el que puede ver en directo lo que está sucediendo desde el punto de vista de otros jugadores.
 
 ### HUD
 
@@ -90,9 +90,13 @@ A la derecha hay 3 barras. De arriba a abajo, la primera es nuestro escudo, la s
 
 
 
-## Instalación
+## Compilar JavaSpaceFX
 
 ### Dependencias
+
+#### Java JDK (Ver. minima 10)
+
+https://www.java.com/es/
 
 #### Git
 
@@ -122,5 +126,34 @@ https://github.com/AlmasB/FXGL
 
 https://github.com/qxo/ini4j
 
+#### Proceso de instalación
 
+* Clonar las 3 dependencias JavaSpaceFX
 
+```bash
+$ git clone https://github.com/KevinDavidCabreraRodriguez/JavaSpace-ComponenteNombre https://github.com/KevinDavidCabreraRodriguez/JavaSpaceRadar https://github.com/RushTfe/JavaSpaceHUD
+```
+
+* Instalar como módulos Maven en el repositorio local
+
+```bash
+$ cd JavaSpace-ComponenteNombre && mvn install && cd ..
+$ cd JavaSpaceRadar && mvn install && cd ..
+$ cd JavaSpaceHUD && mvn install && cd ..
+```
+
+* Clonar el repositorio de JavaSpaceFX y compilar con Maven
+
+```bash
+$ git clone https://github.com/KevinDavidCabreraRodriguez/JavaSpace
+$ cd JavaSpace
+$ mvn package
+```
+
+Listo, dentro de la carpeta JavaSpace se encontrará el fichero JavaSpaceFX.exe en la ruta target/app/
+
+Si no se encuentra en un entorno windows, puede ejecutar el fichero JavaSpaceFx.jar:
+
+```
+$ java -jar JavaSpaceFX.jar
+```
