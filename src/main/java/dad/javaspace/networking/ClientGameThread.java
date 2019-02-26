@@ -21,7 +21,7 @@ public class ClientGameThread extends Thread {
 
 		while (model.isEnPartida()) {
 			try {
-				if (model.isPlayerAlive())
+				//if (model.isPlayerAlive())
 					sendPlayerPosition();
 				desempaquetarPosiciones(model.getScanner().nextLine());
 				indexError = 0;
