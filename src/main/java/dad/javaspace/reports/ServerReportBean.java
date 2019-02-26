@@ -7,7 +7,21 @@ public class ServerReportBean {
 
 	private int disparos = 0;
 	private String ganador = "";
-	private ArrayList<String> ranking = new ArrayList<>();
+	private ArrayList<String> ranking = new ArrayList<>() {
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public String toString() {
+			String ts = "";
+			for (String nombre : this) {
+				ts = ts.concat(nombre).concat("\n");
+			}
+			
+			ts = ts.substring(0, ts.length()-2);
+
+			return super.toString();
+		}
+	};
 	private LocalDate fechaInicio, fechaFin;
 
 	public ArrayList<String> getRanking() {
@@ -49,6 +63,5 @@ public class ServerReportBean {
 	public void setGanador(String ganador) {
 		this.ganador = ganador;
 	}
-
 
 }

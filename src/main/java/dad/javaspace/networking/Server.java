@@ -151,8 +151,10 @@ public class Server extends Task<Integer> {
 
 			// Guarda el ganador
 			for (Connection connection : connectionsArray) {
-				if (serverReportBean.getRanking().contains(connection.getNombre()))
+				if (!serverReportBean.getRanking().contains(connection.getNombre())) {
 					serverReportBean.getRanking().add(connection.getNombre());
+					serverReportBean.setGanador(connection.getNombre());
+				}
 			}
 			
 			new Report(serverReportBean);
