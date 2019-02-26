@@ -14,8 +14,10 @@ import com.almasb.fxgl.physics.HitBox;
 import com.almasb.fxgl.util.Function;
 
 import dad.javaspace.objects.EntityTypes;
+import javafx.animation.TranslateTransition;
 import javafx.geometry.Point2D;
 import javafx.scene.effect.BlendMode;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
@@ -183,5 +185,19 @@ public class Animations {
 		ScaleAnimationBuilder maxToMin = Entities.animationBuilder().duration(Duration.seconds(velocity))
 				.repeat(duration).scale(player).from(maxSize).to(minSize);
 		maxToMin.buildAndPlay();
+	}
+
+	public static void hideEndScreen(VBox node, boolean oculta, double viewHeight) {
+		TranslateTransition transition = new TranslateTransition();
+		transition.setNode(node);
+		if (oculta) {
+			transition.setFromY(viewHeight - 20);
+			transition.setToY(viewHeight / 2 - node.getPrefHeight() / 2);
+		} else {
+			transition.setFromY(viewHeight / 2 - node.getPrefHeight() / 2);
+			transition.setToY(viewHeight - 20);
+		}
+
+		transition.play();
 	}
 }

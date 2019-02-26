@@ -260,7 +260,7 @@ public class LauncherController implements Initializable {
 			botonesSkins.add(skinSeis);
 			botonesSkins.add(skinSiete);
 			botonesSkins.add(skinOcho);
-			
+
 			onSelectedSkinChanged();
 
 			rootView.getStylesheets().setAll("/css/launcher.css");
@@ -285,9 +285,14 @@ public class LauncherController implements Initializable {
 			skinTres.setGraphic(new ImageView(new Image("/assets/textures/Nave2.png")));
 			skinCuatro.setGraphic(new ImageView(new Image("/assets/textures/Nave3.png")));
 			skinCinco.setGraphic(new ImageView(new Image("/assets/textures/Nave4.png")));
-			skinSeis.setGraphic(new ImageView(new Image("/assets/textures/Nave1.png")));
-			skinSiete.setGraphic(new ImageView(new Image("/assets/textures/Nave1.png")));
-			skinOcho.setGraphic(new ImageView(new Image("/assets/textures/Nave1.png")));
+			skinSeis.setGraphic(new ImageView(new Image("/assets/textures/NaveLocked.png")));
+			skinSiete.setGraphic(new ImageView(new Image("/assets/textures/NaveLocked.png")));
+			skinOcho.setGraphic(new ImageView(new Image("/assets/textures/NaveLocked.png")));
+
+			// Desactivar botones de dlc
+			skinSeis.setDisable(true);
+			skinSiete.setDisable(true);
+			skinOcho.setDisable(true);
 
 			/****************************************************************************************************
 			 * 
@@ -428,8 +433,7 @@ public class LauncherController implements Initializable {
 			if (i != model.getSelectedSkin()) {
 				botonesSkins.get(i).getStylesheets().clear();
 				botonesSkins.get(i).getStylesheets().add("/css/unselectedSkinButton.css");
-			}
-			else {
+			} else {
 				botonesSkins.get(i).getStylesheets().clear();
 				botonesSkins.get(i).getStylesheets().add("/css/selectedSkinButton.css");
 			}
@@ -453,7 +457,7 @@ public class LauncherController implements Initializable {
 	private void onCloseAction() {
 		guardarConfig();
 		System.exit(0);
-		//Platform.exit();
+		// Platform.exit();
 	}
 
 //	private void onLaunchAction() {

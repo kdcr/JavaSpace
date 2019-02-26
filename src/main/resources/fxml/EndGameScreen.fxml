@@ -6,11 +6,11 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<fx:root fx:id="rootPane" alignment="CENTER" prefHeight="200.0" prefWidth="350.0" spacing="5.0" styleClass="rootPane" stylesheets="@../css/EndGameScreen.css" type="VBox" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root fx:id="rootPane" alignment="CENTER" prefHeight="200.0" prefWidth="400.0" spacing="5.0" styleClass="rootPane" stylesheets="@../css/EndGameScreen.css" type="VBox" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <HBox alignment="CENTER_RIGHT" VBox.vgrow="NEVER">
          <children>
-            <Button fx:id="hideButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefWidth="350.0" styleClass="hideButton" />
+            <Button fx:id="hideButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" styleClass="hideButton" HBox.hgrow="ALWAYS" />
          </children>
       </HBox>
       <Label fx:id="victoryLabel" styleClass="victoryLabel" text="Label" VBox.vgrow="ALWAYS" />

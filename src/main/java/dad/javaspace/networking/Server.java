@@ -2,6 +2,7 @@ package dad.javaspace.networking;
 
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
@@ -27,15 +28,13 @@ public class Server extends Task<Integer> {
 		return players;
 	}
 
-
-
 	private static int Puerto;
 	static int numCliente = 0;
 	private ArrayList<Integer> disconectedList = new ArrayList<Integer>();
 
 	/**
-	 * Constructor del servidor que recibe como parámetro el modelo del cliente
-	 * para inicializar sus variables
+	 * Constructor del servidor que recibe como parámetro el modelo del cliente para
+	 * inicializar sus variables
 	 * 
 	 * @param model
 	 */
@@ -43,14 +42,15 @@ public class Server extends Task<Integer> {
 		this.model = model;
 		nPlayers = model.getNumPlayers();
 		Puerto = model.getPort();
+		serverReportBean.setFechaInicio(LocalDate.now());
 
 	}
 
 	/**
-	 * esccha las distintas peticiones de los clientes según el número de
-	 * jugadores establecido por el usuario en el correspondiente apartado de la
-	 * intrerfaz. se crea una clase Connection por cada usuario, usando una
-	 * cyclicBarrier para sincronizar todos los clientes
+	 * esccha las distintas peticiones de los clientes según el número de jugadores
+	 * establecido por el usuario en el correspondiente apartado de la intrerfaz. se
+	 * crea una clase Connection por cada usuario, usando una cyclicBarrier para
+	 * sincronizar todos los clientes
 	 * 
 	 * En un bucle while se realizan las distintas funciones necesarias para el
 	 * funcionamiento del juego y se sale de este una vez haya quedado solo
@@ -83,7 +83,7 @@ public class Server extends Task<Integer> {
 			connectionsArray.addAll(playersArray);
 			for (Connection con : playersArray) {
 				con.start();
-
+				serverReportBean.getNombreJugadores().add(con.getNombre());
 			}
 
 			Connection.barrera.await();
@@ -111,8 +111,11 @@ public class Server extends Task<Integer> {
 							serverReportBean.setDisparos(serverReportBean.getDisparos() + 1);
 						}
 
-						if (Double.parseDouble(con.getItemStateString().split(",")[6]) <= 0.0)
+						if (Double.parseDouble(con.getItemStateString().split(",")[6]) <= 0.0) {
 							disconectedList.add(con.getIdentity() - 1);
+							// Guarda el nombre del que acaba de perder, asi se ordenan por puesto 
+							serverReportBean.getRanking().add(con.getNombre());
+						}
 						playersState += con.getItemStateString();
 					} catch (NoSuchElementException e) {
 						disconectedList.add(con.getIdentity() - 1);
@@ -122,7 +125,6 @@ public class Server extends Task<Integer> {
 				}
 
 				for (Integer disconected : disconectedList) {
-
 					playersArray.remove(disconected.intValue());
 				}
 				disconectedList.clear();
@@ -139,18 +141,27 @@ public class Server extends Task<Integer> {
 
 			}
 			for (Connection con : connectionsArray) {
-				if(con.isAlive())
+				if (con.isAlive())
 					con.getSocket().close();
 				con.interrupt();
-				
-			}
 
+			}
+			// Guarda la fecha de finalizacion
+			serverReportBean.setFechaFin(LocalDate.now());
+
+			// Guarda el ganador
+			for (Connection connection : connectionsArray) {
+				if (serverReportBean.getRanking().contains(connection.getNombre()))
+					serverReportBean.getRanking().add(connection.getNombre());
+			}
 			skServidor.close();
 
 		} catch (Exception e) {
 			e.printStackTrace();
+			return 1;
 		}
-		return null;
+
+		return 0;
 	}
 
 	public static int getnPlayers() {

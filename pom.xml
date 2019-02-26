@@ -78,7 +78,7 @@
 								<mainClass>dad.javaspace.Main</mainClass>
 							</classPath>
 							<jre>
-								<bundledJre64Bit>true</bundledJre64Bit>
+								<bundledJre64Bit>false</bundledJre64Bit>
 								<!-- versión del jre -->
 								<minVersion>10.0.2</minVersion>
 								<runtimeBits>64</runtimeBits>

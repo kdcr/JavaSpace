@@ -32,11 +32,12 @@ public class EndGameScreen extends VBox implements Initializable {
 	@FXML
 	private Button hideButton;
 
-	private int pos;
+	private int pos,max;
 
-	public EndGameScreen(int pos) {
+	public EndGameScreen(int pos, int max) {
 		try {
 			this.pos = pos;
+			this.max = max;
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/EndGameScreen.fxml"));
 			loader.setController(this);
 			loader.setRoot(this);
@@ -49,7 +50,7 @@ public class EndGameScreen extends VBox implements Initializable {
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		posLabel.setText(pos + "");
+		posLabel.setText(pos + "/" + (max + 1));
 
 		if (pos == 1)
 			victoryLabel.setText("¡Ganador!");
@@ -63,6 +64,10 @@ public class EndGameScreen extends VBox implements Initializable {
 	
 	public Button getCerrarButton() {
 		return this.cerrarButton;
+	}
+	
+	public Button getHideButton() {
+		return this.hideButton;
 	}
 
 }
