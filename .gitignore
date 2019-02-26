@@ -8,3 +8,7 @@ target/*
 \.settings/
 
 \.classpath
+
+\.idea/
+
+JavaSpace\.iml

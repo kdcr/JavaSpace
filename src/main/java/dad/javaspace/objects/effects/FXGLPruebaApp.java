@@ -158,7 +158,7 @@ public class FXGLPruebaApp extends GameApplication {
 		hiperJumpEmitter.setStartColor(Color.VIOLET);
 		hiperJumpEmitter.setEndColor(Color.CYAN);
 		hiperJumpEmitter.setScaleFunction(new Function<Integer, Point2D>() {
-			// Tamaño de la particula
+			// Tamano de la particula
 			@Override
 			public Point2D apply(Integer arg) {
 				return new Point2D(-0.1, -0.1);
@@ -175,7 +175,7 @@ public class FXGLPruebaApp extends GameApplication {
 		});
 		hiperJump.addComponent(hiperJumpComponent);
 
-		// Animacion aumento de tamaño
+		// Animacion aumento de tamano
 		Point2D min = new Point2D(0, 0);
 		Point2D max = new Point2D(1, 1);
 		Entities.animationBuilder().duration(Duration.seconds(duration)).scale(player).from(min).to(max).buildAndPlay();
