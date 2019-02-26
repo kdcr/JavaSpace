@@ -30,15 +30,13 @@ public class ClientGameThread extends Thread {
 				if (indexError == 5) {
 
 					model.setEnPartida(false);
-
-					try {
-						model.getSocket().close();
-					} catch (Exception ex) {
-					}
-
-					this.interrupt();
 				}
 			}
+
+		}
+		try {
+			model.getSocket().close();
+		} catch (Exception ex) {
 		}
 
 		// Sale del bucle por lo que termina la partida
