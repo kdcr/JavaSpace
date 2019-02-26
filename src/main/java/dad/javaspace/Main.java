@@ -1,6 +1,7 @@
 package dad.javaspace;
 
 import java.io.IOException;
+import java.net.ServerSocket;
 import java.util.ArrayList;
 
 import com.almasb.fxgl.app.FXGL;
@@ -83,7 +84,7 @@ public class Main extends GameApplication {
 	// Estetica
 	AnchorPane rootView;
 	private ArrayList<Entity> starArray = new ArrayList<>();
-	ArrayList<Entity> starList = new ArrayList<>();
+	private ArrayList<Entity> starList = new ArrayList<>();
 
 	ComponentePropulsor componentePropulsor;
 
@@ -120,7 +121,7 @@ public class Main extends GameApplication {
 	@Override
 	protected void initGame() {
 		super.initGame();
-enLauncher = true;
+		enLauncher = true;
 		// Reinizializar objetos y demas parareutilizar el juego
 		model = new ClientModel();
 
