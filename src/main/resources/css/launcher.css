@@ -174,3 +174,30 @@
 	-fx-background-image: url(../assets/textures/imagenjugar.png);
 	-fx-background-size:cover;
 }
+
+
+
+/**************************************************************************
+ *
+ * Seccion de Configuracion
+ *
+ *************************************************************************/
+
+#aboutUsRoot {
+	-fx-background-color: rgba(255.0, 255.0, 255.0, 0.1);
+}
+
+ .mainTitle {
+    -fx-text-fill: white;
+    -fx-font-size: 23;
+ }
+
+ .title {
+    -fx-text-fill: white;
+    -fx-font-size: 15;
+ }
+
+ .names {
+    -fx-text-fill: white;
+    -fx-font-size: 12;
+ }
