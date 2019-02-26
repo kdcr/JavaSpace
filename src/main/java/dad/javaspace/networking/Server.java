@@ -107,7 +107,7 @@ public class Server extends Task<Integer> {
 						con.recive();
 
 						// Sumar un disparo
-						if (con.getItemStateString().split(",")[3] == "true") {
+						if (con.getItemStateString().split(",")[4].equals("true")) {
 							serverReportBean.setDisparos(serverReportBean.getDisparos() + 1);
 						}
 
