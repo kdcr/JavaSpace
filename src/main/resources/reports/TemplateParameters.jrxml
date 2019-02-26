@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="TemplateParameters" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="dcdd0254-8cb5-4152-b817-6bf28b12eaa9">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="fechaInicio" class="java.time.LocalDate">
+		<fieldDescription><![CDATA[fechaInicio]]></fieldDescription>
+	</field>
+	<field name="ganador" class="java.lang.String">
+		<fieldDescription><![CDATA[ganador]]></fieldDescription>
+	</field>
+	<field name="ranking" class="java.util.ArrayList">
+		<fieldDescription><![CDATA[ranking]]></fieldDescription>
+	</field>
+	<field name="fechaFin" class="java.time.LocalDate">
+		<fieldDescription><![CDATA[fechaFin]]></fieldDescription>
+	</field>
+	<field name="disparos" class="java.lang.Integer">
+		<fieldDescription><![CDATA[disparos]]></fieldDescription>
+	</field>
+	<variable name="disparos1" class="java.lang.Integer" resetType="Column" calculation="Count">
+		<variableExpression><![CDATA[$F{disparos}]]></variableExpression>
+	</variable>
+	<background>
+		<band height="647" splitType="Stretch">
+			<image>
+				<reportElement x="30" y="147" width="500" height="500" uuid="2acf1a72-4de4-4501-aa50-3faf08296a8e"/>
+				<imageExpression><![CDATA["C:/Users/Alumno/Desktop/javaspacewatermark.png"]]></imageExpression>
+			</image>
+		</band>
+	</background>
+	<title>
+		<band height="50" splitType="Stretch">
+			<frame>
+				<reportElement x="0" y="0" width="555" height="50" uuid="a8e737c1-b624-4d83-ac16-503602036c00"/>
+				<staticText>
+					<reportElement x="140" y="0" width="280" height="50" uuid="0d1f420d-47da-4056-b801-5c69d975db49"/>
+					<textElement textAlignment="Center">
+						<font fontName="Consolas" size="26" isBold="true" isItalic="true"/>
+					</textElement>
+					<text><![CDATA[JavaSpace Reporte]]></text>
+				</staticText>
+				<image>
+					<reportElement x="460" y="0" width="50" height="50" uuid="c36a8570-85b1-40f4-866f-8db6584f4df1"/>
+					<imageExpression><![CDATA["C:/Users/Alumno/Desktop/Nave1.png"]]></imageExpression>
+				</image>
+			</frame>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="66" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="111" height="30" uuid="0abde1d9-0c09-4239-90ea-b23b14bbd1ea">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e6381ee7-b7b2-45f8-b10c-bef7b254bfe8"/>
+				</reportElement>
+				<text><![CDATA[fechaInicio]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="111" y="0" width="111" height="30" uuid="a4e8b01e-99dd-4516-bb82-478b95e6c553">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="dd0d0338-9ba1-4620-b099-36bc498ef942"/>
+				</reportElement>
+				<text><![CDATA[ganador]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="222" y="0" width="111" height="30" uuid="e324a330-321f-481c-970a-6c7c42fb63f7">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0bb2e445-c52d-4177-9ec8-2fe788fce8b1"/>
+				</reportElement>
+				<text><![CDATA[ranking]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="333" y="0" width="111" height="30" uuid="90b4216b-4bef-4337-8d86-5cdc7cde2b46">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0d2fcbd9-2fb6-4698-a765-ebd56a2e9521"/>
+				</reportElement>
+				<text><![CDATA[fechaFin]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="444" y="0" width="111" height="30" uuid="64a3fc00-6c64-4c41-967d-716719998461">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="7db795a6-c4f1-4a83-a74c-471fb864b03e"/>
+				</reportElement>
+				<text><![CDATA[disparos]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="111" height="30" uuid="7c0ce9f7-2975-4b5e-a7a5-645e735c4189">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e6381ee7-b7b2-45f8-b10c-bef7b254bfe8"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{fechaInicio}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="111" y="0" width="111" height="30" uuid="3372d5e9-5bad-4b68-a032-627987f8ae07">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="dd0d0338-9ba1-4620-b099-36bc498ef942"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{ganador}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="222" y="0" width="111" height="30" uuid="754fd46f-1ce6-4959-ac35-b2f116e1b961">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0bb2e445-c52d-4177-9ec8-2fe788fce8b1"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{ranking}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="333" y="0" width="111" height="30" uuid="46735248-9633-440b-9b53-c12ac59deab5">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0d2fcbd9-2fb6-4698-a765-ebd56a2e9521"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{fechaFin}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="444" y="0" width="111" height="30" uuid="ea94f2ad-f911-4dc9-ada6-a5cf1f8d8723">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="7db795a6-c4f1-4a83-a74c-471fb864b03e"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{disparos}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch">
+			<frame>
+				<reportElement x="0" y="0" width="555" height="30" uuid="45a69420-3182-449a-94bd-5cefb5f349c7"/>
+				<textField pattern="MMMMM dd, yyyy">
+					<reportElement x="360" y="0" width="100" height="30" uuid="e9164244-91d6-44f3-8986-64bb8dffdb19"/>
+					<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+				</textField>
+				<textField pattern="HH:mm">
+					<reportElement x="470" y="0" width="70" height="30" uuid="393c64e4-7a05-4855-bee5-429bfeb69c80"/>
+					<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="0" y="0" width="100" height="30" uuid="9e36e0e8-7456-43fa-a469-f0e1820d22f1"/>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Report">
+					<reportElement x="100" y="0" width="100" height="30" uuid="59a5f647-7e89-4b3f-94f1-5cb16178d8e3"/>
+					<textElement textAlignment="Left"/>
+					<textFieldExpression><![CDATA[" of " + $V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

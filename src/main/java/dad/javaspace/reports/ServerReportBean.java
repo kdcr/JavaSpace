@@ -7,7 +7,6 @@ public class ServerReportBean {
 
 	private int disparos = 0;
 	private String ganador = "";
-	private ArrayList<String> nombreJugadores = new ArrayList<>();
 	private ArrayList<String> ranking = new ArrayList<>();
 	private LocalDate fechaInicio, fechaFin;
 
@@ -51,12 +50,5 @@ public class ServerReportBean {
 		this.ganador = ganador;
 	}
 
-	public ArrayList<String> getNombreJugadores() {
-		return nombreJugadores;
-	}
-
-	public void setNombreJugadores(ArrayList<String> nombreJugadores) {
-		this.nombreJugadores = nombreJugadores;
-	}
 
 }
