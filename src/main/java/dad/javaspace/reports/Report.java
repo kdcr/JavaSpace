@@ -6,6 +6,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 
 import net.sf.jasperreports.engine.JRException;
@@ -25,13 +28,14 @@ public class Report {
 			datasource.addServerReport(serverReportBean);
 
 			JasperReport reporte = (JasperReport) JRLoader
-					.loadObjectFromFile(getClass().getResource("reports/TemplateParameters.jasper").toString());
+					.loadObject(new File("src/main/resources/reports/TemplateParameters.jasper"));
+			// .loadObject(new
+			// File(getClass().getResource("/reports/TemplateParameters.jasper").toString()));
 			JasperPrint jasperPrint = JasperFillManager.fillReport(reporte, null, datasource);
 
 			OutputStream outputStream = new FileOutputStream(new File(System.getProperty("user.home")
-					.concat("/Documents/JavaSpaceReport")
-					.concat(new SimpleDateFormat("-yyyy-MM-dd-HH:mm:ss").format(Calendar.getInstance()).toString())
-					.concat(".pdf")));
+					.concat("/Documents/JavaSpaceReport").concat(LocalDate.now().toString().replaceAll(":", "-"))
+					.concat("_").concat(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")).replaceAll(":", "-")).concat(".pdf")));
 			JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
 			outputStream.close();
 
