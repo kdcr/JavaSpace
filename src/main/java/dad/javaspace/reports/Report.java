@@ -25,11 +25,11 @@ public class Report {
 			datasource.addServerReport(serverReportBean);
 
 			JasperReport reporte = (JasperReport) JRLoader
-					.loadObjectFromFile(getClass().getResource("reports\\TemplateParameters.jasper").toString());
+					.loadObjectFromFile(getClass().getResource("reports/TemplateParameters.jasper").toString());
 			JasperPrint jasperPrint = JasperFillManager.fillReport(reporte, null, datasource);
 
 			OutputStream outputStream = new FileOutputStream(new File(System.getProperty("user.home")
-					.concat("\\Documents\\JavaSpaceReport")
+					.concat("/Documents/JavaSpaceReport")
 					.concat(new SimpleDateFormat("-yyyy-MM-dd-HH:mm:ss").format(Calendar.getInstance()).toString())
 					.concat(".pdf")));
 			JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
