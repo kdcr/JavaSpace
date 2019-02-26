@@ -10,6 +10,7 @@ import net.sf.jasperreports.engine.JRField;
 public class ReportDataSource implements JRDataSource {
 
 	private List<ServerReportBean> listaServerReport = new ArrayList<ServerReportBean>();
+	
 	private int index = -1;
 
 	public ReportDataSource() {

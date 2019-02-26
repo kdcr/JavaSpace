@@ -104,7 +104,7 @@
 				<reportElement x="222" y="0" width="111" height="30" uuid="754fd46f-1ce6-4959-ac35-b2f116e1b961">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="0bb2e445-c52d-4177-9ec8-2fe788fce8b1"/>
 				</reportElement>
-				<textFieldExpression><![CDATA[$F{ranking}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{ranking}.toString().replaceAll(",","\n").replace("[", " ").replace("]", "")]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="333" y="0" width="111" height="30" uuid="46735248-9633-440b-9b53-c12ac59deab5">
