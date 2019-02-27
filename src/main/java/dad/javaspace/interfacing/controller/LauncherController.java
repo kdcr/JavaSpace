@@ -14,8 +14,11 @@ import dad.javaspace.launchermodel.LauncherModel;
 import javafx.animation.FadeTransition;
 import javafx.animation.RotateTransition;
 import javafx.animation.Transition;
+import javafx.application.Application;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ListProperty;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -201,28 +204,27 @@ public class LauncherController implements Initializable {
 
 	@FXML
 	private Button skinOcho;
-	
+
 	/****************************************************************************************************
 	 * 
 	 * About us
 	 * 
 	 ****************************************************************************************************/
 
-    @FXML
-    private GridPane aboutUsRoot;
+	@FXML
+	private GridPane aboutUsRoot;
 
-    @FXML
-    private Hyperlink linkSam;
+	@FXML
+	private Hyperlink linkSam;
 
-    @FXML
-    private Hyperlink linkKevin;
+	@FXML
+	private Hyperlink linkKevin;
 
-    @FXML
-    private Hyperlink linkMichael;
+	@FXML
+	private Hyperlink linkMichael;
 
-    @FXML
-    private Hyperlink linkPedro;
-    
+	@FXML
+	private Hyperlink linkPedro;
 
 	/****************************************************************************************************
 	 * 
@@ -363,7 +365,6 @@ public class LauncherController implements Initializable {
 			 * 
 			 ***************************************************************************************************/
 
-			
 			// Hovered properties
 			createRoomButton.setOnMousePressed(e -> onCreateRoomPressed());
 			aboutButton.hoverProperty().addListener(e -> onAboutUsButtonHovered());
@@ -371,7 +372,7 @@ public class LauncherController implements Initializable {
 			exitButton.hoverProperty().addListener(e -> onExitButtonHovered());
 			selectSkinButton.hoverProperty().addListener(e -> onSelectSkinButtonHovered());
 			empezarPartidaButton.hoverProperty().addListener(e -> onEmpezarPartidaButtonHovered());
-			
+
 			// Tooltips
 			createRoomButton.setTooltip(new Tooltip("Crear sala usando los datos de la configuración de RED"));
 			launchButton.setTooltip(new Tooltip("Empezar partida"));
@@ -380,12 +381,12 @@ public class LauncherController implements Initializable {
 			skinTres.setTooltip(new Tooltip("Black Hole"));
 			skinCuatro.setTooltip(new Tooltip("Abomination"));
 			skinCinco.setTooltip(new Tooltip("Galactic Destroyer"));
-			
+
 			// Actions
 			exitButton.setOnAction(e -> onCloseAction());
 			launchButton.setOnMousePressed(e -> onLaunchButtonPressed());
 			launchButton.setOnAction(e -> guardarConfig());
-			
+
 			// Skins
 			skinUno.setOnAction(e -> onSkinUnoAction());
 			skinDos.setOnAction(e -> onSkinDosAction());
@@ -537,7 +538,7 @@ public class LauncherController implements Initializable {
 			hoverAnimation(cfgHoverRoot);
 		}
 	}
-	
+
 	private void onAboutUsButtonHovered() {
 		if (aboutButton.isHover()) {
 			rootBorderPaneView.getCenter().setOpacity(0);
@@ -714,4 +715,21 @@ public class LauncherController implements Initializable {
 	public Label getLabelInfo() {
 		return labelInfo;
 	}
+
+	public Hyperlink getLinkSam() {
+		return linkSam;
+	}
+
+	public Hyperlink getLinkKevin() {
+		return linkKevin;
+	}
+
+	public Hyperlink getLinkMichael() {
+		return linkMichael;
+	}
+
+	public Hyperlink getLinkPedro() {
+		return linkPedro;
+	}
+
 }
