@@ -14,7 +14,7 @@
 		<maven.compiler.target>10</maven.compiler.target>
 		<!-- codificación utilizada es UTF-8 -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<jre.path>C:\Program Files\Java\jre-10.0.2</jre.path>
+		<jre.path>/usr/lib/jvm/java-10-jre/</jre.path>
 	</properties>
 	<build>
 		<plugins>
@@ -33,7 +33,7 @@
 						</manifest>
 					</archive>
 					<!-- directorio donde se genera el jar (por defecto es 'target') -->
-					<outputDirectory>${project.build.directory}</outputDirectory>
+					<outputDirectory>${project.build.directory}/app/</outputDirectory>
 				</configuration>
 			</plugin>
 			<plugin>

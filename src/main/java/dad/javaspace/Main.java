@@ -1,6 +1,7 @@
 package dad.javaspace;
 
 import java.io.IOException;
+import java.net.ServerSocket;
 import java.util.ArrayList;
 
 import com.almasb.fxgl.app.FXGL;
@@ -44,6 +45,8 @@ public class Main extends GameApplication {
 	double viewWidth;
 	double viewHeight;
 
+	private boolean enLauncher = false;
+
 	JavaSpaceHUD hud = new JavaSpaceHUD();
 	RadarController radar = new RadarController();
 
@@ -81,7 +84,7 @@ public class Main extends GameApplication {
 	// Estetica
 	AnchorPane rootView;
 	private ArrayList<Entity> starArray = new ArrayList<>();
-	ArrayList<Entity> starList = new ArrayList<>();
+	private ArrayList<Entity> starList = new ArrayList<>();
 
 	ComponentePropulsor componentePropulsor;
 
@@ -118,7 +121,7 @@ public class Main extends GameApplication {
 	@Override
 	protected void initGame() {
 		super.initGame();
-
+		enLauncher = true;
 		// Reinizializar objetos y demas parareutilizar el juego
 		model = new ClientModel();
 
@@ -287,7 +290,7 @@ public class Main extends GameApplication {
 	}
 
 	private void startGame() {
-		
+		enLauncher = false;
 		controller.getLaunchButton().setDisable(false);
 
 		model.setPlayerAlive(true);
@@ -438,7 +441,7 @@ public class Main extends GameApplication {
 	@Override
 	protected void onUpdate(double tpf) {
 		super.onUpdate(tpf);
-		if (model.isEnPartida()) {
+		if (!enLauncher) {
 
 			// Si se cae la conexión sale del juego
 			if (!clientGameThread.isAlive()) {
@@ -702,7 +705,7 @@ public class Main extends GameApplication {
 	 * Genera una estrella cada millis milisegundos, ademas borra de forma aleatoria
 	 * algunas que ya existian de antes
 	 * 
-	 * @param Milisegundos de refresco
+	 * @param millis Milisegundos de refresco
 	 */
 	private void generateStars(int millis) {
 		if (System.currentTimeMillis() > coolDownStars + millis) {

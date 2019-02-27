@@ -23,6 +23,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
@@ -200,6 +201,28 @@ public class LauncherController implements Initializable {
 
 	@FXML
 	private Button skinOcho;
+	
+	/****************************************************************************************************
+	 * 
+	 * About us
+	 * 
+	 ****************************************************************************************************/
+
+    @FXML
+    private GridPane aboutUsRoot;
+
+    @FXML
+    private Hyperlink linkSam;
+
+    @FXML
+    private Hyperlink linkKevin;
+
+    @FXML
+    private Hyperlink linkMichael;
+
+    @FXML
+    private Hyperlink linkPedro;
+    
 
 	/****************************************************************************************************
 	 * 
@@ -227,6 +250,7 @@ public class LauncherController implements Initializable {
 		loadView("/fxml/EmpezarPartidaHoverView.fxml");
 		loadView("/fxml/SalirLauncherView.fxml");
 		loadView("/fxml/SkinSelectorView.fxml");
+		loadView("/fxml/AboutUsView.fxml");
 		loadView("/fxml/CFGView.fxml");
 	}
 
@@ -286,8 +310,8 @@ public class LauncherController implements Initializable {
 			skinCuatro.setGraphic(new ImageView(new Image("/assets/textures/Nave3.png")));
 			skinCinco.setGraphic(new ImageView(new Image("/assets/textures/Nave4.png")));
 			skinSeis.setGraphic(new ImageView(new Image("/assets/textures/NaveLocked.png")));
-			skinSiete.setGraphic(new ImageView(new Image("/assets/textures/NaveLocked.png")));
-			skinOcho.setGraphic(new ImageView(new Image("/assets/textures/NaveLocked.png")));
+			skinSiete.setGraphic(new ImageView(new Image("/assets/textures/xwing.png")));
+			skinOcho.setGraphic(new ImageView(new Image("/assets/textures/placeholder.png")));
 
 			// Desactivar botones de dlc
 			skinSeis.setDisable(true);
@@ -339,26 +363,35 @@ public class LauncherController implements Initializable {
 			 * 
 			 ***************************************************************************************************/
 
+			
+			// Hovered properties
 			createRoomButton.setOnMousePressed(e -> onCreateRoomPressed());
-			createRoomButton.setTooltip(new Tooltip("Crear sala usando los datos de la configuración de RED"));
+			aboutButton.hoverProperty().addListener(e -> onAboutUsButtonHovered());
 			cfgButton.hoverProperty().addListener(e -> onCFGButtonHovered());
 			exitButton.hoverProperty().addListener(e -> onExitButtonHovered());
-			exitButton.setOnAction(e -> onCloseAction());
-			empezarPartidaButton.hoverProperty().addListener(e -> onEmpezarPartidaButtonHovered());
 			selectSkinButton.hoverProperty().addListener(e -> onSelectSkinButtonHovered());
+			empezarPartidaButton.hoverProperty().addListener(e -> onEmpezarPartidaButtonHovered());
+			
+			// Tooltips
+			createRoomButton.setTooltip(new Tooltip("Crear sala usando los datos de la configuración de RED"));
+			launchButton.setTooltip(new Tooltip("Empezar partida"));
+			skinUno.setTooltip(new Tooltip("Interestelar 1"));
+			skinDos.setTooltip(new Tooltip("Supernova"));
+			skinTres.setTooltip(new Tooltip("Black Hole"));
+			skinCuatro.setTooltip(new Tooltip("Abomination"));
+			skinCinco.setTooltip(new Tooltip("Galactic Destroyer"));
+			
+			// Actions
+			exitButton.setOnAction(e -> onCloseAction());
 			launchButton.setOnMousePressed(e -> onLaunchButtonPressed());
 			launchButton.setOnAction(e -> guardarConfig());
-			launchButton.setTooltip(new Tooltip("Empezar partida"));
+			
+			// Skins
 			skinUno.setOnAction(e -> onSkinUnoAction());
-			skinUno.setTooltip(new Tooltip("Interestelar 1"));
 			skinDos.setOnAction(e -> onSkinDosAction());
-			skinDos.setTooltip(new Tooltip("Supernova"));
 			skinTres.setOnAction(e -> onSkinTresAction());
-			skinTres.setTooltip(new Tooltip("Black Hole"));
 			skinCuatro.setOnAction(e -> onSkinCuatroAction());
-			skinCuatro.setTooltip(new Tooltip("Abomination"));
 			skinCinco.setOnAction(e -> onSkinCincoAction());
-			skinCinco.setTooltip(new Tooltip("Galactic Destroyer"));
 			skinSeis.setOnAction(e -> onSkinSeisAction());
 			skinSiete.setOnAction(e -> onSkinSieteAction());
 			skinOcho.setOnAction(e -> onSkinOchoAction());
@@ -503,7 +536,13 @@ public class LauncherController implements Initializable {
 			rootBorderPaneView.getCenter().setOpacity(0);
 			hoverAnimation(cfgHoverRoot);
 		}
-
+	}
+	
+	private void onAboutUsButtonHovered() {
+		if (aboutButton.isHover()) {
+			rootBorderPaneView.getCenter().setOpacity(0);
+			hoverAnimation(aboutUsRoot);
+		}
 	}
 
 	private void onEmpezarPartidaButtonHovered() {
