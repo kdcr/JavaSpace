@@ -27,7 +27,7 @@
 		<band height="647" splitType="Stretch">
 			<image>
 				<reportElement x="30" y="147" width="500" height="500" uuid="2acf1a72-4de4-4501-aa50-3faf08296a8e"/>
-				<imageExpression><![CDATA["C:/Users/Alumno/Desktop/javaspacewatermark.png"]]></imageExpression>
+				<imageExpression><![CDATA["src/main/resources/reports/images/javaspacewatermark.png"]]></imageExpression>
 			</image>
 		</band>
 	</background>
@@ -44,7 +44,7 @@
 				</staticText>
 				<image>
 					<reportElement x="460" y="0" width="50" height="50" uuid="c36a8570-85b1-40f4-866f-8db6584f4df1"/>
-					<imageExpression><![CDATA["C:/Users/Alumno/Desktop/Nave1.png"]]></imageExpression>
+					<imageExpression><![CDATA["src/main/resources/assets/textures/Nave1.png"]]></imageExpression>
 				</image>
 			</frame>
 		</band>
