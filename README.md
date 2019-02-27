@@ -16,7 +16,7 @@
 
 ### Presentación
 
-	Al abrir el juego la pantalla muestra el launcher, en el que podremos configurar los aspectos del funcionamiento del juego así como elegir con qué nave jugar, el nombre a usar... Ahora pasaremos a detallar más correctamente las diferentes secciones del launcher.
+Al abrir el juego la pantalla muestra el launcher, en el que podremos configurar los aspectos del funcionamiento del juego así como elegir con qué nave jugar, el nombre a usar... Ahora pasaremos a detallar más correctamente las diferentes secciones del launcher.
 
 El launcher se compone de dos secciones. El menú, que se encuentra en la parte izquierda, y el contenido del mismo, que se enfocará en el centro-derecha.
 
@@ -131,7 +131,9 @@ https://github.com/qxo/ini4j
 * Clonar las 3 dependencias JavaSpaceFX
 
 ```bash
-$ git clone https://github.com/KevinDavidCabreraRodriguez/JavaSpace-ComponenteNombre https://github.com/KevinDavidCabreraRodriguez/JavaSpaceRadar https://github.com/RushTfe/JavaSpaceHUD
+$ git clone https://github.com/KevinDavidCabreraRodriguez/JavaSpace-ComponenteNombre
+$ git clone https://github.com/KevinDavidCabreraRodriguez/JavaSpaceRadar
+$ git clone https://github.com/RushTfe/JavaSpaceHUD
 ```
 
 * Instalar como módulos Maven en el repositorio local
