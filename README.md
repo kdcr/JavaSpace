@@ -81,8 +81,6 @@ El juego sigue el famoso formato "Battle royale", en el que un número de jugado
 
 ### HUD
 
-![](src/main/resources/assets/textures/hud.png)
-
 El hud cuenta de varias secciones. 
 Arriba al centro veremos nuestro nombre.
 A la izquierda encontraremos un número que indica la velocidad. Justo debajo de ese número podemos observar un circulo que se rellena. Esto es la aceleración. A más relleno el círculo, mas fuerte será la aceleración de la nave.
